@@ -18,6 +18,8 @@ CONJUNTOS = [
     ("productos · integración (PG + Redis reales)", ["servicios/productos/tests/integracion"]),
     ("clientes · unitarias (mocks declarados)", ["servicios/clientes/tests/test_clientes_unit.py"]),
     ("clientes · integración (PG real)", ["servicios/clientes/tests/integracion"]),
+    ("inventario · unitarias (mocks declarados)", ["servicios/inventario/tests/test_inventario_unit.py"]),
+    ("inventario · integración (RabbitMQ + PG reales)", ["servicios/inventario/tests/integracion"]),
 ]
 
 
