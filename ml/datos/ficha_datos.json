@@ -1,0 +1,51 @@
+{
+  "fuente": "C:\\Users\\maria\\Downloads\\final parte 2\\prestamos_entrenamiento.csv",
+  "sha256_fuente": "c6cdc437c3aecc9116bc8b978df421d5a7600634c1ad7d6f82e58222a2446ecd",
+  "filas_origen": 12000,
+  "filas_descartadas": 0,
+  "objetivo": "incumplimiento_90d",
+  "excluidas": [
+    "solicitud_id",
+    "cliente_id",
+    "incumplimiento_90d",
+    "tasa_mensual_simulada"
+  ],
+  "variables_constantemente_descartadas": [],
+  "variables_modelo": [
+    "ingresos_mensuales_cop",
+    "obligaciones_mensuales_cop",
+    "tipo_empleo",
+    "antiguedad_laboral_meses",
+    "meses_historial_crediticio",
+    "creditos_previos",
+    "atrasos_previos_30d",
+    "porcentaje_pago_puntual",
+    "monto_solicitado_cop",
+    "plazo_meses",
+    "cuota_estimada_cop"
+  ],
+  "proporciones": {
+    "entrenamiento": 0.6,
+    "validacion": 0.2,
+    "prueba": 0.2
+  },
+  "semilla": 42,
+  "conteos": {
+    "entrenamiento": 7200,
+    "validacion": 2400,
+    "prueba": 2400
+  },
+  "tasa_positivos": {
+    "total": 0.3055833333333333,
+    "entrenamiento": 0.3055555555555556,
+    "validacion": 0.30583333333333335,
+    "prueba": 0.30541666666666667
+  },
+  "nulos_por_columna": {
+    "tipo_empleo": 93,
+    "antiguedad_laboral_meses": 91,
+    "meses_historial_crediticio": 97,
+    "porcentaje_pago_puntual": 2473
+  },
+  "semilla_estratificacion": 42
+}
