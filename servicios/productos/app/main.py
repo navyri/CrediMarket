@@ -60,7 +60,7 @@ def _problem(status: int, titulo: str, detalle: str, instance: str) -> JSONRespo
 
 
 @app.exception_handler(RequestValidationError)
-def validacion(exc: RequestValidationError, request: Request):
+def validacion(request: Request, exc: RequestValidationError):
     errores = [
         {"campo": ".".join(str(p) for p in e["loc"] if p != "body"), "mensaje": e["msg"]}
         for e in exc.errors()
@@ -75,7 +75,7 @@ def validacion(exc: RequestValidationError, request: Request):
 
 
 @app.exception_handler(Exception)
-def error_interno(exc: Exception, request: Request):
+def error_interno(request: Request, exc: Exception):
     logging.exception("error no controlado en %s", request.url.path)
     return _problem(500, "Error interno", "fallo inesperado del servicio", str(request.url.path))
 

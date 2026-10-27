@@ -78,7 +78,7 @@ def _sembrar_administrador() -> None:
 
 
 @app.exception_handler(RequestValidationError)
-def validacion(exc: RequestValidationError, request: Request):
+def validacion(request: Request, exc: RequestValidationError):
     errores = [{"campo": ".".join(str(p) for p in e["loc"] if p != "body"),
                 "mensaje": e["msg"]} for e in exc.errors()]
     return JSONResponse(
@@ -91,7 +91,7 @@ def validacion(exc: RequestValidationError, request: Request):
 
 
 @app.exception_handler(Exception)
-def error_interno(exc: Exception, request: Request):
+def error_interno(request: Request, exc: Exception):
     logging.exception("error no controlado en %s", request.url.path)
     return JSONResponse(
         status_code=500,

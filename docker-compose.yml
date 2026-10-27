@@ -82,6 +82,34 @@ services:
       timeout: 5s
       retries: 12
 
+  inventario:
+    build:
+      context: .
+      dockerfile: servicios/inventario/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://svc_inventario:${PASSWORD_INVENTORY}@postgres:5432/credimarket
+      BROKER_URL: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672/%2Fcredimarket
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      RESERVA_VENCIMIENTO_SEG: ${RESERVA_VENCIMIENTO_SEG}
+      INTERVALO_VENCIMIENTO_SEG: ${INTERVALO_VENCIMIENTO_SEG:-15}
+      INTERVALO_OUTBOX_SEG: ${INTERVALO_OUTBOX_SEG:-1}
+      MAX_INTENTOS: ${REINTENTOS_BROKER:-3}
+    ports:
+      - "8004:8004"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8004/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
   rabbitmq:
     image: rabbitmq:4-management-alpine
     restart: unless-stopped
