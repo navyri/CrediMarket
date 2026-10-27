@@ -196,6 +196,7 @@ Leyenda: [ ] Pendiente · [~] En progreso/aprobación · [x] Hecho y verificado 
 - **P2-DEC-004 (estructura del repo):** raíz `CrediMarket/` con `docs/`, `servicios/{productos,clientes,prestamos,inventario}/`, `frontend/`, `ml/`, `pruebas/`, `scripts/`, `docker-compose.yml`, `.env.example`, `README.md`. Un único repo compartido; sin mezcla con P1.
 - **P2-DEC-005 (política Git):** rama `main`; commits pequeños y coherentes tras validar incrementos; `git add` con lista explícita de archivos (nunca `git add .`); sin secretos, venv, `node_modules`, cachés ni temporales; sin force push; artefactos de ML: scripts y manifiestos versionados, CSV de datos y ejecuciones MLflow conservados por hash + almacenamiento persistente (volúmenes), modelos exportados versionados por manifiesto.
 - **P2-DEC-006 (identidad pública):** repo público en GitHub → identificación pública acotada al nombre de pila **"Mariana"** (sin apellidos, correo ni datos personales). Nombre completo solo por canal privado si el profesor lo exige; no se versiona.
+- **P2-DEC-007 (estética de README):** los README y documentos finales usan la estética visual acordada (banners `capsule-render` con paleta `21182E`/`B78ADC`/`79D9CD`/`DE85B8`/`EEE6F5`, badges `shields.io` flat-square, separadores rect, footer waving). Imagen de proyecto: `https://64.media.tumblr.com/0ceaefa71b378b4e49ddbda86846b227/01b7e65d99474b79-e3/s2048x3072/2ae1ba514b7b56bfd165426a1b8f703e3d0e648a.pnj` (verificada HTTP 200, PNG, 1.637.403 bytes). Redacción: profesional y específica del proyecto; sin referencias al proceso de asistencia ni notas conversacionales.
 - *Pendientes deliberadamente sin decidir:* broker (P2-1.3), stack de frontend, motor de BD, algoritmos finales.
 
 **Arquitectura vigente (documental, aún no implementada):** ver §6 y P2-DEC-004.
@@ -214,3 +215,4 @@ Leyenda: [ ] Pendiente · [~] En progreso/aprobación · [x] Hecho y verificado 
 | 2026-10-27 | Entorno verificado: repo vacío no git; Docker daemon apagado; Python 3.14.2 sin pandas. |
 | 2026-10-27 | Estructura (P2-DEC-004) y política Git (P2-DEC-005) adoptadas; P2-0.7 cerrado. |
 | 2026-10-27 | Grupo real registrado: 1 integrante (Mariana). P2-0.6 cerrado. P2-DEC-006 (identidad pública acotada a nombre de pila) y CON-003 resuelto. Etapa P2-0 completa. |
+| 2026-10-27 | README con identidad visual acordada (P2-DEC-007); imagen de proyecto verificada (HTTP 200). Commit `5e085cf`. |
