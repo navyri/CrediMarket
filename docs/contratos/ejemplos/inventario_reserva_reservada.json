@@ -1,0 +1,16 @@
+{
+  "event_id": "b51e8a02-6d39-4f17-9a2c-0e8b3d5f7a44",
+  "type": "inventario.reserva.reservada",
+  "schema_version": 1,
+  "occurred_at": "2026-10-27T15:04:06.500Z",
+  "correlation_id": "PRE-0000042",
+  "prestamo_id": "PRE-0000042",
+  "producer": "inventario",
+  "payload": {
+    "prestamo_id": "PRE-0000042",
+    "reserva_id": "RES-0000123",
+    "producto_id": "PROD-1001",
+    "cantidad": 1,
+    "vence_en": "2026-10-27T15:14:05Z"
+  }
+}

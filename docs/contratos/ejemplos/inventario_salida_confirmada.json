@@ -1,0 +1,14 @@
+{
+  "event_id": "f94a2c65-7e08-4d3b-9c61-5b8f1a0e7d92",
+  "type": "inventario.salida.confirmada",
+  "schema_version": 1,
+  "occurred_at": "2026-10-27T16:00:00.000Z",
+  "correlation_id": "PRE-0000042",
+  "prestamo_id": "PRE-0000042",
+  "producer": "inventario",
+  "payload": {
+    "prestamo_id": "PRE-0000042",
+    "reserva_id": "RES-0000123",
+    "entregado_en": "2026-10-27T16:00:00.000Z"
+  }
+}

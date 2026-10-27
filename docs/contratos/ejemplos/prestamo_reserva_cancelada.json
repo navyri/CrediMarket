@@ -1,0 +1,13 @@
+{
+  "event_id": "3a9d1f77-2c48-4b6e-8d51-7e0a9c2b4f16",
+  "type": "prestamo.reserva.cancelada",
+  "schema_version": 1,
+  "occurred_at": "2026-10-27T15:06:40.001Z",
+  "correlation_id": "PRE-0000042",
+  "prestamo_id": "PRE-0000042",
+  "producer": "prestamos",
+  "payload": {
+    "prestamo_id": "PRE-0000042",
+    "motivo": "cancelacion_cliente"
+  }
+}

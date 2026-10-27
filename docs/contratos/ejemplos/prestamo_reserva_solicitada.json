@@ -1,0 +1,16 @@
+{
+  "event_id": "8f2b6c1e-4a7d-4f3a-9c2e-1b5d7e9a0c3f",
+  "type": "prestamo.reserva.solicitada",
+  "schema_version": 1,
+  "occurred_at": "2026-10-27T15:04:05.123Z",
+  "correlation_id": "PRE-0000042",
+  "prestamo_id": "PRE-0000042",
+  "producer": "prestamos",
+  "payload": {
+    "prestamo_id": "PRE-0000042",
+    "producto_id": "PROD-1001",
+    "cantidad": 1,
+    "plazo_dias": 180,
+    "vence_en": "2026-10-27T15:14:05Z"
+  }
+}

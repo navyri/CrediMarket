@@ -1,0 +1,14 @@
+{
+  "event_id": "d2a6e448-9b17-4c83-8f05-6a1d3e9b2c70",
+  "type": "inventario.reserva.liberada",
+  "schema_version": 1,
+  "occurred_at": "2026-10-27T15:07:01.250Z",
+  "correlation_id": "PRE-0000042",
+  "prestamo_id": "PRE-0000042",
+  "producer": "inventario",
+  "payload": {
+    "prestamo_id": "PRE-0000042",
+    "reserva_id": "RES-0000123",
+    "origen": "cancelacion"
+  }
+}

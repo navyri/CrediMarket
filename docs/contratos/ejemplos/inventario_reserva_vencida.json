@@ -1,0 +1,15 @@
+{
+  "event_id": "e81c7b30-4d65-4a92-b7f8-2c9e0d5a6f13",
+  "type": "inventario.reserva.vencida",
+  "schema_version": 1,
+  "occurred_at": "2026-10-27T15:14:06.000Z",
+  "correlation_id": "PRE-0000042",
+  "prestamo_id": "PRE-0000042",
+  "producer": "inventario",
+  "payload": {
+    "prestamo_id": "PRE-0000042",
+    "reserva_id": "RES-0000123",
+    "origen": "vencimiento",
+    "vencio_en": "2026-10-27T15:14:06.000Z"
+  }
+}

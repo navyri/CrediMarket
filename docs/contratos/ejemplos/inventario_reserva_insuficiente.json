@@ -1,0 +1,15 @@
+{
+  "event_id": "c7f3d911-5a82-4e60-b13d-9f2c6a8e0b57",
+  "type": "inventario.reserva.insuficiente",
+  "schema_version": 1,
+  "occurred_at": "2026-10-27T15:04:06.800Z",
+  "correlation_id": "PRE-0000043",
+  "prestamo_id": "PRE-0000043",
+  "producer": "inventario",
+  "payload": {
+    "prestamo_id": "PRE-0000043",
+    "producto_id": "PROD-1001",
+    "solicitado": 1,
+    "disponible": 0
+  }
+}
