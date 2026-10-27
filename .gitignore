@@ -1,0 +1,42 @@
+# Secretos y entornos
+.env
+*.env
+!.env.example
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Node / frontend
+node_modules/
+dist/
+build/
+.npm/
+
+# Python ML / notebooks
+.ipynb_checkpoints/
+*.joblib
+*.pkl
+*.pickle
+
+# Datos crudos (se conservan fuera del repo; hashes documentados en docs/)
+*.csv
+
+# MLflow local (se conserva en volúmenes Docker persistentes; ver P2-DEC-005)
+mlruns/
+mlflow.db
+
+# Editores y SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs y temporales
+*.log
+tmp/
+.cache/
+.pytest_cache/
+coverage/
+htmlcov/
