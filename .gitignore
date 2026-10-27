@@ -27,6 +27,12 @@ build/
 mlruns/
 mlflow.db
 
+# Registros internos de progreso, checklists y bitácoras (no se publican)
+docs/P2_REGISTRO_MAESTRO.md
+**/P2_REGISTRO*.md
+**/CHECKLIST*.md
+**/*BITACORA*.md
+
 # Editores y SO
 .vscode/
 .idea/

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&height=210&color=21182E&text=CREDIMARKET&fontColor=B78ADC&fontSize=62&fontAlignY=32&desc=Microservicios%2C%20mensajer%C3%ADa%2C%20Redis%20y%20MLOps%20%C2%B7%20Parte%202&descColor=79D9CD&descAlignY=58"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=210&color=F8F2EF&text=CREDIMARKET&fontColor=D8455C&fontSize=62&fontAlignY=32&desc=Microservicios%2C%20mensajer%C3%ADa%2C%20Redis%20y%20MLOps%20%C2%B7%20Parte%202&descColor=2A1F26&descAlignY=58"/>
 </p>
 
 <p align="center">
@@ -7,13 +7,13 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/microservicios-4%20de%20negocio-B78ADC?style=flat-square"/>
-  <img src="https://img.shields.io/badge/Python-REST-79D9CD?style=flat-square&logo=python&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Redis-cache--aside-DE85B8?style=flat-square&logo=redis&logoColor=white"/>
-  <img src="https://img.shields.io/badge/broker-Kafka%20o%20RabbitMQ-EEE6F5?style=flat-square"/>
-  <img src="https://img.shields.io/badge/MLflow-experimentos-30213F?style=flat-square&logo=mlflow&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Docker-Compose-79D9CD?style=flat-square&logo=docker&logoColor=white"/>
-  <img src="https://img.shields.io/badge/datos-12.000%2B200%20sint%C3%A9ticos-B78ADC?style=flat-square"/>
+  <img src="https://img.shields.io/badge/microservicios-4%20de%20negocio-D8455C?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Python-REST-2A1F26?style=flat-square&logo=python&logoColor=F8F2EF"/>
+  <img src="https://img.shields.io/badge/Redis-cache--aside-F2C4CC?style=flat-square&logo=redis&logoColor=2A1F26"/>
+  <img src="https://img.shields.io/badge/broker-Kafka%20o%20RabbitMQ-9FB8DC?style=flat-square"/>
+  <img src="https://img.shields.io/badge/MLflow-experimentos-2A1F26?style=flat-square&logo=mlflow&logoColor=D8455C"/>
+  <img src="https://img.shields.io/badge/Docker-Compose-9FB8DC?style=flat-square&logo=docker&logoColor=2A1F26"/>
+  <img src="https://img.shields.io/badge/datos-12.000%2B200%20sint%C3%A9ticos-D8455C?style=flat-square"/>
 </p>
 
 **CrediMarket** es una tienda que vende computadores, celulares y otros productos tecnológicos a
@@ -31,7 +31,7 @@ Los datos y las operaciones de crédito son sintéticos y académicos. No consti
 financiera aplicable a personas reales.
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=21182E"/>
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=2A1F26"/>
 </p>
 
 ## Equipo
@@ -43,7 +43,7 @@ financiera aplicable a personas reales.
 Grupo de un integrante. Por privacidad, solo se publica el nombre de pila.
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=21182E"/>
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=2A1F26"/>
 </p>
 
 ## Estado del proyecto
@@ -59,7 +59,7 @@ Grupo de un integrante. Por privacidad, solo se publica el nombre de pila.
 | P2-10 – P2-12 | Pruebas de aceptación, entrega y sustentación | ⏳ |
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=21182E"/>
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=2A1F26"/>
 </p>
 
 ## Datos
@@ -70,22 +70,12 @@ Grupo de un integrante. Por privacidad, solo se publica el nombre de pila.
 | `solicitudes_nuevas.csv` | 200 | 14 (sin etiqueta) | Solo inferencia |
 
 Distribución de la etiqueta en el histórico: 69,44 % clase 0 · 30,56 % clase 1. Los archivos no se
-versionan en el repositorio; sus hash SHA-256 están registrados en la documentación para verificación.
+versionan en el repositorio; sus hash SHA-256 están registrados para verificación.
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=21182E"/>
-</p>
-
-## Documentación
-
-| Documento | Contenido |
-|---|---|
-| [`docs/P2_REGISTRO_MAESTRO.md`](docs/P2_REGISTRO_MAESTRO.md) | Requisitos con trazabilidad, decisiones, supuestos, contradicciones, evidencias y bitácora |
-
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=21182E"/>
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=2A1F26"/>
 </p>
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=21182E" alt=""/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=F8F2EF" alt=""/>
 </p>
