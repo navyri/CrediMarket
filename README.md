@@ -6,9 +6,13 @@ Microservicios, mensajería, Redis y MLOps (Universidad EIA).
 
 ## Integrantes y responsabilidades
 
+Grupo de **un (1) integrante** (máximo permitido: 4, §2.1). Por política de privacidad (P2-DEC-006), solo se publica el nombre de pila.
+
 | Integrante | Responsabilidades principales |
 |---|---|
-| _Pendiente (P2-0.6: nombres reales no disponibles aún; no se inventan)_ | |
+| **Mariana** | Todos los frentes de trabajo: servicios Productos/Inventario + Redis; Clientes + seguridad + frontend; Préstamos + broker; datos + modelo + MLOps; documentación y sustentación. |
+
+> Nota de trazabilidad (CON-003): el enunciado (§2.2, §14, §15.2 c8) prevé grupos de hasta 4 integrantes con contribuciones visibles de los cuatro; este grupo tiene un solo miembro, por lo que el historial Git contiene contribuciones reales de una única integrante. No se han generado autorías adicionales.
 
 ## Arquitectura (resumen)
 
