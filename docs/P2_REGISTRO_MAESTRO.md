@@ -1,6 +1,6 @@
 # Registro Maestro P2 — CrediMarket
 
-> Etapa P2-0 · Inicializado: 2026-10-27 · Estado: [x] Etapa P2-0 completada salvo P2-0.6 (integrantes reales, bloqueado)
+> Etapa P2-0 · Inicializado: 2026-10-27 · Estado: [x] Etapa P2-0 completada (P2-0.1–0.7 [x]) · Grupo real: 1 integrante (Mariana)
 
 ## 1. Fuentes (nombres reales verificados)
 
@@ -33,7 +33,7 @@ Leyenda: [ ] Pendiente · [~] En progreso/aprobación · [x] Hecho y verificado 
 - [x] P2-0.3 Extraer requisitos, entregables, aceptación y rúbrica. (ver §5)
 - [x] P2-0.4 Registrar contradicciones y acordar interpretación. (CON-001..005 en §6; interpretaciones adoptadas como P2-DEC-001..003, sin eliminar requisitos)
 - [x] P2-0.5 Verificar repositorio, SO, shell, herramientas y recursos. (ver §2; nota: daemon Docker apagado → SUP-003)
-- [!] P2-0.6 Registrar integrantes reales y responsabilidades. (bloqueado: no hay nombres reales disponibles; no se inventan)
+- [x] P2-0.6 Registrar integrantes reales y responsabilidades. (grupo real: **1 integrante — Mariana**; identidad pública acotada a nombre de pila por P2-DEC-006)
 - [x] P2-0.7 Aprobar plan, estructura y política de Git. (adoptados como P2-DEC-004 y P2-DEC-005)
 
 ### ETAPA P2-1 — Diseño y contratos
@@ -72,7 +72,7 @@ Leyenda: [ ] Pendiente · [~] En progreso/aprobación · [x] Hecho y verificado 
 ### ETAPA P2-12 — Sustentación
 - [ ] P2-12.1 … P2-12.5 (5 tareas) — no iniciadas.
 
-**Conteo total: 137 → [x]=6 · [~]=0 · [!]=1 · [ ]=130**
+**Conteo total: 137 → [x]=7 · [~]=0 · [!]=0 · [ ]=130**
 
 ## 4. Datos verificados (P2-0.2) — calculado, no declarado
 
@@ -145,7 +145,7 @@ Leyenda: [ ] Pendiente · [~] En progreso/aprobación · [x] Hecho y verificado 
 | P2-REQ-047 | §15 | 8 criterios de rúbrica (15/15/10/15/15/15/10/5 %) como definición de "hecho" | entrega | [ ] |
 | P2-REQ-048 | §15.2 c5, §12.11 | Segunda versión identificable + promoción + rollback; monitoreo y drift simulado para nivel Excelente (P2-DEC-002) | MLOps/Préstamos | [ ] |
 | P2-REQ-049 | §15.2 c6 | Roles y autorización validados en backend; sin autenticación = Insuficiente en criterio 6 (P2-DEC-001) | seguridad | [ ] |
-| P2-REQ-050 | §2 | README con integrantes y responsabilidades reales; contribuciones visibles en Git | entrega | [!] ver CON-003 y P2-0.6 |
+| P2-REQ-050 | §2 | README con integrantes y responsabilidades reales; contribuciones visibles en Git (grupo real: 1 integrante, ver CON-003) | entrega | [x] registrado; commits reales en curso |
 
 ## 6. Contradicciones del enunciado (P2-0.4) — interpretadas y adoptadas
 
@@ -165,9 +165,10 @@ Leyenda: [ ] Pendiente · [~] En progreso/aprobación · [x] Hecho y verificado 
 
 ### CON-003 · "Máximo 4 integrantes" vs. "los cuatro integrantes"
 - **Citado:** §2.1: *"Grupos de máximo 4 estudiantes"* · §2.2: *"el historial de commits debe evidenciar contribuciones de los cuatro integrantes"* · §14: *"Los cuatro integrantes deben estar presentes"* · §15.2 criterio 8: *"contribuciones de los 4 integrantes visibles"*.
-- **Impacto:** si el grupo tiene menos de 4 miembros, tres frases son imposibles de cumplir literalmente.
-- **Interpretación conservadora adoptada (P2-DEC-003):** no se inventarán integrantes. El README y la política de commits se preparan con la tabla de responsabilidades lista para completar con nombres reales (P2-0.6). Si el grupo tiene menos de 4 miembros, se documenta la diferencia y se plantea al profesor **solo si surge en la sustentación** (único caso en que la consulta es estrictamente necesaria).
-- **Estado:** [!] P2-0.6 sigue bloqueado por falta de nombres reales (información que no puedo obtener ni inventar).
+- **Impacto:** el grupo real tiene **1 integrante** (Mariana), por lo que tres frases del enunciado (§2.2, §14, c8) son imposibles de cumplir literalmente. §2.1 ("máximo 4") sí se cumple.
+- **Interpretación conservadora adoptada (P2-DEC-003, actualizado):** no se inventan integrantes. La README declara el grupo real de 1 integrante con responsabilidades por frente de trabajo; el historial Git mostrará commits reales de esa única integrante. La diferencia con §2.2/§14/c8 se documenta en la README como limitación de composición del grupo y se plantea al profesor solo si surge en la sustentación (único caso en que la consulta es estrictamente necesaria).
+- **Resolución de privacidad (P2-DEC-006):** al ser un repo público en GitHub, la identificación pública se limita al **nombre de pila "Mariana"** (sin apellidos, correo ni datos doxxing). El nombre completo, si el profesor lo exige en clase, se aporta por canal privado; no se versiona.
+- **Estado:** [x] resuelto con la información real disponible.
 
 ### CON-004 · Estados de vencimiento ausentes de la tabla mínima
 - **Citado:** §4 tabla de estados (6 estados, ninguno de vencimiento) vs. §4 párrafo final: *"si una reserva vence… el equipo define el nombre del estado o motivo"*.
@@ -194,6 +195,7 @@ Leyenda: [ ] Pendiente · [~] En progreso/aprobación · [x] Hecho y verificado 
 - **P2-DEC-003:** No se inventan integrantes; README queda con tabla lista para nombres reales (interpreta CON-003).
 - **P2-DEC-004 (estructura del repo):** raíz `CrediMarket/` con `docs/`, `servicios/{productos,clientes,prestamos,inventario}/`, `frontend/`, `ml/`, `pruebas/`, `scripts/`, `docker-compose.yml`, `.env.example`, `README.md`. Un único repo compartido; sin mezcla con P1.
 - **P2-DEC-005 (política Git):** rama `main`; commits pequeños y coherentes tras validar incrementos; `git add` con lista explícita de archivos (nunca `git add .`); sin secretos, venv, `node_modules`, cachés ni temporales; sin force push; artefactos de ML: scripts y manifiestos versionados, CSV de datos y ejecuciones MLflow conservados por hash + almacenamiento persistente (volúmenes), modelos exportados versionados por manifiesto.
+- **P2-DEC-006 (identidad pública):** repo público en GitHub → identificación pública acotada al nombre de pila **"Mariana"** (sin apellidos, correo ni datos personales). Nombre completo solo por canal privado si el profesor lo exige; no se versiona.
 - *Pendientes deliberadamente sin decidir:* broker (P2-1.3), stack de frontend, motor de BD, algoritmos finales.
 
 **Arquitectura vigente (documental, aún no implementada):** ver §6 y P2-DEC-004.
@@ -210,4 +212,5 @@ Leyenda: [ ] Pendiente · [~] En progreso/aprobación · [x] Hecho y verificado 
 | 2026-10-27 | P2-0.1–0.3 completados: DOCX leído (16 secciones + rúbrica), CSV inspeccionados con hashes y estadísticas calculadas, 50 requisitos registrados. |
 | 2026-10-27 | Contradicciones CON-001..005 registradas; interpretadas como P2-DEC-001..003 sin eliminar requisitos (P2-0.4 cerrado por decisión del responsable). |
 | 2026-10-27 | Entorno verificado: repo vacío no git; Docker daemon apagado; Python 3.14.2 sin pandas. |
-| 2026-10-27 | Estructura (P2-DEC-004) y política Git (P2-DEC-005) adoptadas; P2-0.7 cerrado. P2-0.6 queda [!] por falta de integrantes reales. |
+| 2026-10-27 | Estructura (P2-DEC-004) y política Git (P2-DEC-005) adoptadas; P2-0.7 cerrado. |
+| 2026-10-27 | Grupo real registrado: 1 integrante (Mariana). P2-0.6 cerrado. P2-DEC-006 (identidad pública acotada a nombre de pila) y CON-003 resuelto. Etapa P2-0 completa. |
