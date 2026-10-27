@@ -1,0 +1,90 @@
+# CrediMarket · Parte 2 · Docker Compose (P2-2.7)
+# Infraestructura: PostgreSQL (esquemas separados), RabbitMQ, Redis y MLflow con volúmenes
+# persistentes para datos durables (§13.2). Los 4 microservicios y el frontend se agregan en
+# P2-3…P2-8; este archivo es el "Compose inicial" de P2-2.7.
+#
+# Uso:  cp .env.example .env   (editar valores)   →   docker compose up -d
+
+name: credimarket
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PASSWORD_PRODUCTOS: ${PASSWORD_PRODUCTOS}
+      PASSWORD_CLIENTES: ${PASSWORD_CLIENTES}
+      PASSWORD_PRESTAMOS: ${PASSWORD_PRESTAMOS}
+      PASSWORD_INVENTORY: ${PASSWORD_INVENTORY}
+    ports:
+      # 5434 en el host: 5432 está ocupado por un PostgreSQL externo de la máquina (PID verificado
+      # con netstat) y 5433 por otro proyecto; 5434 verificado libre (P2-2.8).
+      - "5434:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/01_esquemas.sh:/docker-entrypoint-initdb.d/01_esquemas.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_DEFAULT_VHOST}
+    ports:
+      - "5672:5672"
+      - "15672:15672"   # panel para la demostración (§5.2)
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+
+  redis:
+    image: redis:8-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a '${REDIS_PASSWORD}' ping | grep PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  mlflow:
+    image: python:3.14-slim
+    restart: unless-stopped
+    working_dir: /mlflow
+    # MLflow con backend y artefactos en volumen persistente (P2-2.6, §8.C)
+    # Nota: comando en UNA línea a propósito; YAML `>` con líneas más indentadas
+    # introduce saltos literales que el shell ejecuta como órdenes separadas.
+    command: sh -c "pip install --no-cache-dir mlflow==3.17.2 && mlflow server --backend-store-uri sqlite:////mlflow/mlflow.db --default-artifact-root /mlflow/artifacts --host 0.0.0.0 --port 5000"
+    ports:
+      - "5000:5000"
+    volumes:
+      - mlflowdata:/mlflow
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request;urllib.request.urlopen('http://localhost:5000/health')\""]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 90s
+
+volumes:
+  pgdata:
+  rabbitmqdata:
+  redisdata:
+  mlflowdata:
