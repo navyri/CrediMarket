@@ -32,6 +32,56 @@ services:
       timeout: 5s
       retries: 12
 
+  productos:
+    build:
+      context: .
+      dockerfile: servicios/productos/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://svc_productos:${PASSWORD_PRODUCTOS}@postgres:5432/credimarket
+      REDIS_URL: redis://redis:6379/0
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      CACHE_TTL_SEG: ${CACHE_TTL_SEG:-60}
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  clientes:
+    build:
+      context: .
+      dockerfile: servicios/clientes/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://svc_clientes:${PASSWORD_CLIENTES}@postgres:5432/credimarket
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      JWT_EXP_MIN: ${JWT_EXP_MIN}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@credimarket.demo}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-CAMBIAR_admin_local}
+    ports:
+      - "8002:8002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8002/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
   rabbitmq:
     image: rabbitmq:4-management-alpine
     restart: unless-stopped
