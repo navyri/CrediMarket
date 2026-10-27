@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&height=210&color=F8F2EF&text=CREDIMARKET&fontColor=D8455C&fontSize=62&fontAlignY=32&desc=Microservicios%2C%20mensajer%C3%ADa%2C%20Redis%20y%20MLOps%20%C2%B7%20Parte%202&descColor=2A1F26&descAlignY=58"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=210&color=D8455C&text=CREDIMARKET&fontColor=F8F2EF&fontSize=62&fontAlignY=32&desc=Microservicios%2C%20mensajer%C3%ADa%2C%20Redis%20y%20MLOps%20%C2%B7%20Parte%202&descColor=D8455C&descAlignY=58"/>
 </p>
 
 <p align="center">
@@ -31,7 +31,7 @@ Los datos y las operaciones de crédito son sintéticos y académicos. No consti
 financiera aplicable a personas reales.
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=2A1F26"/>
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
 </p>
 
 ## Equipo
@@ -43,23 +43,7 @@ financiera aplicable a personas reales.
 Grupo de un integrante. Por privacidad, solo se publica el nombre de pila.
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=2A1F26"/>
-</p>
-
-## Estado del proyecto
-
-| Etapa | Contenido | Estado |
-|---|---|---|
-| P2-0 | Lectura del enunciado, inspección de datos y registro de requisitos | ✅ |
-| P2-1 | Diseño de responsabilidades, contratos y máquina de estados | ⏳ |
-| P2-2 | Base reproducible: Docker Compose, bases de datos, broker, Redis, MLflow | ⏳ |
-| P2-3 – P2-4 | Servicios y mensajería confiable | ⏳ |
-| P2-5 – P2-7 | Datos, entrenamiento, exportación y servicio del modelo | ⏳ |
-| P2-8 – P2-9 | Frontend, versiones y monitoreo | ⏳ |
-| P2-10 – P2-12 | Pruebas de aceptación, entrega y sustentación | ⏳ |
-
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=2A1F26"/>
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
 </p>
 
 ## Datos
@@ -73,9 +57,5 @@ Distribución de la etiqueta en el histórico: 69,44 % clase 0 · 30,56 % clase 
 versionan en el repositorio; sus hash SHA-256 están registrados para verificación.
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=2A1F26"/>
-</p>
-
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=F8F2EF" alt=""/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=D8455C" alt=""/>
 </p>
