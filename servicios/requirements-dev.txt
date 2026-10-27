@@ -1,0 +1,3 @@
+# P2-2.2 · Pruebas (unitarias con mocks declarados + integración)
+pytest==9.1.1
+httpx==0.28.1

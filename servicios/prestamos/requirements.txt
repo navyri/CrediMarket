@@ -1,0 +1,6 @@
+# P2-2.2 · Servicio Préstamos = base + ML de inferencia (el modelo es suyo, §3)
+-r ../requirements-base.txt
+scikit-learn==1.9.1
+pandas==3.1.0
+numpy==2.5.4
+joblib==1.6.0
