@@ -117,6 +117,17 @@ def test_ciclo_completo_cache_aside():
             headers={"Authorization": f"Bearer {_token('cliente')}"},
         ).status_code == 403
 
+        # validación de entrada → 400 con problem+json y detalle de campos
+        invalido = cliente.post(
+            "/productos",
+            json={"sku": SKU + "-bad", "nombre": "x", "categoria": "x",
+                  "precio_cop": -5},
+            headers={"Authorization": f"Bearer {_token('administrador')}"},
+        )
+        assert invalido.status_code == 400, invalido.text
+        assert invalido.headers["content-type"].startswith("application/problem+json")
+        assert invalido.json()["errors"], "debe detallar el campo inválido"
+
         # listado público y 404 con problem+json
         assert cliente.get("/productos").status_code == 200
         no_existe = cliente.get("/productos/no-existe")
