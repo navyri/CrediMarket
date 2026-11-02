@@ -1,0 +1,169 @@
+{
+  "total": 16,
+  "ok": 16,
+  "fallos": 0,
+  "duracion_total_s": 80.8,
+  "ejecutado_en": "2026-11-02T03:20:58Z",
+  "resultados": [
+    {
+      "caso": 1,
+      "id": "P2-TEST-001",
+      "titulo": "Riesgo favorable con existencias",
+      "estado": "OK",
+      "duracion_s": 4.2,
+      "exit_code": 0,
+      "observado": "préstamo 9ed0f259… aprobado con reserva ea5e13e6… y entregado (traza PENDIENTE_INVENTARIO→APROBADA→APROBADA→COMPLETADA); stock 5/0 → 3/0",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_01.json"
+    },
+    {
+      "caso": 2,
+      "id": "P2-TEST-002",
+      "titulo": "Solicitud rechazada",
+      "estado": "OK",
+      "duracion_s": 1.5,
+      "exit_code": 0,
+      "observado": "préstamo f86de520… RECHAZADA y persistida: motivo 'regla de control: obligaciones alcanzan o superan los ingresos', modelo v1, sin reserva (reservada=0)",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_02.json"
+    },
+    {
+      "caso": 3,
+      "id": "P2-TEST-003",
+      "titulo": "Riesgo favorable sin existencias",
+      "estado": "OK",
+      "duracion_s": 2.7,
+      "exit_code": 0,
+      "observado": "préstamo 0588e2a3… CANCELADA_SIN_STOCK (motivo: sin existencias suficientes (disponible 0)), sin reserva y sin stock negativo (existencia=None)",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_03.json"
+    },
+    {
+      "caso": 4,
+      "id": "P2-TEST-004",
+      "titulo": "Dos solicitudes por la última unidad",
+      "estado": "OK",
+      "duracion_s": 3.9,
+      "exit_code": 0,
+      "observado": "dos POST concurrentes sobre stock=1 → 3eab164c… APROBADA con reserva y c680bb94… CANCELADA_SIN_STOCK sin reserva; stock final total=1 reservada=1 disponible=0",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_04.json"
+    },
+    {
+      "caso": 5,
+      "id": "P2-TEST-005",
+      "titulo": "Misma petición y mismo evento repetidos",
+      "estado": "OK",
+      "duracion_s": 3.2,
+      "exit_code": 0,
+      "observado": "misma clave×2 → 1 préstamo (2b77eacb…); clave repetida con cuerpo distinto → 409; entrega repetida → 200 y luego 409 con un solo descuento (4 → 3); préstamos del cliente = 1",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_05.json"
+    },
+    {
+      "caso": 6,
+      "id": "P2-TEST-006",
+      "titulo": "Caída del consumidor o del broker",
+      "estado": "OK",
+      "duracion_s": 16.5,
+      "exit_code": 0,
+      "observado": "broker detenido → solicitud 202 persistida en PENDIENTE_INVENTARIO; al reiniciar RabbitMQ llegó a APROBADA con 1 sola reserva (72dbbc48…) y stock coherente (reservada 0 → 1); traza PENDIENTE_INVENTARIO→PENDIENTE_INVENTARIO→APROBADA",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_06.json"
+    },
+    {
+      "caso": 7,
+      "id": "P2-TEST-007",
+      "titulo": "Cancelación y evento tardío",
+      "estado": "OK",
+      "duracion_s": 4.3,
+      "exit_code": 0,
+      "observado": "préstamo 196758e6… aprobado → cancelado (CANCELADA) → reserva d232773a… LIBERADA; entrega tardía rechazada con 409 y el préstamo sigue en CANCELADA (no reactivado); stock restaurado (reservada 0, disponible 3)",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_07.json"
+    },
+    {
+      "caso": 8,
+      "id": "P2-TEST-008",
+      "titulo": "Redis vacío, expirado o caído",
+      "estado": "OK",
+      "duracion_s": 17.6,
+      "exit_code": 0,
+      "observado": "miss con FLUSHDB → 200 + clave repoblada (TTL 60s); expiración → miss → repoblada; Redis detenido → 200 desde BD; reiniciado → 200 y caché activa",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_08.json"
+    },
+    {
+      "caso": 9,
+      "id": "P2-TEST-009",
+      "titulo": "Precio modificado",
+      "estado": "OK",
+      "duracion_s": 3.0,
+      "exit_code": 0,
+      "observado": "precio 175.000 (v1) → PATCH 250.000 (v2) → caché invalidada=True → GET devuelve 250.000 → préstamo a32c39ca… cotizado a 250.000 (monto_total=250000)",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_09.json"
+    },
+    {
+      "caso": 10,
+      "id": "P2-TEST-010",
+      "titulo": "Modelo exportado vs. API",
+      "estado": "OK",
+      "duracion_s": 2.5,
+      "exit_code": 0,
+      "observado": "versión v1 (run 709931de…): probabilidad API 0.4435322732 == artefacto v1/modelo.joblib 0.4435322732 (|Δ| < 1e-9); decisión FAVORABLE vs umbral 0.49",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_10.json"
+    },
+    {
+      "caso": 11,
+      "id": "P2-TEST-011",
+      "titulo": "Promoción y rollback",
+      "estado": "OK",
+      "duracion_s": 0.7,
+      "exit_code": 0,
+      "observado": "promoción v1 → v2 (run_id y umbral cambian) y rollback v2 → v1; activo.json registra version_anterior=v2 y el historial creció en 2 entradas trazables",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_11.json"
+    },
+    {
+      "caso": 12,
+      "id": "P2-TEST-012",
+      "titulo": "Importar CSV dos veces",
+      "estado": "OK",
+      "duracion_s": 0.5,
+      "exit_code": 0,
+      "observado": "1.ª importación → 3 insertadas + 1 rechazadas con motivo por fila; 2.ª → 0 insertadas/0 actualizadas/3 sin cambios; directorio 87 → 90 clientes (+3, sin duplicados)",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_12.json"
+    },
+    {
+      "caso": 13,
+      "id": "P2-TEST-013",
+      "titulo": "Préstamos ajenos",
+      "estado": "OK",
+      "duracion_s": 2.3,
+      "exit_code": 0,
+      "observado": "préstamo eefe52ba…: dueño 200, cliente ajeno 403 en GET y 403 en cancelar (JSON legible), sin token 401, admin 200; estado inalalterado APROBADA",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_13.json"
+    },
+    {
+      "caso": 14,
+      "id": "P2-TEST-014",
+      "titulo": "Flujo desde frontend",
+      "estado": "OK",
+      "duracion_s": 4.3,
+      "exit_code": 0,
+      "observado": "build OK (dist/index.html) y secuencia de la UI reproducida por REST: registro+perfil → catálogo 175.000 → solicitud 202 → PENDIENTE_INVENTARIO→APROBADA con reserva 5a977ada…; relectura persistida (monto 175000.00, estado APROBADA)",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_14.json"
+    },
+    {
+      "caso": 15,
+      "id": "P2-TEST-015",
+      "titulo": "Pendiente y actualización asíncrona",
+      "estado": "OK",
+      "duracion_s": 2.8,
+      "exit_code": 0,
+      "observado": "POST → 202 en 65 ms (PENDIENTE_INVENTARIO) y polling PENDIENTE_INVENTARIO@270ms → APROBADA@1321ms; reserva b453e118… RESERVADA y stock reservada 0 → 1",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_15.json"
+    },
+    {
+      "caso": 16,
+      "id": "P2-TEST-016",
+      "titulo": "Formulario inválido / sesión vencida / API caída",
+      "estado": "OK",
+      "duracion_s": 10.5,
+      "exit_code": 0,
+      "observado": "sin Idempotency-Key → 400 problem+json con errors[]; precio extra → 400 problem+json con errors[] por campo; JWT expirado → 401 'el token expiró'; API detenida → ConnectionError y recuperación confirmada con 200",
+      "evidencia": "docs\\evidencias\\aceptacion\\caso_16.json"
+    }
+  ]
+}

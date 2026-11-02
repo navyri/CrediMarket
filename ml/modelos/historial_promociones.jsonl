@@ -20,3 +20,9 @@
 {"modelo_version": "v1", "run_id": "709931de846a4d3d9b87b81b6b840f9a", "umbral": 0.49, "promovido_en": "2026-11-02T01:06:11Z", "motivo": "rollback explícito desde v2"}
 {"modelo_version": "v2", "run_id": "1c003ff09b0f4dc49406ef8325f413b5", "umbral": 0.49, "promovido_en": "2026-11-02T02:19:03Z", "motivo": "prueba de integración"}
 {"modelo_version": "v1", "run_id": "709931de846a4d3d9b87b81b6b840f9a", "umbral": 0.49, "promovido_en": "2026-11-02T02:19:03Z", "motivo": "rollback explícito desde v2"}
+{"modelo_version": "v2", "run_id": "1c003ff09b0f4dc49406ef8325f413b5", "umbral": 0.49, "promovido_en": "2026-11-02T02:55:23Z", "motivo": "aceptación §12.11: promoción"}
+{"modelo_version": "v1", "run_id": "709931de846a4d3d9b87b81b6b840f9a", "umbral": 0.49, "promovido_en": "2026-11-02T02:55:23Z", "motivo": "aceptación §12.11: rollback"}
+{"modelo_version": "v2", "run_id": "1c003ff09b0f4dc49406ef8325f413b5", "umbral": 0.49, "promovido_en": "2026-11-02T03:17:52Z", "motivo": "aceptación §12.11: promoción"}
+{"modelo_version": "v1", "run_id": "709931de846a4d3d9b87b81b6b840f9a", "umbral": 0.49, "promovido_en": "2026-11-02T03:17:52Z", "motivo": "aceptación §12.11: rollback"}
+{"modelo_version": "v2", "run_id": "1c003ff09b0f4dc49406ef8325f413b5", "umbral": 0.49, "promovido_en": "2026-11-02T03:20:37Z", "motivo": "aceptación §12.11: promoción"}
+{"modelo_version": "v1", "run_id": "709931de846a4d3d9b87b81b6b840f9a", "umbral": 0.49, "promovido_en": "2026-11-02T03:20:37Z", "motivo": "aceptación §12.11: rollback"}

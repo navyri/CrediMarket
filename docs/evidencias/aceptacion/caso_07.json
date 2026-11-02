@@ -1,0 +1,30 @@
+{
+  "id": "P2-TEST-007",
+  "caso_s12": 7,
+  "requisito": "§12.7 Cancelación y evento tardío",
+  "esperado": "Estado coherente, reserva liberada y préstamo no reactivado.",
+  "observado": "préstamo 196758e6… aprobado → cancelado (CANCELADA) → reserva d232773a… LIBERADA; entrega tardía rechazada con 409 y el préstamo sigue en CANCELADA (no reactivado); stock restaurado (reservada 0, disponible 3)",
+  "estado": "OK",
+  "detalle": {
+    "prestamo_id": "196758e6-b2aa-4c00-b4ba-59bd4386d974",
+    "reserva_id": "d232773a-64f3-4503-b37b-5f26d222af0e",
+    "estado_final": "CANCELADA",
+    "estado_reserva_tras_late": "LIBERADA",
+    "respuesta_evento_tardio": 409,
+    "traza_estados": [
+      "PENDIENTE_INVENTARIO",
+      "APROBADA",
+      "APROBADA",
+      "CANCELADA"
+    ],
+    "stock": {
+      "producto_id": "de353785-6fe7-4941-97ef-037477ccbd7a",
+      "total": 3,
+      "reservada": 0,
+      "disponible": 3,
+      "actualizado_en": "2026-11-02T03:20:12.427839Z"
+    }
+  },
+  "ejecutado_en": "2026-11-02T03:20:13Z",
+  "commit": "0a136f6"
+}

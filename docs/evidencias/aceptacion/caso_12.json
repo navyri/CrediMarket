@@ -1,0 +1,42 @@
+{
+  "id": "P2-TEST-012",
+  "caso_s12": 12,
+  "requisito": "§12.12 Importar CSV dos veces",
+  "esperado": "0 insertados/actualizados en la 2.ª importación; sin duplicar clientes.",
+  "observado": "1.ª importación → 3 insertadas + 1 rechazadas con motivo por fila; 2.ª → 0 insertadas/0 actualizadas/3 sin cambios; directorio 87 → 90 clientes (+3, sin duplicados)",
+  "estado": "OK",
+  "detalle": {
+    "primera": {
+      "archivo": "clientes_aceptacion.csv",
+      "procesadas": 4,
+      "insertados": 3,
+      "actualizados": 0,
+      "sin_cambios": 0,
+      "rechazadas": 1,
+      "errores": [
+        {
+          "fila": 5,
+          "motivo": "nombre vacío"
+        }
+      ]
+    },
+    "segunda": {
+      "archivo": "clientes_aceptacion.csv",
+      "procesadas": 4,
+      "insertados": 0,
+      "actualizados": 0,
+      "sin_cambios": 3,
+      "rechazadas": 1,
+      "errores": [
+        {
+          "fila": 5,
+          "motivo": "nombre vacío"
+        }
+      ]
+    },
+    "clientes_antes": 87,
+    "clientes_despues": 90
+  },
+  "ejecutado_en": "2026-11-02T03:20:38Z",
+  "commit": "0a136f6"
+}

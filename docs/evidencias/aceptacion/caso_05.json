@@ -1,0 +1,32 @@
+{
+  "id": "P2-TEST-005",
+  "caso_s12": 5,
+  "requisito": "§12.5 Misma petición y mismo evento repetidos",
+  "esperado": "Un préstamo y un único efecto sobre el inventario.",
+  "observado": "misma clave×2 → 1 préstamo (2b77eacb…); clave repetida con cuerpo distinto → 409; entrega repetida → 200 y luego 409 con un solo descuento (4 → 3); préstamos del cliente = 1",
+  "estado": "OK",
+  "detalle": {
+    "prestamo_id": "2b77eacb-90c9-49af-a182-76650c80dfa7",
+    "segunda_respuesta_misma_clave": "2b77eacb-90c9-49af-a182-76650c80dfa7",
+    "clave_cuerpo_distinto": 409,
+    "entrega_1": 200,
+    "entrega_2": 409,
+    "stock_antes": {
+      "producto_id": "20072f6a-7b5e-4267-8fc9-d5954a080e43",
+      "total": 4,
+      "reservada": 0,
+      "disponible": 4,
+      "actualizado_en": "2026-11-02T03:19:50.492891Z"
+    },
+    "stock_despues": {
+      "producto_id": "20072f6a-7b5e-4267-8fc9-d5954a080e43",
+      "total": 3,
+      "reservada": 0,
+      "disponible": 3,
+      "actualizado_en": "2026-11-02T03:19:52.587742Z"
+    },
+    "prestamos_del_cliente": 1
+  },
+  "ejecutado_en": "2026-11-02T03:19:52Z",
+  "commit": "0a136f6"
+}
