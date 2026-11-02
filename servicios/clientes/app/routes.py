@@ -38,8 +38,44 @@ router = APIRouter()
 # Columnas admitidas en la importación (§9: "pueden adaptar los campos").
 COLUMNAS_OBLIGATORIAS = {"documento_identidad", "nombre", "email"}
 COLUMNAS_OPCIONALES = {"telefono", "ciudad", "activo"}
-COLUMNAS_CONOCIDAS = COLUMNAS_OBLIGATORIAS | COLUMNAS_OPCIONALES
+# Perfil financiero del cliente (P2-7): adaptado del histórico; opcional.
+COLUMNAS_PERFIL = {
+    "ingresos_mensuales_cop", "obligaciones_mensuales_cop", "tipo_empleo",
+    "antiguedad_laboral_meses", "meses_historial_crediticio",
+    "creditos_previos", "atrasos_previos_30d", "porcentaje_pago_puntual",
+}
+COLUMNAS_CONOCIDAS = COLUMNAS_OBLIGATORIAS | COLUMNAS_OPCIONALES | COLUMNAS_PERFIL
+# Tipos numéricos del perfil: None si el valor está vacío (dato faltante
+# legítimo; el imputador del pipeline lo absorbe en inferencia, §8.B).
+PERFIL_NUMERICO = {
+    "ingresos_mensuales_cop": float, "obligaciones_mensuales_cop": float,
+    "antiguedad_laboral_meses": float, "meses_historial_crediticio": float,
+    "creditos_previos": int, "atrasos_previos_30d": int,
+    "porcentaje_pago_puntual": float,
+}
 _RE_EMAIL = re.compile(r"[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+def _perfil_de_fila(fila: dict) -> tuple[dict, str | None]:
+    """Extrae y valida el perfil financiero de una fila CSV.
+
+    Devuelve (perfil, motivo_de_rechazo). Un valor vacío se vuelve None;
+    un valor no numérico rechaza la fila (no se inventa información).
+    """
+    perfil: dict = {}
+    for columna, convertidor in PERFIL_NUMERICO.items():
+        crudo = (fila.get(columna) or "").strip()
+        if not crudo:
+            perfil[columna] = None
+            continue
+        try:
+            perfil[columna] = convertidor(float(crudo))
+        except (ValueError, OverflowError):
+            return {}, f"{columna} no numérico: {crudo!r}"
+    perfil["tipo_empleo"] = (fila.get("tipo_empleo") or "").strip().lower() or None
+    if perfil.get("tipo_empleo") and len(perfil["tipo_empleo"]) > 40:
+        return {}, f"tipo_empleo excede 40 caracteres: {perfil['tipo_empleo']!r}"
+    return perfil, None
 
 
 def _problema(status: int, titulo: str, detalle: str, instance: str, errores=None):
@@ -182,15 +218,28 @@ def _validar_fila(fila: dict) -> str | None:
     return None
 
 
-def _mismos_datos(cliente: Cliente, fila: dict) -> bool:
+def _mismos_datos(cliente: Cliente, fila: dict, perfil: dict) -> bool:
     activo = (fila.get("activo") or "true").strip().lower() in ("true", "1", "si")
-    return (
+    if not (
         cliente.nombre == fila["nombre"].strip()
         and cliente.email == fila["email"].strip().lower()
         and (cliente.telefono or "") == (fila.get("telefono") or "").strip()
         and (cliente.ciudad or "") == (fila.get("ciudad") or "").strip()
         and cliente.activo == activo
-    )
+    ):
+        return False
+    # El perfil también debe coincidir: una fila con perfil distinto actualiza.
+    for campo, valor in perfil.items():
+        actual = getattr(cliente, campo)
+        if valor is None:
+            if actual is not None:
+                return False
+        elif campo == "tipo_empleo":
+            if actual != valor:
+                return False
+        elif actual is None or abs(float(actual) - float(valor)) > 1e-6:
+            return False
+    return True
 
 
 @router.post("/clientes/import", response_model=ResultadoImportacion)
@@ -233,6 +282,8 @@ def importar_clientes(request: Request, file: UploadFile = File(...),
                 for k, v in fila_bruta.items() if k is not None}
         procesadas += 1
         motivo = _validar_fila(fila)
+        if not motivo:
+            perfil, motivo = _perfil_de_fila(fila)
         if motivo:
             rechazadas += 1
             errores.append(ErrorImportacion(fila=indice, motivo=motivo))
@@ -247,10 +298,11 @@ def importar_clientes(request: Request, file: UploadFile = File(...),
                 telefono=fila.get("telefono") or None,
                 ciudad=fila.get("ciudad") or None,
                 activo=(fila.get("activo", "true").lower() in ("true", "1", "si")),
+                **perfil,
             )
             sesion.add(nuevo)
             insertados += 1
-        elif _mismos_datos(existente, fila):
+        elif _mismos_datos(existente, fila, perfil):
             sin_cambios += 1
         else:
             existente.nombre = fila["nombre"]
@@ -258,6 +310,8 @@ def importar_clientes(request: Request, file: UploadFile = File(...),
             existente.telefono = fila.get("telefono") or None
             existente.ciudad = fila.get("ciudad") or None
             existente.activo = fila.get("activo", "true").lower() in ("true", "1", "si")
+            for campo, valor in perfil.items():
+                setattr(existente, campo, valor)
             actualizados += 1
 
     try:

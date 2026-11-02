@@ -2,7 +2,8 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String, UniqueConstraint
+from sqlalchemy import (Boolean, DateTime, Float, ForeignKey, Integer, Numeric,
+                        String, UniqueConstraint)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base
@@ -31,6 +32,21 @@ class Cliente(Base):
     telefono: Mapped[str | None] = mapped_column(String(30), nullable=True)
     ciudad: Mapped[str | None] = mapped_column(String(80), nullable=True)
     activo: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+
+    # Perfil financiero del cliente (§9: campos adaptados del histórico; cada
+    # cliente_id es único en el CSV). Préstamos lo lee por API para construir
+    # el vector de variables del modelo (§4: dueño de sus datos = Clientes).
+    ingresos_mensuales_cop: Mapped[float | None] = mapped_column(
+        Numeric(14, 2), nullable=True)
+    obligaciones_mensuales_cop: Mapped[float | None] = mapped_column(
+        Numeric(14, 2), nullable=True)
+    tipo_empleo: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    antiguedad_laboral_meses: Mapped[float | None] = mapped_column(Float, nullable=True)
+    meses_historial_crediticio: Mapped[float | None] = mapped_column(Float, nullable=True)
+    creditos_previos: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    atrasos_previos_30d: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    porcentaje_pago_puntual: Mapped[float | None] = mapped_column(Float, nullable=True)
+
     creado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False,
                                                 default=_ahora)
     actualizado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False,
