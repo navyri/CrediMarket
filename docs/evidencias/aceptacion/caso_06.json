@@ -3,32 +3,32 @@
   "caso_s12": 6,
   "requisito": "§12.6 Caída del consumidor o del broker",
   "esperado": "Recuperación sin perder solicitudes confirmadas ni duplicar efectos.",
-  "observado": "broker detenido → solicitud 202 persistida en PENDIENTE_INVENTARIO; al reiniciar RabbitMQ llegó a APROBADA con 1 sola reserva (72dbbc48…) y stock coherente (reservada 0 → 1); traza PENDIENTE_INVENTARIO→PENDIENTE_INVENTARIO→APROBADA",
+  "observado": "broker detenido → solicitud 202 persistida en PENDIENTE_INVENTARIO; al reiniciar RabbitMQ llegó a APROBADA con 1 sola reserva (ce8927c4…) y stock coherente (reservada 0 → 1); traza PENDIENTE_INVENTARIO→PENDIENTE_INVENTARIO→APROBADA",
   "estado": "OK",
   "detalle": {
-    "prestamo_id": "1039f831-7213-4b54-be66-5a4b0237a3ec",
-    "reserva_id": "72dbbc48-bae6-4ca4-afb5-a4b9029119e6",
+    "prestamo_id": "6761331a-9b7a-4f92-b322-3204a9bbb214",
+    "reserva_id": "ce8927c4-b70b-4bb7-8ebe-b028d1f2ac05",
     "traza_estados": [
       "PENDIENTE_INVENTARIO",
       "PENDIENTE_INVENTARIO",
       "APROBADA"
     ],
     "stock_antes": {
-      "producto_id": "7f0da2f2-30d8-4cdc-839f-979aaf1bfe89",
+      "producto_id": "ab37d3ad-e153-4fa3-a5db-34111b213859",
       "total": 3,
       "reservada": 0,
       "disponible": 3,
-      "actualizado_en": "2026-11-02T03:19:53.721972Z"
+      "actualizado_en": "2026-11-02T04:02:02.161017Z"
     },
     "stock_despues": {
-      "producto_id": "7f0da2f2-30d8-4cdc-839f-979aaf1bfe89",
+      "producto_id": "ab37d3ad-e153-4fa3-a5db-34111b213859",
       "total": 3,
       "reservada": 1,
       "disponible": 2,
-      "actualizado_en": "2026-11-02T03:20:08.411089Z"
+      "actualizado_en": "2026-11-02T04:02:17.687651Z"
     },
     "reservas_del_prestamo": 1
   },
-  "ejecutado_en": "2026-11-02T03:20:09Z",
-  "commit": "0a136f6"
+  "ejecutado_en": "2026-11-02T04:02:18Z",
+  "commit": "e712e73"
 }

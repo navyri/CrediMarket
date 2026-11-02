@@ -3,10 +3,10 @@
   "caso_s12": 9,
   "requisito": "§12.9 Precio modificado",
   "esperado": "Invalidación de caché y monto del préstamo basado en la cotización vigente.",
-  "observado": "precio 175.000 (v1) → PATCH 250.000 (v2) → caché invalidada=True → GET devuelve 250.000 → préstamo a32c39ca… cotizado a 250.000 (monto_total=250000)",
+  "observado": "precio 175.000 (v1) → PATCH 250.000 (v2) → caché invalidada=True → GET devuelve 250.000 → préstamo fd782ca3… cotizado a 250.000 (monto_total=250000)",
   "estado": "OK",
   "detalle": {
-    "producto_id": "fa6f4d43-a4ea-47da-acfa-f5e7f4a22592",
+    "producto_id": "7896533d-cfd3-498b-8cbe-8a60e6ceb18b",
     "precio_viejo": 175000,
     "precio_nuevo": 250000,
     "version_antes": 1,
@@ -15,6 +15,6 @@
     "precio_unitario_prestamo": 250000.0,
     "monto_total_cop": 250000.0
   },
-  "ejecutado_en": "2026-11-02T03:20:34Z",
-  "commit": "0a136f6"
+  "ejecutado_en": "2026-11-02T04:02:42Z",
+  "commit": "e712e73"
 }
