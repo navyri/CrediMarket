@@ -3,23 +3,23 @@
   "caso_s12": 2,
   "requisito": "§12.2 Solicitud rechazada",
   "esperado": "Registro de la decisión y versión del modelo; no hay reserva.",
-  "observado": "préstamo efddd270… RECHAZADA y persistida: motivo 'regla de control: obligaciones alcanzan o superan los ingresos', modelo v1, sin reserva (reservada=0)",
+  "observado": "préstamo 1fc23876… RECHAZADA y persistida: motivo 'regla de control: obligaciones alcanzan o superan los ingresos', modelo v1, sin reserva (reservada=0)",
   "estado": "OK",
   "detalle": {
-    "prestamo_id": "efddd270-fce3-4803-b1b2-c410c6695ed8",
+    "prestamo_id": "1fc23876-38f3-4866-b2fe-37ae60f40ab6",
     "motivo": "regla de control: obligaciones alcanzan o superan los ingresos",
     "modelo_version": "v1",
     "probabilidad": 1.0,
     "umbral": 0.49,
     "reserva_id": null,
     "stock": {
-      "producto_id": "a359cddf-5279-4b85-b33b-082583742adb",
+      "producto_id": "1f747d37-e6df-495a-83c1-ef895a045923",
       "total": 3,
       "reservada": 0,
       "disponible": 3,
-      "actualizado_en": "2026-11-02T04:01:52.035188Z"
+      "actualizado_en": "2026-11-02T04:55:37.740913Z"
     }
   },
-  "ejecutado_en": "2026-11-02T04:01:52Z",
-  "commit": "e712e73"
+  "ejecutado_en": "2026-11-02T04:55:38Z",
+  "commit": "32e0427"
 }

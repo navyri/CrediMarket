@@ -3,28 +3,27 @@
   "caso_s12": 7,
   "requisito": "§12.7 Cancelación y evento tardío",
   "esperado": "Estado coherente, reserva liberada y préstamo no reactivado.",
-  "observado": "préstamo 18f47804… aprobado → cancelado (CANCELADA) → reserva 5bad46c8… LIBERADA; entrega tardía rechazada con 409 y el préstamo sigue en CANCELADA (no reactivado); stock restaurado (reservada 0, disponible 3)",
+  "observado": "préstamo 4701d01e… aprobado → cancelado (CANCELADA) → reserva 00e83aab… LIBERADA; entrega tardía rechazada con 409 y el préstamo sigue en CANCELADA (no reactivado); stock restaurado (reservada 0, disponible 3)",
   "estado": "OK",
   "detalle": {
-    "prestamo_id": "18f47804-9be8-43f1-a0dd-9dd1c3f97e59",
-    "reserva_id": "5bad46c8-51c0-4be4-8164-e4757b52f7da",
+    "prestamo_id": "4701d01e-ea5d-4e3b-b708-711950384de2",
+    "reserva_id": "00e83aab-3223-4c78-86dc-b4f5650944a6",
     "estado_final": "CANCELADA",
     "estado_reserva_tras_late": "LIBERADA",
     "respuesta_evento_tardio": 409,
     "traza_estados": [
-      "PENDIENTE_INVENTARIO",
       "APROBADA",
       "APROBADA",
       "CANCELADA"
     ],
     "stock": {
-      "producto_id": "82931716-c85f-4907-a44b-41fde16f891a",
+      "producto_id": "c8561fbb-091c-40c5-af2a-594236bd7c3a",
       "total": 3,
       "reservada": 0,
       "disponible": 3,
-      "actualizado_en": "2026-11-02T04:02:20.759558Z"
+      "actualizado_en": "2026-11-02T04:56:05.482164Z"
     }
   },
-  "ejecutado_en": "2026-11-02T04:02:21Z",
-  "commit": "e712e73"
+  "ejecutado_en": "2026-11-02T04:56:05Z",
+  "commit": "32e0427"
 }

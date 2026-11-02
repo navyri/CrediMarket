@@ -11,25 +11,25 @@
     "umbral_original": 0.49,
     "umbral_promovido": 0.49,
     "run_id_original": "709931de846a4d3d9b87b81b6b840f9a",
-    "run_id_promovido": "1c003ff09b0f4dc49406ef8325f413b5",
+    "run_id_promovido": "b3bd8708780843aca67c603880c3a6bb",
     "entradas_historial_nuevas": [
       {
         "modelo_version": "v2",
-        "run_id": "1c003ff09b0f4dc49406ef8325f413b5",
+        "run_id": "b3bd8708780843aca67c603880c3a6bb",
         "umbral": 0.49,
-        "promovido_en": "2026-11-02T04:02:45Z",
+        "promovido_en": "2026-11-02T04:56:31Z",
         "motivo": "aceptación §12.11: promoción"
       },
       {
         "modelo_version": "v1",
         "run_id": "709931de846a4d3d9b87b81b6b840f9a",
         "umbral": 0.49,
-        "promovido_en": "2026-11-02T04:02:45Z",
+        "promovido_en": "2026-11-02T04:56:31Z",
         "motivo": "aceptación §12.11: rollback"
       }
     ],
     "activo_version_anterior": "v2"
   },
-  "ejecutado_en": "2026-11-02T04:02:45Z",
-  "commit": "e712e73"
+  "ejecutado_en": "2026-11-02T04:56:31Z",
+  "commit": "32e0427"
 }
