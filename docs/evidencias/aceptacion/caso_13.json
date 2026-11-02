@@ -1,0 +1,19 @@
+{
+  "id": "P2-TEST-013",
+  "caso_s12": 13,
+  "requisito": "§12.13 Cliente accede a préstamos ajenos",
+  "esperado": "Rechazado por autorización (403) con token de otro cliente.",
+  "observado": "préstamo eefe52ba…: dueño 200, cliente ajeno 403 en GET y 403 en cancelar (JSON legible), sin token 401, admin 200; estado inalalterado APROBADA",
+  "estado": "OK",
+  "detalle": {
+    "prestamo_id": "eefe52ba-3c10-4cc9-935c-0bbe776ed9c8",
+    "dueno_get": 200,
+    "ajeno_get": 403,
+    "ajeno_cancelar": 403,
+    "sin_token": 401,
+    "admin_get": 200,
+    "estado_final": "APROBADA"
+  },
+  "ejecutado_en": "2026-11-02T03:20:40Z",
+  "commit": "0a136f6"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "P2-TEST-004",
+  "caso_s12": 4,
+  "requisito": "§12.4 Dos solicitudes por la última unidad",
+  "esperado": "Solo una obtiene la reserva.",
+  "observado": "dos POST concurrentes sobre stock=1 → 3eab164c… APROBADA con reserva y c680bb94… CANCELADA_SIN_STOCK sin reserva; stock final total=1 reservada=1 disponible=0",
+  "estado": "OK",
+  "detalle": {
+    "prestamo_ganador": "3eab164c-28fa-4ea6-b938-8419b9efb7de",
+    "prestamo_perdedor": "c680bb94-bc30-4527-9bda-b7ef58118a77",
+    "codigos_http": [
+      202,
+      202
+    ],
+    "stock": {
+      "producto_id": "2effc7c7-e9d2-43ca-8508-1f83c6efee5c",
+      "total": 1,
+      "reservada": 1,
+      "disponible": 0,
+      "actualizado_en": "2026-11-02T03:19:48.358775Z"
+    },
+    "motivo_perdedor": "sin existencias suficientes (disponible 0)"
+  },
+  "ejecutado_en": "2026-11-02T03:19:49Z",
+  "commit": "0a136f6"
+}

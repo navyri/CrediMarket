@@ -1,0 +1,34 @@
+{
+  "id": "P2-TEST-016",
+  "caso_s12": 16,
+  "requisito": "§12.16 Formulario inválido / sesión vencida / API caída",
+  "esperado": "Mensajes claros y recuperación.",
+  "observado": "sin Idempotency-Key → 400 problem+json con errors[]; precio extra → 400 problem+json con errors[] por campo; JWT expirado → 401 'el token expiró'; API detenida → ConnectionError y recuperación confirmada con 200",
+  "estado": "OK",
+  "detalle": {
+    "sin_idempotency_key": {
+      "status": 400,
+      "detail": "falta la cabecera Idempotency-Key"
+    },
+    "campo_extra": {
+      "status": 400,
+      "errors": [
+        {
+          "campo": "precio_unitario_cop",
+          "mensaje": "Extra inputs are not permitted"
+        }
+      ]
+    },
+    "jwt_expirado": {
+      "status": 401,
+      "detail": "el token expiró"
+    },
+    "api_caida": {
+      "excepcion": "ConnectionError",
+      "servicio": "prestamos detenido",
+      "recuperado": true
+    }
+  },
+  "ejecutado_en": "2026-11-02T03:20:58Z",
+  "commit": "0a136f6"
+}

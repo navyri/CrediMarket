@@ -1,0 +1,32 @@
+{
+  "id": "P2-TEST-010",
+  "caso_s12": 10,
+  "requisito": "§12.10 Modelo exportado vs API",
+  "esperado": "Predicciones equivalentes y versión identificable.",
+  "observado": "versión v1 (run 709931de…): probabilidad API 0.4435322732 == artefacto v1/modelo.joblib 0.4435322732 (|Δ| < 1e-9); decisión FAVORABLE vs umbral 0.49",
+  "estado": "OK",
+  "detalle": {
+    "modelo_version": "v1",
+    "run_id": "709931de846a4d3d9b87b81b6b840f9a",
+    "probabilidad_api": 0.4435322732077263,
+    "probabilidad_artefacto": 0.4435322732077263,
+    "umbral": 0.49,
+    "decision": "FAVORABLE",
+    "artefacto": "C:\\Users\\maria\\Downloads\\CrediMarket\\ml\\modelos\\v1\\modelo.joblib",
+    "variables": [
+      "ingresos_mensuales_cop",
+      "obligaciones_mensuales_cop",
+      "antiguedad_laboral_meses",
+      "meses_historial_crediticio",
+      "creditos_previos",
+      "atrasos_previos_30d",
+      "porcentaje_pago_puntual",
+      "monto_solicitado_cop",
+      "plazo_meses",
+      "cuota_estimada_cop",
+      "tipo_empleo"
+    ]
+  },
+  "ejecutado_en": "2026-11-02T03:20:36Z",
+  "commit": "0a136f6"
+}

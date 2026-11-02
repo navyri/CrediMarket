@@ -1,0 +1,39 @@
+{
+  "id": "P2-TEST-015",
+  "caso_s12": 15,
+  "requisito": "§12.15 Pendiente y actualización asíncrona",
+  "esperado": "202 + polling hasta APROBADA (la confirmación llega por mensaje).",
+  "observado": "POST → 202 en 65 ms (PENDIENTE_INVENTARIO) y polling PENDIENTE_INVENTARIO@270ms → APROBADA@1321ms; reserva b453e118… RESERVADA y stock reservada 0 → 1",
+  "estado": "OK",
+  "detalle": {
+    "prestamo_id": "7c9c747e-3a8e-4ebb-9cca-53dfe24a810c",
+    "reserva_id": "b453e118-e8aa-43d9-87f1-514f0258af5f",
+    "latencia_202_ms": 64.5,
+    "traza": [
+      {
+        "t_ms": 270,
+        "estado": "PENDIENTE_INVENTARIO"
+      },
+      {
+        "t_ms": 1321,
+        "estado": "APROBADA"
+      }
+    ],
+    "stock_antes": {
+      "producto_id": "328a3677-966f-4481-8709-72a571225bba",
+      "total": 3,
+      "reservada": 0,
+      "disponible": 3,
+      "actualizado_en": "2026-11-02T03:20:45.711444Z"
+    },
+    "stock_despues": {
+      "producto_id": "328a3677-966f-4481-8709-72a571225bba",
+      "total": 3,
+      "reservada": 1,
+      "disponible": 2,
+      "actualizado_en": "2026-11-02T03:20:46.667461Z"
+    }
+  },
+  "ejecutado_en": "2026-11-02T03:20:47Z",
+  "commit": "0a136f6"
+}

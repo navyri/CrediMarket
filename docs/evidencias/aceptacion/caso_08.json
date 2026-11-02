@@ -1,0 +1,29 @@
+{
+  "id": "P2-TEST-008",
+  "caso_s12": 8,
+  "requisito": "§12.8 Redis vacío, expirado o caído",
+  "esperado": "Caché demostrable y consultas recuperables desde la base de datos.",
+  "observado": "miss con FLUSHDB → 200 + clave repoblada (TTL 60s); expiración → miss → repoblada; Redis detenido → 200 desde BD; reiniciado → 200 y caché activa",
+  "estado": "OK",
+  "detalle": {
+    "vacio": {
+      "http": 200,
+      "clave_repoblada": true,
+      "ttl_s": 60
+    },
+    "expirado": {
+      "http": 200,
+      "repoblada": true,
+      "ttl_s": 60
+    },
+    "caido": {
+      "http": 200,
+      "detalle": "la BD responde sin Redis (fallback o directo)"
+    },
+    "recuperado": {
+      "http": 200
+    }
+  },
+  "ejecutado_en": "2026-11-02T03:20:31Z",
+  "commit": "0a136f6"
+}

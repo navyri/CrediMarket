@@ -27,7 +27,7 @@
     "cuota_estimada_cop",
     "tipo_empleo"
   ],
-  "promovido_en": "2026-11-02T02:19:03Z",
-  "motivo": "rollback explícito desde v2",
+  "promovido_en": "2026-11-02T03:20:37Z",
+  "motivo": "aceptación §12.11: rollback",
   "version_anterior": "v2"
 }
