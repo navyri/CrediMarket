@@ -18,6 +18,14 @@ from app.config import ajustes                      # noqa: E402
 from app.schemas import ProductoCreacion            # noqa: E402
 
 
+@pytest.fixture(autouse=True)
+def _cortacircuitos_reiniciado():
+    """Cada prueba empieza y termina con el cortacircuitos cerrado (§6)."""
+    cache.reiniciar_cortacircuitos()
+    yield
+    cache.reiniciar_cortacircuitos()
+
+
 # ---------------------------------------------------------------- clave y TTL
 def test_clave_cache_sigue_el_prefijo_acordado_unit():
     """Contrato de clave `productos:v1:{id}` (§6, P2-TEST-009)."""
@@ -90,6 +98,27 @@ def test_fallback_local_respeta_el_ttl_unit():
     security.memoria_puesta("k", '{"v": 1}', ttl=0)
     assert security.memoria_leida("k") is None            # expira de inmediato
     security.memoria_vacia()
+
+
+def test_cortacircuitos_no_reintenta_redis_durante_la_ventana_unit():
+    """§6: tras un fallo la espera es acotada; no se paga el timeout en cada petición.
+
+    Antes del cortacircuitos, con Redis caído cada lectura costaba p50 ≈ 4,8 s
+    (medido con scripts/medir_cache.py --sin-redis); ahora solo el primer
+    intento de la ventana toca Redis.
+    """
+    estadisticas.reiniciar()
+    cliente = MagicMock()
+    cliente.get.side_effect = cache.redis.RedisError("redis no disponible")
+    with patch.object(cache, "obtener_cliente", return_value=cliente):
+        assert cache.leer("p-cc") is None        # 1.º intento: falla y abre la ventana
+        assert cache.leer("p-cc") is None        # 2.º: fail-fast, sin tocar Redis
+        assert cache.leer("p-cc") is None        # 3.º: idem
+    assert cliente.get.call_count == 1, "se reintentó Redis con la ventana abierta"
+    assert cache.redis_esta_disponible() is False    # respuesta inmediata
+    resumen = estadisticas.resumen()
+    assert resumen["errores_redis"] == 3         # 1 fallo real + 2 intentos omitidos
+    estadisticas.reiniciar()
 
 
 def test_valores_corruptos_se_tratan_como_miss_unit():

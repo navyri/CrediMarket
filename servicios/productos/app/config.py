@@ -20,6 +20,7 @@ class Ajustes(BaseSettings):
     cache_prefijo: str = "productos"
     cache_version: str = "v1"
     fallback_ttl_seg: int = 5          # caché en memoria cuando Redis no responde
+    cache_fail_fast_seg: int = 5       # cortacircuitos: no tocar Redis tras un fallo
     fallback_max_entradas: int = 256
 
     url_clientes: str = "http://clientes:8002"

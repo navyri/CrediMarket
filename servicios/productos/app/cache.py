@@ -12,6 +12,7 @@ fallback y latencia p50/p95 del GET sobre Redis.
 """
 import json
 import logging
+import time
 
 import redis
 
@@ -23,6 +24,12 @@ logger = logging.getLogger("productos.cache")
 
 _cliente_redis: redis.Redis | None = None
 _redis_disponible = True
+
+# Cortacircuitos (§6: "si Redis falla, seguir respondiendo ... con un tiempo de
+# espera acotado"). Sin esta ventana, cada petición pagaría el timeout de
+# conexión a un Redis caído (medido: p50 ≈ 4,8 s por lectura). Tras el primer
+# fallo se salta Redis durante `cache_fail_fast_seg` y se reintenta al vencer.
+_ventana_fallo_hasta: float = 0.0
 
 
 def clave_producto(producto_id: str) -> str:
@@ -49,13 +56,41 @@ def _marcar(estado: bool) -> None:
     _redis_disponible = estado
 
 
+def _redis_en_fallo() -> bool:
+    """True mientras dura la ventana de fail-fast abierta tras un fallo."""
+    return time.monotonic() < _ventana_fallo_hasta
+
+
+def _anotar_fallo() -> None:
+    """Abre el cortacircuitos: durante `cache_fail_fast_seg` no se toca Redis."""
+    global _ventana_fallo_hasta
+    _marcar(False)
+    _ventana_fallo_hasta = time.monotonic() + ajustes.cache_fail_fast_seg
+
+
+def _anotar_ok() -> None:
+    """Cierra el cortacircuitos: Redis volvió a responder."""
+    global _ventana_fallo_hasta
+    _marcar(True)
+    _ventana_fallo_hasta = 0.0
+
+
+def reiniciar_cortacircuitos() -> None:
+    """Cierra la ventana (pruebas y recuperación forzada)."""
+    global _ventana_fallo_hasta, _redis_disponible
+    _ventana_fallo_hasta = 0.0
+    _redis_disponible = True
+
+
 def redis_esta_disponible() -> bool:
+    if _redis_en_fallo():                     # ventana abierta: respuesta inmediata
+        return False
     try:
         obtener_cliente().ping()
-        _marcar(True)
+        _anotar_ok()
         return True
     except redis.RedisError:
-        _marcar(False)
+        _anotar_fallo()
         return False
 
 
@@ -72,14 +107,19 @@ def leer(producto_id: str) -> dict | None:
     redis_respondio = False
     bruto = None
     latencia = None
-    try:
-        bruto = obtener_cliente().get(clave)
-        latencia = (estadisticas.tiempo() - inicio) * 1000
-        redis_respondio = True
-        _marcar(True)
-    except redis.RedisError:
-        _marcar(False)
+    if _redis_en_fallo():
+        # Cortacircuitos abierto: se omite el intento para que la espera sea
+        # acotada (§6) en lugar de pagar el timeout de conexión en cada petición.
         estadisticas.registrar_error_redis()
+    else:
+        try:
+            bruto = obtener_cliente().get(clave)
+            latencia = (estadisticas.tiempo() - inicio) * 1000
+            redis_respondio = True
+            _anotar_ok()
+        except redis.RedisError:
+            estadisticas.registrar_error_redis()
+            _anotar_fallo()
 
     if redis_respondio:
         if bruto is not None:
@@ -109,13 +149,17 @@ def escribir(producto_id: str, datos: dict) -> None:
     """Puebla la caché tras un miss de BD (TTL configurable, §6)."""
     clave = clave_producto(producto_id)
     bruto = json.dumps(datos, default=str)
+    if _redis_en_fallo():
+        estadisticas.registrar_error_redis()     # intento omitido (Redis caído)
+        memoria_puesta(clave, bruto, ajustes.fallback_ttl_seg)
+        return
     try:
         obtener_cliente().set(clave, bruto, ex=ajustes.cache_ttl_seg)
-        _marcar(True)
+        _anotar_ok()
         memoria_borrada(clave)
     except redis.RedisError:
-        _marcar(False)
         estadisticas.registrar_error_redis()
+        _anotar_fallo()
         memoria_puesta(clave, bruto, ajustes.fallback_ttl_seg)
 
 
@@ -123,11 +167,16 @@ def invalidar(producto_id: str) -> None:
     """Invalidación tras commit (§6): se llama SIEMPRE después de persistir."""
     clave = clave_producto(producto_id)
     memoria_borrada(clave)
+    if _redis_en_fallo():
+        estadisticas.registrar_error_redis()     # intento omitido (Redis caído)
+        logger.warning("ventana de fallo abierta; %s queda acotada por el TTL",
+                       clave)
+        return
     try:
         obtener_cliente().delete(clave)
-        _marcar(True)
+        _anotar_ok()
         estadisticas.registrar_invalidacion()
     except redis.RedisError:
-        _marcar(False)
         estadisticas.registrar_error_redis()
+        _anotar_fallo()
         logger.warning("no se pudo invalidar %s; el TTL acota la obsolescencia", clave)
