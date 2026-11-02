@@ -146,3 +146,31 @@ def test_redis_caido_no_toma_el_servicio():
         with patch.object(cache, "obtener_cliente", return_value=roto):
             respuesta = cliente.get(f"/productos/{pid}")
         assert respuesta.status_code == 200
+
+
+def test_estadisticas_de_cache_reportan_hit_rate_y_latencias():
+    """P2-TEST-019: p50/p95, hit-rate y fallback medidos sobre Redis real."""
+    with _r() as cliente:
+        # Un mismo producto: 1.ª lectura (miss → pueble) y luego hits reales.
+        pid = cliente.get("/productos", params={"tamano": 1}).json()["items"][0]["id"]
+        cliente.get(f"/productos/{pid}")          # miss → BD → SET
+        cliente.get(f"/productos/{pid}")          # hit
+        cliente.get(f"/productos/{pid}")          # hit
+
+        # Solo administrador ve las métricas (§10).
+        sin_rol = cliente.get("/cache/estadisticas")
+        assert sin_rol.status_code in (401, 403)
+        cliente_rol = cliente.get(
+            "/cache/estadisticas",
+            headers={"Authorization": f"Bearer {_token('cliente')}"})
+        assert cliente_rol.status_code == 403
+
+        resumen = cliente.get(
+            "/cache/estadisticas",
+            headers={"Authorization": f"Bearer {_token('administrador')}"}).json()
+        assert resumen["redis_disponible"] is True
+        assert resumen["lecturas"]["aciertos"] >= 2        # los hits de arriba
+        assert resumen["lecturas"]["hit_rate"] > 0
+        assert resumen["latencia_redis_ms"]["p50"] is not None
+        assert resumen["latencia_redis_ms"]["p95"] >= resumen["latencia_redis_ms"]["p50"]
+        assert resumen["invalidaciones"] >= 0

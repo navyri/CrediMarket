@@ -6,12 +6,16 @@ Patrón implementado:
 - indisponibilidad: fallback acotado en memoria con TTL corto; la caché nunca
   bloquea una lectura ni oculta la fuente de verdad (§6: la deduplicación y la
   cotización oficial viven en BD, jamás en Redis).
+
+Cada operación deja su métrica en `estadisticas` (P2-TEST-019): hit-rate,
+fallback y latencia p50/p95 del GET sobre Redis.
 """
 import json
 import logging
 
 import redis
 
+from . import estadisticas
 from .config import ajustes
 from .security import memoria_borrada, memoria_leida, memoria_puesta
 
@@ -56,22 +60,48 @@ def redis_esta_disponible() -> bool:
 
 
 def leer(producto_id: str) -> dict | None:
-    """Devuelve el producto si está en Redis; si no, None (miss)."""
+    """Devuelve el producto si está en Redis; si no, None (miss).
+
+    El fallback local SOLO se usa cuando Redis no responde (indisponibilidad,
+    P2-TEST-008). Un miss legítimo devuelve None para que la ruta lea la BD y
+    repueble la caché: servir el fallback en un miss dejaría datos obsoletos
+    sin repoblar Redis.
+    """
     clave = clave_producto(producto_id)
+    inicio = estadisticas.tiempo()
+    redis_respondio = False
+    bruto = None
+    latencia = None
     try:
         bruto = obtener_cliente().get(clave)
+        latencia = (estadisticas.tiempo() - inicio) * 1000
+        redis_respondio = True
         _marcar(True)
-        if bruto is not None:
-            return json.loads(bruto)
     except redis.RedisError:
         _marcar(False)
-    except (json.JSONDecodeError, TypeError):
-        logger.warning("valor corrupto en %s; se trata como miss", clave)
-        invalidar(producto_id)
-    # Fallback local acotado (solo mientras Redis no responde).
+        estadisticas.registrar_error_redis()
+
+    if redis_respondio:
+        if bruto is not None:
+            try:
+                datos = json.loads(bruto)
+            except (json.JSONDecodeError, TypeError):
+                logger.warning("valor corrupto en %s; se trata como miss", clave)
+                invalidar(producto_id)
+                datos = None
+            if datos is not None:
+                estadisticas.registrar_lectura("acierto", latencia)
+                return datos
+        # Miss (o valor corrupto ya invalidado): la ruta lee BD y repuebla.
+        estadisticas.registrar_lectura("fallo", latencia)
+        return None
+
+    # Redis no respondió: fallback local acotado (P2-TEST-008).
     bruto_local = memoria_leida(clave)
     if bruto_local:
+        estadisticas.registrar_lectura("fallback")
         return json.loads(bruto_local)
+    estadisticas.registrar_lectura("fallo")
     return None
 
 
@@ -85,6 +115,7 @@ def escribir(producto_id: str, datos: dict) -> None:
         memoria_borrada(clave)
     except redis.RedisError:
         _marcar(False)
+        estadisticas.registrar_error_redis()
         memoria_puesta(clave, bruto, ajustes.fallback_ttl_seg)
 
 
@@ -95,6 +126,8 @@ def invalidar(producto_id: str) -> None:
     try:
         obtener_cliente().delete(clave)
         _marcar(True)
+        estadisticas.registrar_invalidacion()
     except redis.RedisError:
         _marcar(False)
+        estadisticas.registrar_error_redis()
         logger.warning("no se pudo invalidar %s; el TTL acota la obsolescencia", clave)

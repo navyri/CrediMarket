@@ -1,0 +1,134 @@
+{
+  "prueba": "P2-TEST-020",
+  "titulo": "drift simulado y monitoreo del modelo activo",
+  "fecha": "2026-11-02T00:39:51+00:00",
+  "lote_real": {
+    "archivo": "solicitudes_nuevas.csv",
+    "origen": "produccion_real",
+    "filas": 200,
+    "estado": "revisar",
+    "psi_maximo": 0.126586,
+    "por_variable": {
+      "ingresos_mensuales_cop": 0.057174,
+      "obligaciones_mensuales_cop": 0.036617,
+      "antiguedad_laboral_meses": 0.126586,
+      "meses_historial_crediticio": 0.083316,
+      "creditos_previos": 0.008062,
+      "atrasos_previos_30d": 0.0088,
+      "porcentaje_pago_puntual": 0.059783,
+      "monto_solicitado_cop": 0.11462,
+      "plazo_meses": 0.026877,
+      "cuota_estimada_cop": 0.027886,
+      "tipo_empleo": 0.089515
+    },
+    "variables_con_alerta": [],
+    "variables_a_revisar": [
+      "antiguedad_laboral_meses",
+      "monto_solicitado_cop"
+    ],
+    "modelo_version": "v1",
+    "linea_base": {
+      "fuente": "ml/datos/entrenamiento.csv",
+      "filas": 7200,
+      "generado_en": "2026-11-02T00:24:32+00:00",
+      "sha256_fuente": "616cffb3fa673b5cd9ac5fd39daebb767af5ff415426d2eeee017454b2d8b511"
+    },
+    "mlflow_run": "15069154df204fe080954f0a7b5bd06e"
+  },
+  "lote_simulado": {
+    "desplazamiento": {
+      "antiguedad_laboral_meses": "x 0.25",
+      "atrasos_previos_30d": "+ 4",
+      "creditos_previos": "+ 3",
+      "porcentaje_pago_puntual": "- 35"
+    },
+    "origen": "desplazamiento_simulado",
+    "filas": 200,
+    "estado": "alerta",
+    "psi_maximo": 12.434693,
+    "por_variable": {
+      "ingresos_mensuales_cop": 0.057174,
+      "obligaciones_mensuales_cop": 0.036617,
+      "antiguedad_laboral_meses": 5.851385,
+      "meses_historial_crediticio": 0.083316,
+      "creditos_previos": 8.170766,
+      "atrasos_previos_30d": 11.971262,
+      "porcentaje_pago_puntual": 12.434693,
+      "monto_solicitado_cop": 0.11462,
+      "plazo_meses": 0.026877,
+      "cuota_estimada_cop": 0.027886,
+      "tipo_empleo": 0.089515
+    },
+    "variables_con_alerta": [
+      "antiguedad_laboral_meses",
+      "atrasos_previos_30d",
+      "creditos_previos",
+      "porcentaje_pago_puntual"
+    ],
+    "variables_a_revisar": [
+      "monto_solicitado_cop"
+    ],
+    "modelo_version": "v1",
+    "linea_base": {
+      "fuente": "ml/datos/entrenamiento.csv",
+      "filas": 7200,
+      "generado_en": "2026-11-02T00:24:32+00:00",
+      "sha256_fuente": "616cffb3fa673b5cd9ac5fd39daebb767af5ff415426d2eeee017454b2d8b511"
+    },
+    "mlflow_run": "b361d2da92de4796ac24225754ab8c21"
+  },
+  "estado_produccion": {
+    "total_inferencias": 8,
+    "modelo_version": "v1",
+    "latencia_ms": {
+      "p50": 3.993,
+      "p95": 10.356,
+      "maxima": 13.578
+    },
+    "probabilidad_media": 0.525221,
+    "tasa_sobre_umbral": 0.375,
+    "aplicaron_regla": 0,
+    "ventana": 8,
+    "deriva": {
+      "estado": "insuficiente",
+      "filas": 8,
+      "por_variable": {
+        "ingresos_mensuales_cop": 7.543351,
+        "obligaciones_mensuales_cop": 4.903422,
+        "antiguedad_laboral_meses": 4.824015,
+        "meses_historial_crediticio": 6.422402,
+        "creditos_previos": 0.147839,
+        "atrasos_previos_30d": 0.470466,
+        "porcentaje_pago_puntual": 9.03459,
+        "monto_solicitado_cop": 2.347191,
+        "plazo_meses": 2.365791,
+        "cuota_estimada_cop": 4.902326,
+        "tipo_empleo": 2.38706
+      },
+      "psi_maximo": 9.03459,
+      "variables_con_alerta": [
+        "antiguedad_laboral_meses",
+        "atrasos_previos_30d",
+        "cuota_estimada_cop",
+        "ingresos_mensuales_cop",
+        "meses_historial_crediticio",
+        "monto_solicitado_cop",
+        "obligaciones_mensuales_cop",
+        "plazo_meses",
+        "porcentaje_pago_puntual",
+        "tipo_empleo"
+      ],
+      "variables_a_revisar": [
+        "creditos_previos"
+      ]
+    },
+    "linea_base": {
+      "fuente": "ml/datos/entrenamiento.csv",
+      "filas": 7200,
+      "generado_en": "2026-11-02T00:24:32+00:00",
+      "sha256_fuente": "616cffb3fa673b5cd9ac5fd39daebb767af5ff415426d2eeee017454b2d8b511"
+    },
+    "estado": "insuficiente"
+  },
+  "veredicto": "OK: el lote real se clasifica 'revisar' (deriva natural moderada) y el lote con desplazamiento documentado cruza a 'alerta' sin reentrenar ni tocar el modelo activo; /monitoreo/estado reporta latencias y tasas de las inferencias vivas."
+}

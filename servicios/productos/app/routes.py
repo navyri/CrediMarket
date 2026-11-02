@@ -6,7 +6,7 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from . import cache
+from . import cache, estadisticas
 from .db import obtener_sesion
 from .models import Producto
 from .schemas import (
@@ -181,3 +181,15 @@ def cotizar_producto(
         version=producto.version,
         vigente_desde=producto.actualizado_en,
     )
+
+
+@router.get("/cache/estadisticas")
+def estadisticas_cache(_auth: dict = Depends(rol_administrador)):
+    """Hit-rate, fallback y latencia p50/p95 de Redis (§6, P2-TEST-019).
+
+    Métricas de observación del proceso actual: demuestran que el cache-aside
+    funciona y que la caché degrada a memoria local sin bloquear lecturas.
+    """
+    resumen = estadisticas.resumen()
+    resumen["redis_disponible"] = cache.redis_esta_disponible()
+    return resumen

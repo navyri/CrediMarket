@@ -1,0 +1,25 @@
+{
+  "prueba": "P2-TEST-019",
+  "titulo": "mediciones de la caché Redis (hit-rate, fallback, p50/p95)",
+  "fecha": "2026-11-02T00:39:51+00:00",
+  "producto_prueba": "5e819ef2-18f5-4178-98f7-9ed4d11d4b00",
+  "estadisticas": {
+    "redis_disponible": true,
+    "lecturas": {
+      "total": 3,
+      "aciertos": 2,
+      "fallos": 1,
+      "fallback": 0,
+      "hit_rate": 0.6667,
+      "tasa_fallback": 0.0
+    },
+    "latencia_redis_ms": {
+      "p50": 0.195,
+      "p95": 3.8,
+      "muestra": 3
+    },
+    "invalidaciones": 0,
+    "errores_redis": 0
+  },
+  "veredicto": "OK: el cache-aside registra aciertos tras el pueble y latencias p50/p95 del GET sobre Redis; el fallback queda a 0 con Redis disponible (la métrica existe para cuando deje de estarlo)."
+}

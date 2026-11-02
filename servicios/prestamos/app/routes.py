@@ -12,11 +12,13 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from . import modelo, servicio
+from . import modelo, monitoreo, servicio
 from .config import ajustes
 from .db import obtener_sesion
 from .models import Prestamo, SolicitudIdempotente
 from .schemas import (
+    LoteResultado,
+    LoteSolicitud,
     ModeloInfo,
     PrestamoLectura,
     PrestamoLista,
@@ -217,6 +219,7 @@ def cancelar_prestamo(prestamo_id: str, request: Request,
 # ------------------------------------------------------- inferencia aislada (§8.E)
 @router.post("/riesgo/predict", response_model=RiesgoDecision)
 def predecir_riesgo(cuerpo: RiesgoSolicitud, request: Request,
+                    sesion: Session = Depends(obtener_sesion),
                     datos: dict = Depends(rol_interno)):
     """Inferencia aislada: NO reserva inventario ni crea préstamo (§8.E)."""
     if not modelo.disponible():
@@ -226,7 +229,17 @@ def predecir_riesgo(cuerpo: RiesgoSolicitud, request: Request,
     variables = dict(cuerpo.model_dump())
     monto = float(cuerpo.monto_solicitado_cop)
     variables.update(servicio.variables_del_prestamo(monto, cuerpo.plazo_meses))
+    inicio = monitoreo.tiempo()
     favorable, probabilidad, motivo, ficha = servicio.decidir_riesgo(variables)
+    latencia_ms = (monitoreo.tiempo() - inicio) * 1000
+    # Monitoreo (§15.2): también la inferencia aislada deja su métrica.
+    monitoreo.registrar(
+        sesion, origen="inferencia", prestamo_id=None, variables=variables,
+        probabilidad=probabilidad, umbral=ficha.get("umbral") or 0.0,
+        aplico_regla=(probabilidad == 1.0 and not favorable),
+        latencia_ms=latencia_ms,
+        modelo_version=ficha.get("modelo_version", "sin-modelo"))
+    sesion.commit()
     return RiesgoDecision(
         probabilidad_incumplimiento=probabilidad,
         umbral=ficha.get("umbral") or 0.0,
@@ -234,6 +247,44 @@ def predecir_riesgo(cuerpo: RiesgoSolicitud, request: Request,
         modelo_version=ficha.get("modelo_version", "sin-modelo"),
         run_id=ficha.get("run_id"),
         regla_aplicada=motivo if probabilidad == 1.0 and not favorable else None,
+    )
+
+
+# --------------------------------------------------------- monitoreo (§15.2)
+@router.get("/monitoreo/estado")
+def estado_monitoreo(request: Request,
+                     sesion: Session = Depends(obtener_sesion),
+                     _auth: dict = Depends(rol_administrador)):
+    """Desempeño y deriva de las últimas inferencias vs la línea base.
+
+    Latencias p50/p95, tasa sobre umbral y PSI por variable del lote reciente
+    (P2-TEST-019/P2-TEST-020). Solo lectura de datos propios del servicio.
+    """
+    return monitoreo.estado(sesion)
+
+
+@router.post("/monitoreo/evaluar-lote", response_model=LoteResultado)
+def evaluar_lote(cuerpo: LoteSolicitud, request: Request,
+                 sesion: Session = Depends(obtener_sesion),
+                 _auth: dict = Depends(rol_interno)):
+    """PSI de un lote contra la línea base exportada (P2-9.4).
+
+    Permite evaluar un lote de producción completo (por ejemplo las
+    `solicitudes_nuevas.csv`) sin crear préstamos ni tocar inventario.
+    """
+    ficha = modelo.ficha_activa() or {}
+    referencia = monitoreo.cargar_referencia()
+    resultado = monitoreo.psi_lote(referencia, cuerpo.filas)
+    return LoteResultado(
+        origen=cuerpo.origen,
+        filas=resultado["filas"],
+        estado=resultado["estado"],
+        psi_maximo=resultado.get("psi_maximo"),
+        por_variable=resultado.get("por_variable", {}),
+        variables_con_alerta=resultado.get("variables_con_alerta", []),
+        variables_a_revisar=resultado.get("variables_a_revisar", []),
+        modelo_version=ficha.get("modelo_version"),
+        linea_base=monitoreo.ficha_referencia(referencia),
     )
 
 

@@ -341,3 +341,95 @@ def test_ready_reporta_503_sin_modelo():
 def test_salud_publica():
     with TestClient(app) as cliente:
         assert cliente.get("/health").json()["estado"] == "ok"
+
+
+# ------------------------------------------------------ monitoreo (P2-9, §15.2)
+def test_monitoreo_registra_la_decision_y_reporta_estado():
+    """P2-TEST-020: toda decisión deja métrica (misma transacción) y
+    `GET /monitoreo/estado` resume latencias, tasas y deriva."""
+    cliente_id = str(uuid.uuid4())
+    p_perfil, p_cotiza = _vecinos(PERFIL_BUENO)
+    with p_perfil, p_cotiza, TestClient(app) as cliente:
+        admin = _token("administrador")
+        antes = cliente.get("/monitoreo/estado", headers=admin).json()
+
+        headers = {**_token("cliente", cliente_id), "Idempotency-Key": _clave()}
+        creada = cliente.post("/prestamos", headers=headers,
+                              json=_solicitud(cliente_id))
+        assert creada.status_code == 202, creada.text
+
+        # la inferencia aislada también deja su métrica (origen "inferencia")
+        cliente.post("/riesgo/predict", headers=_token("servicio"), json={
+            "ingresos_mensuales_cop": 7_000_000, "obligaciones_mensuales_cop": 600_000,
+            "monto_solicitado_cop": 900_000, "plazo_meses": 9,
+            "tipo_empleo": "dependiente", "antiguedad_laboral_meses": 30,
+            "meses_historial_crediticio": 40, "creditos_previos": 1,
+            "atrasos_previos_30d": 0, "porcentaje_pago_puntual": 96})
+
+        estado = cliente.get("/monitoreo/estado", headers=admin).json()
+        assert estado["total_inferencias"] >= antes["total_inferencias"] + 2
+        assert estado["latencia_ms"]["p50"] is not None
+        assert estado["latencia_ms"]["p95"] >= estado["latencia_ms"]["p50"]
+        assert estado["probabilidad_media"] is not None
+        assert estado["linea_base"]["fuente"].endswith("entrenamiento.csv")
+        assert estado["deriva"]["estado"] in (
+            "estable", "revisar", "alerta", "insuficiente")
+        # solo administrador (§10)
+        assert cliente.get("/monitoreo/estado",
+                           headers=_token("cliente", cliente_id)).status_code == 403
+
+
+def test_evaluar_lote_psi_contra_la_linea_base():
+    """P2-9.4: evalúa un lote (200 filas reales) sin crear nada (§8.E)."""
+    import csv as _csv
+    lote_csv = Path(__file__).resolve().parents[4] / "ml" / "datos" / "entrenamiento.csv"
+    with TestClient(app) as cliente:
+        admin = _token("administrador")
+        def _numero(fila: dict, clave: str, convertidor=float):
+            """Los vacíos del histórico son faltantes legítimos (None)."""
+            crudo = (fila.get(clave) or "").strip()
+            return convertidor(crudo) if crudo else None
+
+        with lote_csv.open(encoding="utf-8-sig", newline="") as archivo:
+            filas = []
+            for fila in _csv.DictReader(archivo):
+                filas.append({
+                    "ingresos_mensuales_cop": _numero(fila, "ingresos_mensuales_cop"),
+                    "obligaciones_mensuales_cop":
+                        _numero(fila, "obligaciones_mensuales_cop"),
+                    "tipo_empleo": fila["tipo_empleo"],
+                    "antiguedad_laboral_meses":
+                        _numero(fila, "antiguedad_laboral_meses"),
+                    "meses_historial_crediticio":
+                        _numero(fila, "meses_historial_crediticio"),
+                    "creditos_previos": _numero(fila, "creditos_previos", int),
+                    "atrasos_previos_30d": _numero(fila, "atrasos_previos_30d", int),
+                    "porcentaje_pago_puntual": _numero(fila, "porcentaje_pago_puntual"),
+                    "monto_solicitado_cop": _numero(fila, "monto_solicitado_cop"),
+                    "plazo_meses": _numero(fila, "plazo_meses", int),
+                    "cuota_estimada_cop": _numero(fila, "cuota_estimada_cop"),
+                })
+                if len(filas) == 200:
+                    break
+
+        antes = cliente.get("/prestamos", headers=_token("administrador")).json()["total"]
+        r = cliente.post("/monitoreo/evaluar-lote", headers=admin,
+                         json={"origen": "prueba_integracion", "filas": filas})
+        assert r.status_code == 200, r.text
+        cuerpo = r.json()        # un lote de la MISMA distribución base no puede acusar alerta de deriva
+        assert cuerpo["estado"] in ("estable", "revisar"), cuerpo
+        assert cuerpo["psi_maximo"] < 0.25
+        assert len(cuerpo["por_variable"]) == 11
+        assert cuerpo["linea_base"]["filas"] > 0
+        # evaluar un lote no crea ni toca préstamos (§8.E)
+        despues = cliente.get("/prestamos", headers=_token("administrador")).json()["total"]
+        assert despues == antes
+
+        # validaciones: lote vacío y campos extra → 400 problem+json
+        vacio = cliente.post("/monitoreo/evaluar-lote", headers=admin,
+                             json={"filas": []})
+        assert vacio.status_code == 400
+        assert vacio.headers["content-type"].startswith("application/problem+json")
+        extra = cliente.post("/monitoreo/evaluar-lote", headers=admin,
+                             json={"filas": filas[:1], "incluir_secreto": True})
+        assert extra.status_code == 400
