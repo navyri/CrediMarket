@@ -134,6 +134,7 @@ versionan en el repositorio; sus hash SHA-256 están registrados para verificaci
 | [`docs/guia-demo.md`](docs/guia-demo.md) | Cuentas de prueba y pasos de la demostración desde el navegador |
 | [`docs/informe-redis-desempeno.md`](docs/informe-redis-desempeno.md) | Diseño de la caché, mediciones (MISS/HIT/carga), fallos y recursos |
 | [`docs/informe-seleccion-modelo.md`](docs/informe-seleccion-modelo.md) | Baseline y parrillas candidatas, métricas, umbral y curva de costos (§8.B) |
+| [`docs/diccionario-datos.md`](docs/diccionario-datos.md) | Columnas, unidades, categorías, faltantes y particiones de los CSV |
 | [`docs/arquitectura/diagramas.md`](docs/arquitectura/diagramas.md) | Diagrama de arquitectura y de secuencia |
 | [`docs/arquitectura/contratos-rest.md`](docs/arquitectura/contratos-rest.md) | Contratos de las 4 APIs (incluye la convención de errores) |
 | [`docs/arquitectura/contratos-mensajes.md`](docs/arquitectura/contratos-mensajes.md) | Contratos y ejemplos JSON de los mensajes |
