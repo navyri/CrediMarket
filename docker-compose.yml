@@ -198,6 +198,29 @@ services:
       retries: 20
       start_period: 90s
 
+  frontend:
+    # Build de producción (Vite) servido por nginx; el navegador del usuario
+    # consume las APIs directamente en localhost:8001-8004 (§10).
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      # 8090 en el host: 5173 lo ocupa otra aplicación de la máquina, 5174 es
+      # el respaldo de Vite en desarrollo y 8080 otra app local (verificado
+      # con netstat antes de publicar).
+      - "8090:80"
+    depends_on:
+      - productos
+      - clientes
+      - prestamos
+      - inventario
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:80/"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+
 volumes:
   pgdata:
   rabbitmqdata:
