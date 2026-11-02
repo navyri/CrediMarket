@@ -13,7 +13,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app import cache, security                      # noqa: E402
+from app import cache, estadisticas, security          # noqa: E402
 from app.config import ajustes                      # noqa: E402
 from app.schemas import ProductoCreacion            # noqa: E402
 
@@ -135,7 +135,6 @@ def test_producto_creacion_rechaza_precio_no_positivo_unit():
         ProductoCreacion(sku="S1", nombre="Teclado", categoria="perifericos",
                          precio_cop=0)
 
-
 def test_producto_creacion_acepta_precio_positivo_unit():
     p = ProductoCreacion(sku="S1", nombre="Teclado", categoria="perifericos",
                          precio_cop="150000")
@@ -150,3 +149,61 @@ def test_respuesta_de_error_sigue_rfc9457_unit():
     assert respuesta.status_code == 404
     assert '"title":"Recurso no encontrado"' in cuerpo
     assert '"status":404' in cuerpo and '"instance":"/productos/x"' in cuerpo
+
+
+# ------------------------------------------------- métricas de caché (P2-TEST-019)
+def test_estadisticas_clasifica_lecturas_y_percentiles_unit():
+    """Hit-rate = aciertos/total; p50/p95 sobre la muestra de latencias."""
+    estadisticas.reiniciar()
+    estadisticas.registrar_lectura("acierto", 0.5)
+    estadisticas.registrar_lectura("acierto", 1.5)
+    estadisticas.registrar_lectura("fallo", 2.5)
+    estadisticas.registrar_lectura("fallback")
+    resumen = estadisticas.resumen()
+    assert resumen["lecturas"] == {
+        "total": 4, "aciertos": 2, "fallos": 1, "fallback": 1,
+        "hit_rate": 0.5, "tasa_fallback": 0.25}
+    assert resumen["latencia_redis_ms"]["p50"] == 1.5
+    assert abs(resumen["latencia_redis_ms"]["p95"] - 2.4) < 1e-9
+    estadisticas.reiniciar()
+
+
+def test_leer_con_redis_registra_acierto_con_latencia_unit():
+    estadisticas.reiniciar()
+    cliente = MagicMock()
+    cliente.get.return_value = '{"id": "p-1", "version": 1}'
+    with patch.object(cache, "obtener_cliente", return_value=cliente):
+        assert cache.leer("p-1") is not None
+    resumen = estadisticas.resumen()
+    assert resumen["lecturas"]["aciertos"] == 1
+    assert resumen["latencia_redis_ms"]["p50"] is not None
+    estadisticas.reiniciar()
+
+
+def test_lectura_sin_redis_cuenta_fallback_unit():
+    """P2-TEST-019: con Redis fuera se cuentan errores y servidos por memoria."""
+    estadisticas.reiniciar()
+    security.memoria_vacia()
+    cliente = MagicMock()
+    cliente.get.side_effect = cache.redis.RedisError("redis no disponible")
+    cliente.set.side_effect = cache.redis.RedisError("redis no disponible")
+    with patch.object(cache, "obtener_cliente", return_value=cliente):
+        assert cache.leer("p-2") is None                 # sin fallback aún
+        cache.escribir("p-2", {"id": "p-2", "version": 7})
+        assert cache.leer("p-2")["version"] == 7         # servido por memoria
+    resumen = estadisticas.resumen()
+    # leer(1) + escribir + leer(2): cada intento toca Redis y falla.
+    assert resumen["errores_redis"] == 3
+    assert resumen["lecturas"]["fallback"] == 1
+    assert resumen["lecturas"]["hit_rate"] == 0.0
+    estadisticas.reiniciar()
+    security.memoria_vacia()
+
+
+def test_invalidacion_se_cuenta_como_metrica_unit():
+    estadisticas.reiniciar()
+    cliente = MagicMock()
+    with patch.object(cache, "obtener_cliente", return_value=cliente):
+        cache.invalidar("p-3")
+    assert estadisticas.resumen()["invalidaciones"] == 1
+    estadisticas.reiniciar()

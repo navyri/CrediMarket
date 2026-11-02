@@ -94,3 +94,29 @@ class PromocionResultado(BaseModel):
     activo_desde: str
     version_anterior: str | None
     motivo: str
+
+
+# ------------------------------------------------------------ monitoreo (§15.2)
+class LoteSolicitud(BaseModel):
+    """Evaluación de deriva de un lote de inferencia (P2-9.4).
+
+    Cada fila es un vector de variables con los nombres del histórico (§9).
+    Solo evalúa: no crea préstamos ni reserva inventario.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    origen: str = Field(default="evaluacion_lote", min_length=1, max_length=60)
+    filas: list[dict] = Field(min_length=1, max_length=5000)
+
+
+class LoteResultado(BaseModel):
+    origen: str
+    filas: int
+    estado: str    # estable|revisar|alerta|insuficiente|sin_datos|sin_referencia
+    psi_maximo: float | None
+    por_variable: dict[str, float]
+    variables_con_alerta: list[str]
+    variables_a_revisar: list[str]
+    modelo_version: str | None
+    linea_base: dict | None

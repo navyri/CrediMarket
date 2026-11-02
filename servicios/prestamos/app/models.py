@@ -103,3 +103,29 @@ class Outbox(Base):
                                                 nullable=False, default=_ahora)
     publicado_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True),
                                                           nullable=True)
+
+
+class MetricaInferencia(Base):
+    """Monitoreo de desempeño en producción (§15.2, P2-9.4).
+
+    Una fila por cada decisión de riesgo (solicitud o inferencia aislada), con
+    su latencia y el vector de variables usado. Es el insumo de
+    `GET /monitoreo/estado`: tasas, latencias y deriva (PSI) contra la línea
+    base exportada del histórico. Datos propios del servicio (esquema `prestamos`).
+    """
+
+    __tablename__ = "metrica_inferencia"
+    __table_args__ = {"schema": "prestamos"}
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=nuevo_id)
+    origen: Mapped[str] = mapped_column(String(20), nullable=False)  # solicitud|inferencia
+    prestamo_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    modelo_version: Mapped[str] = mapped_column(String(20), nullable=False)
+    probabilidad: Mapped[float] = mapped_column(Float, nullable=False)
+    umbral: Mapped[float] = mapped_column(Float, nullable=False)
+    aplico_regla: Mapped[bool] = mapped_column(nullable=False)
+    latencia_ms: Mapped[float] = mapped_column(Float, nullable=False)
+    # Vector de variables del modelo (§8.B): insumo del PSI por lote.
+    variables: Mapped[dict] = mapped_column(JSON, nullable=False)
+    registrado_en: Mapped[datetime] = mapped_column(DateTime(timezone=True),
+                                                    nullable=False, default=_ahora)

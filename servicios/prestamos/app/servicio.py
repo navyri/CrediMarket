@@ -19,6 +19,7 @@ import httpx
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from . import monitoreo
 from .broker import construir_evento
 from .config import ajustes
 from .models import EventoProcesado, Outbox, Prestamo, SolicitudIdempotente
@@ -168,7 +169,9 @@ def construir_prestamo(sesion: Session, datos: dict, cotizacion: dict,
         "porcentaje_pago_puntual": perfil.get("porcentaje_pago_puntual"),
     })
 
+    inicio = monitoreo.tiempo()
     favorable, probabilidad, motivo, ficha = decidir_riesgo(variables)
+    latencia_ms = (monitoreo.tiempo() - inicio) * 1000
 
     prestamo = Prestamo(
         cliente_id=datos["cliente_id"], producto_id=datos["producto_id"],
@@ -188,6 +191,15 @@ def construir_prestamo(sesion: Session, datos: dict, cotizacion: dict,
     )
     sesion.add(prestamo)
     sesion.flush()          # obtiene el id antes del outbox
+
+    # Monitoreo (§15.2): la métrica viaja en el MISMO commit que el préstamo.
+    monitoreo.registrar(
+        sesion, origen="solicitud", prestamo_id=prestamo.id,
+        variables=variables, probabilidad=probabilidad,
+        umbral=prestamo.umbral,
+        aplico_regla=(probabilidad == 1.0 and not favorable),
+        latencia_ms=latencia_ms,
+        modelo_version=prestamo.modelo_version)
 
     if favorable:
         # §5.3: payload sin datos financieros hacia Inventario.
