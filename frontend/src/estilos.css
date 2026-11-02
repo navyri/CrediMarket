@@ -1,152 +1,326 @@
-/* CrediMarket · paleta de marca: crema #F8F2EF, coral #D8455C, tinta #2B2A29. */
+/* CrediMarket · tema CUTE DARK (noche de ciruela + rosa candy + lavanda).
+   Inspirado en la estética kawaii de las referencias (corazones, destellos,
+   esquinas redondeadas, contornos punteados) pero en modo oscuro y con la
+   identidad del enunciado: crema #F8F2EF y coral #D8455C dentro del degradado. */
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap");
+
 :root {
+  /* noche */
+  --fondo: #160f1e;
+  --fondo-2: #1d1428;
+  --panel: #241a31;
+  --panel-alto: #2c2039;
+  --borde: #443056;
+  /* dulces */
+  --rosa: #ff8fb1;
+  --rosa-fuerte: #ff5c93;
+  --coral: #d8455c;          /* marca (§README) */
+  --lavanda: #c9b6ff;
   --crema: #f8f2ef;
-  --crema-honda: #efe4de;
-  --coral: #d8455c;
-  --coral-suave: #f4dfe3;
-  --tinta: #2b2a29;
-  --gris: #6f6a67;
-  --borde: #e3d5cf;
-  --ok: #2e7d52;
-  --ok-suave: #e2f2e9;
-  --alerta: #a3670d;
-  --alerta-suave: #fbeed8;
-  --error-suave: #f9dfe4;
+  --gris: #b6a3c0;
+  /* estados (fondos translúcidos sobre oscuro) */
+  --ok: #8ce6b0;
+  --ok-fondo: rgba(70, 200, 130, 0.14);
+  --alerta: #ffd97a;
+  --alerta-fondo: rgba(255, 217, 122, 0.14);
+  --error: #ff9db0;
+  --error-fondo: rgba(255, 120, 150, 0.14);
+  --rosa-fondo: rgba(255, 143, 177, 0.14);
+  --degradado: linear-gradient(120deg, var(--rosa-fuerte), var(--coral));
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-  background: var(--crema);
-  color: var(--tinta);
-  line-height: 1.5;
+  min-height: 100vh;
+  font-family: "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--crema);
+  line-height: 1.55;
+  /* cielo nocturno con destellos + resplandores rosa/lavanda */
+  background-color: var(--fondo);
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1.4px),
+    radial-gradient(1100px 520px at 12% -8%, rgba(255, 92, 147, 0.20), transparent 62%),
+    radial-gradient(900px 560px at 102% -4%, rgba(201, 182, 255, 0.16), transparent 58%),
+    radial-gradient(760px 700px at 50% 118%, rgba(216, 69, 92, 0.14), transparent 62%);
+  background-size: 30px 30px, auto, auto, auto;
 }
 
-a { color: var(--coral); }
+a { color: var(--rosa); }
+a:hover { color: var(--rosa-suave, #ffd9e4); }
+
+::selection { background: rgba(255, 92, 147, 0.4); color: var(--crema); }
+
+:focus-visible { outline: 2px solid var(--rosa); outline-offset: 2px; }
+
+/* scrollbar candy */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--fondo-2); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--rosa-fuerte), var(--lavanda));
+  border-radius: 999px;
+  border: 2px solid var(--fondo-2);
+}
 
 /* ------------------------------------------------------------------ shell */
 .cabecera {
-  background: var(--tinta);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(29, 20, 40, 0.92);
+  backdrop-filter: blur(8px);
   color: var(--crema);
-  padding: 0.6rem 1.2rem;
+  padding: 0.65rem 1.2rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
   align-items: center;
+  border-bottom: 2px dashed rgba(255, 143, 177, 0.45);   /* borde punteado kawaii */
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
 }
-.marca { font-weight: 700; letter-spacing: 0.04em; color: var(--crema); text-decoration: none; }
-.marca span { color: var(--coral); }
+.marca {
+  font-family: "Fredoka", "Segoe UI", sans-serif;
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: 0.03em;
+  color: var(--crema);
+  text-decoration: none;
+}
+.marca span { color: var(--rosa); }
+.marca::after { content: " ♡"; color: var(--lavanda); font-size: 0.9em; }
 .nav { display: flex; flex-wrap: wrap; gap: 0.2rem; flex: 1; }
 .nav a {
-  color: var(--crema-honda);
+  color: var(--gris);
   text-decoration: none;
-  padding: 0.3rem 0.7rem;
+  padding: 0.32rem 0.8rem;
   border-radius: 999px;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: all 0.15s ease;
 }
-.nav a:hover { background: rgba(248, 242, 239, 0.15); }
-.nav a.activo { background: var(--coral); color: #fff; }
+.nav a:hover { color: var(--crema); background: var(--rosa-fondo); }
+.nav a.activo {
+  background: var(--degradado);
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(255, 92, 147, 0.45);
+}
 .sesion-cab { display: flex; gap: 0.6rem; align-items: center; font-size: 0.85rem; }
-.sesion-cab .rol { background: rgba(248, 242, 239, 0.18); padding: 0.15rem 0.6rem; border-radius: 999px; }
+.sesion-cab .rol {
+  background: rgba(201, 182, 255, 0.16);
+  color: var(--lavanda);
+  padding: 0.18rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 182, 255, 0.35);
+}
 
-.contenido { max-width: 1100px; margin: 0 auto; padding: 1.4rem 1.2rem 3rem; }
-h1 { font-size: 1.5rem; margin: 0.2rem 0 0.4rem; }
-h2 { font-size: 1.1rem; margin: 1.4rem 0 0.5rem; }
+.contenido { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.2rem 3rem; }
+h1, h2, h3 { font-family: "Fredoka", "Segoe UI", sans-serif; font-weight: 600; }
+h1 { font-size: 1.55rem; margin: 0.2rem 0 0.4rem; }
+h1::after { content: " ✦"; color: var(--rosa); font-size: 0.8em; }
+h2 { font-size: 1.12rem; margin: 1.5rem 0 0.5rem; color: #ffe3ec; }
 .subtitulo { color: var(--gris); margin-top: 0; font-size: 0.95rem; }
 
 /* ------------------------------------------------------------------ tarjetas y tablas */
-.rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+.rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.1rem; }
 .tarjeta {
-  background: #fff;
+  position: relative;
+  background: linear-gradient(165deg, var(--panel-alto), var(--panel));
   border: 1px solid var(--borde);
-  border-radius: 12px;
-  padding: 1rem;
+  border-radius: 18px;
+  padding: 1.1rem 1rem 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
 }
-.tarjeta h3 { margin: 0; font-size: 1.02rem; }
-.precio { color: var(--coral); font-weight: 700; font-size: 1.15rem; }
+.tarjeta::after {                     /* corazoncito en la esquina */
+  content: "♡";
+  position: absolute;
+  top: 8px;
+  right: 14px;
+  color: rgba(255, 143, 177, 0.55);
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+.tarjeta:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 143, 177, 0.6);
+  box-shadow: 0 10px 28px rgba(255, 92, 147, 0.18);
+}
+.tarjeta h3 { margin: 0; font-size: 1.05rem; color: var(--crema); }
+.precio {
+  background: var(--degradado);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+  font-size: 1.2rem;
+}
 .meta { color: var(--gris); font-size: 0.83rem; }
 
-.tabla { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--borde); border-radius: 12px; overflow: hidden; font-size: 0.9rem; }
-.tabla th, .tabla td { padding: 0.55rem 0.7rem; text-align: left; border-bottom: 1px solid var(--borde); vertical-align: top; }
-.tabla th { background: var(--crema-honda); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--gris); }
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: linear-gradient(165deg, var(--panel-alto), var(--panel));
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  overflow: hidden;
+  font-size: 0.9rem;
+}
+.tabla th, .tabla td { padding: 0.6rem 0.75rem; text-align: left; border-bottom: 1px dashed rgba(255, 143, 177, 0.22); vertical-align: top; }
+.tabla th {
+  background: linear-gradient(120deg, rgba(255, 92, 147, 0.28), rgba(201, 182, 255, 0.22));
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #ffe3ec;
+}
 .tabla tr:last-child td { border-bottom: none; }
+.tabla tbody tr:hover td { background: rgba(255, 143, 177, 0.07); }
 
 /* ------------------------------------------------------------------ formularios */
 form.panel, .panel {
-  background: #fff;
+  position: relative;
+  background: linear-gradient(165deg, var(--panel-alto), var(--panel));
   border: 1px solid var(--borde);
-  border-radius: 12px;
-  padding: 1.1rem;
+  border-radius: 18px;
+  padding: 1.2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.75rem;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.28);
+}
+.panel::after {
+  content: "♡";
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  color: rgba(255, 143, 177, 0.5);
+  pointer-events: none;
 }
 .campo { display: flex; flex-direction: column; gap: 0.25rem; }
-.campo label { font-size: 0.85rem; font-weight: 600; }
+.campo label { font-size: 0.85rem; font-weight: 700; color: #ffe3ec; }
 .campo input, .campo select, .campo textarea {
-  padding: 0.5rem 0.6rem;
+  padding: 0.55rem 0.7rem;
   border: 1px solid var(--borde);
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 0.95rem;
-  background: #fffdfc;
+  font-family: inherit;
+  background: rgba(22, 15, 30, 0.75);
+  color: var(--crema);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.campo input:focus, .campo select:focus { outline: 2px solid var(--coral-suave); border-color: var(--coral); }
+.campo input::placeholder, .campo textarea::placeholder { color: rgba(182, 163, 192, 0.65); }
+.campo input:focus, .campo select:focus, .campo textarea:focus {
+  outline: none;
+  border-color: var(--rosa);
+  box-shadow: 0 0 0 3px rgba(255, 143, 177, 0.25);
+}
 .campo .ayuda { font-size: 0.78rem; color: var(--gris); }
 .fila { display: flex; gap: 0.8rem; flex-wrap: wrap; }
 .fila .campo { flex: 1; min-width: 150px; }
 
 button {
-  background: var(--coral);
+  background: var(--degradado);
   color: #fff;
   border: none;
-  border-radius: 8px;
-  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  padding: 0.58rem 1.2rem;
   font-size: 0.92rem;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: inherit;
   cursor: pointer;
+  box-shadow: 0 3px 14px rgba(255, 92, 147, 0.35);
+  transition: transform 0.12s ease, filter 0.12s ease, box-shadow 0.12s ease;
 }
-button:hover:not(:disabled) { filter: brightness(1.06); }
-button:disabled { opacity: 0.55; cursor: not-allowed; }
-button.secundario { background: #fff; color: var(--tinta); border: 1px solid var(--borde); }
-button.peligro { background: #fff; color: var(--coral); border: 1px solid var(--coral); }
-button.mini { padding: 0.25rem 0.6rem; font-size: 0.8rem; }
+button:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 5px 18px rgba(255, 92, 147, 0.45); }
+button:active:not(:disabled) { transform: translateY(0); }
+button:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+button.secundario {
+  background: rgba(201, 182, 255, 0.12);
+  color: var(--lavanda);
+  border: 1px solid rgba(201, 182, 255, 0.5);
+  box-shadow: none;
+}
+button.secundario:hover:not(:disabled) { background: rgba(201, 182, 255, 0.22); box-shadow: none; filter: none; }
+button.peligro {
+  background: rgba(255, 120, 150, 0.12);
+  color: var(--error);
+  border: 1px solid rgba(255, 120, 150, 0.6);
+  box-shadow: none;
+}
+button.peligro:hover:not(:disabled) { background: rgba(255, 120, 150, 0.22); filter: none; box-shadow: none; }
+button.mini { padding: 0.26rem 0.7rem; font-size: 0.8rem; }
 
 /* ------------------------------------------------------------------ avisos y estados */
-.aviso { border-radius: 10px; padding: 0.65rem 0.9rem; font-size: 0.9rem; }
-.aviso.ok { background: var(--ok-suave); color: var(--ok); }
-.aviso.error { background: var(--error-suave); color: #a12a41; }
-.aviso.info { background: var(--coral-suave); color: #97263a; }
+.aviso {
+  border-radius: 14px;
+  padding: 0.7rem 0.95rem;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+}
+.aviso.ok { background: var(--ok-fondo); color: var(--ok); border-color: rgba(140, 230, 176, 0.4); }
+.aviso.error { background: var(--error-fondo); color: var(--error); border-color: rgba(255, 157, 176, 0.45); }
+.aviso.info { background: var(--rosa-fondo); color: var(--rosa); border-color: rgba(255, 143, 177, 0.45); }
 
 .insignia {
   display: inline-block;
-  padding: 0.14rem 0.6rem;
+  padding: 0.16rem 0.7rem;
   border-radius: 999px;
   font-size: 0.78rem;
-  font-weight: 700;
-  background: var(--crema-honda);
+  font-weight: 800;
+  background: rgba(182, 163, 192, 0.16);
   color: var(--gris);
   white-space: nowrap;
+  border: 1px solid rgba(182, 163, 192, 0.35);
 }
-.insignia.ok { background: var(--ok-suave); color: var(--ok); }
-.insignia.error { background: var(--error-suave); color: #a12a41; }
-.insignia.aviso { background: var(--alerta-suave); color: var(--alerta); }
-.insignia.proceso { background: var(--coral-suave); color: #97263a; }
+.insignia.ok { background: var(--ok-fondo); color: var(--ok); border-color: rgba(140, 230, 176, 0.45); }
+.insignia.error { background: var(--error-fondo); color: var(--error); border-color: rgba(255, 157, 176, 0.45); }
+.insignia.aviso { background: var(--alerta-fondo); color: var(--alerta); border-color: rgba(255, 217, 122, 0.45); }
+.insignia.proceso { background: var(--rosa-fondo); color: var(--rosa); border-color: rgba(255, 143, 177, 0.5); }
 
-.cargando { color: var(--gris); font-style: italic; padding: 1rem 0; }
+.cargando { color: var(--rosa); font-style: italic; padding: 1rem 0; animation: latido 1.4s ease-in-out infinite; }
 .vacio { color: var(--gris); font-size: 0.9rem; }
 
+@keyframes latido {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
 /* ------------------------------------------------------------------ login */
-.login-caja { max-width: 420px; margin: 8vh auto 0; }
-.login-marca { text-align: center; font-size: 1.9rem; font-weight: 800; letter-spacing: 0.05em; }
-.login-marca span { color: var(--coral); }
+.login-caja { max-width: 440px; margin: 7vh auto 0; }
+.login-marca {
+  text-align: center;
+  font-family: "Fredoka", "Segoe UI", sans-serif;
+  font-size: 2.1rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin: 0.4rem 0 0.2rem;
+  background: linear-gradient(90deg, var(--rosa), #ffd9e4 45%, var(--lavanda));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 14px rgba(255, 92, 147, 0.4));
+}
+.login-marca::before { content: "✦ "; color: var(--lavanda); -webkit-text-fill-color: var(--lavanda); }
+.login-marca::after { content: " ✦"; color: var(--lavanda); -webkit-text-fill-color: var(--lavanda); }
+.login-marca span { color: inherit; }
 .tabs { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; }
-.tabs button { flex: 1; background: #fff; color: var(--tinta); border: 1px solid var(--borde); }
-.tabs button.activo { background: var(--coral); color: #fff; border-color: var(--coral); }
+.tabs button {
+  flex: 1;
+  background: rgba(201, 182, 255, 0.1);
+  color: var(--gris);
+  border: 1px solid var(--borde);
+  box-shadow: none;
+}
+.tabs button:hover:not(:disabled) { background: rgba(201, 182, 255, 0.2); transform: none; box-shadow: none; filter: none; }
+.tabs button.activo {
+  background: var(--degradado);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 3px 14px rgba(255, 92, 147, 0.4);
+}
 
 /* ------------------------------------------------------------------ responsive (§10) */
 @media (max-width: 720px) {
