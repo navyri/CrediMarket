@@ -70,17 +70,39 @@ async def _bucle_vencimientos() -> None:
 @asynccontextmanager
 async def arrancar(aplicacion: FastAPI):
     _aplicar_migraciones()
+    intentar_broker = True
+
+    async def _reintentar_broker() -> None:
+        """Reconexión del consumidor si RabbitMQ no estaba listo al arrancar.
+
+        Compose no garantiza el orden exacto; sin broker el servicio sigue
+        respondiendo y el outbox conserva los mensajes (§5), pero el consumidor
+        debe recuperarse en cuanto el broker aparezca.
+        """
+        nonlocal intentar_broker
+        while intentar_broker:
+            try:
+                await broker.arrancar_consumidor(_procesar)
+                await broker.arrancar_relay_outbox(_consultar_outbox, _marcar_outbox)
+                logging.info("broker conectado tras reconexión")
+                return
+            except Exception as exc:                  # noqa: BLE001
+                logging.warning("broker aún no disponible: %s (reintento en 5s)", exc)
+                await asyncio.sleep(5)
+
     try:
         await broker.arrancar_consumidor(_procesar)
         await broker.arrancar_relay_outbox(_consultar_outbox, _marcar_outbox)
-        tarea_vencimiento = asyncio.create_task(_bucle_vencimientos())
+        intentar_broker = False
     except Exception as exc:                          # noqa: BLE001
-        # Sin broker el servicio sigue respondiendo (su /ready lo refleja).
         logging.warning("broker no disponible al arrancar: %s", exc)
-        tarea_vencimiento = asyncio.create_task(_bucle_vencimientos())
+    tarea_broker = asyncio.create_task(_reintentar_broker())
+    tarea_vencimiento = asyncio.create_task(_bucle_vencimientos())
     try:
         yield
     finally:
+        intentar_broker = False
+        tarea_broker.cancel()
         tarea_vencimiento.cancel()
         await broker.cerrar()
 

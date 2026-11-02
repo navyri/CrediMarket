@@ -52,14 +52,39 @@ def test_mismos_datos_detecta_idempotencia_unit():
     fila = {"documento_identidad": "CLI-0000001", "nombre": "Cliente 1",
             "email": "cliente1@demo.local", "telefono": "", "ciudad": "",
             "activo": "true"}
-    assert routes._mismos_datos(_cliente(), fila) is True
+    perfil = {"tipo_empleo": None, "ingresos_mensuales_cop": None,
+              "obligaciones_mensuales_cop": None, "antiguedad_laboral_meses": None,
+              "meses_historial_crediticio": None, "creditos_previos": None,
+              "atrasos_previos_30d": None, "porcentaje_pago_puntual": None}
+    assert routes._mismos_datos(_cliente(), fila, perfil) is True
 
 
 def test_mismos_datos_detecta_cambio_unit():
     fila = {"documento_identidad": "CLI-0000001", "nombre": "Cliente 1 EDITADO",
             "email": "cliente1@demo.local", "telefono": "", "ciudad": "",
             "activo": "true"}
-    assert routes._mismos_datos(_cliente(), fila) is False
+    assert routes._mismos_datos(_cliente(), fila, {}) is False
+
+
+def test_mismos_datos_detecta_cambio_de_perfil_unit():
+    """P2-7: una fila con perfil distinto cuenta como actualización."""
+    fila = {"documento_identidad": "CLI-0000001", "nombre": "Cliente 1",
+            "email": "cliente1@demo.local", "telefono": "", "ciudad": "",
+            "activo": "true"}
+    mismo = {"tipo_empleo": None, "ingresos_mensuales_cop": None,
+             "obligaciones_mensuales_cop": None, "antiguedad_laboral_meses": None,
+             "meses_historial_crediticio": None, "creditos_previos": None,
+             "atrasos_previos_30d": None, "porcentaje_pago_puntual": None}
+    assert routes._mismos_datos(_cliente(), fila, mismo) is True
+
+    con_ingresos = dict(mismo, ingresos_mensuales_cop=3_500_000)
+    cliente_con_perfil = _cliente(ingresos_mensuales_cop=3_500_000)
+    assert routes._mismos_datos(cliente_con_perfil, fila, con_ingresos) is True
+    # la BD tiene otros ingresos que la fila → hay que actualizar
+    otro = dict(mismo, ingresos_mensuales_cop=4_000_000)
+    assert routes._mismos_datos(cliente_con_perfil, fila, otro) is False
+    # la fila trae ingresos y la BD está vacía → hay que actualizar
+    assert routes._mismos_datos(_cliente(), fila, con_ingresos) is False
 
 
 @pytest.mark.parametrize(

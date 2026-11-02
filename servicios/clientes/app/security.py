@@ -94,8 +94,13 @@ def autenticado(request: Request) -> dict | None:
 
 
 def exigir_dueno_o_admin(datos: dict, cliente_id: str, instancia: str) -> None:
-    """§10: un cliente solo ve lo suyo; 403 en caso contrario (prueba #13)."""
-    if datos.get("rol") == "administrador":
+    """§10: un cliente solo ve lo suyo; 403 en caso contrario (prueba #13).
+
+    El rol `servicio` (token interno de otros microservicios) también pasa:
+    Préstamos lee aquí el perfil financiero para el modelo (P2-7), y solo
+    necesita el campo que consume.
+    """
+    if datos.get("rol") in ("administrador", "servicio"):
         return
     if datos.get("cliente_id") != cliente_id:
         raise HTTPException(status_code=403,

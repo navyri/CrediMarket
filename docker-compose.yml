@@ -110,6 +110,43 @@ services:
       timeout: 5s
       retries: 12
 
+  prestamos:
+    build:
+      context: .
+      dockerfile: servicios/prestamos/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://svc_prestamos:${PASSWORD_PRESTAMOS}@postgres:5432/credimarket
+      BROKER_URL: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672/%2Fcredimarket
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ALGORITHM: ${JWT_ALGORITHM}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      URL_CLIENTES: http://clientes:8002
+      URL_PRODUCTOS: http://productos:8001
+      URL_MLFLOW: http://mlflow:5000
+      # §8.D: el modelo activo vive en el volumen montado (promoción/rollback
+      # persisten fuera del contenedor y el servicio lo recarga en caliente).
+      MODELO_DIR: /modelos
+      TASA_MENSUAL_OFICIAL: ${TASA_MENSUAL_OFICIAL:-0.018}
+      RATIO_DEUDA_INGRESO_MAX: ${RATIO_DEUDA_INGRESO_MAX:-1.0}
+      INTERVALO_RECHARGA_MODELO_SEG: ${INTERVALO_RECHARGA_MODELO_SEG:-10}
+      INTERVALO_OUTBOX_SEG: ${INTERVALO_OUTBOX_SEG:-1}
+      MAX_INTENTOS: ${REINTENTOS_BROKER:-3}
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./ml/modelos:/modelos
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8003/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
   rabbitmq:
     image: rabbitmq:4-management-alpine
     restart: unless-stopped
