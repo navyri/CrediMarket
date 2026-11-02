@@ -2,20 +2,39 @@
   "modelo_version": "v2",
   "candidato": "regresion_logistica",
   "parrilla": [
+    "baseline_prior",
+    "regresion_logistica_C01",
     "regresion_logistica",
     "random_forest",
-    "hist_gradient_boosting"
+    "regresion_logistica_C10",
+    "random_forest_profundo",
+    "hist_gradient_boosting",
+    "hist_gradient_boosting_conservador"
   ],
   "metrica_seleccion": "roc_auc_validacion",
   "roc_auc_validacion": 0.7047423874181825,
   "umbral": 0.49,
   "f1_validacion_en_umbral": 0.536313,
+  "metrica_umbral": "f1_validacion",
+  "costos_ficticios": {
+    "falso_aprobar": 100.0,
+    "falso_rechazar": 25.0,
+    "umbral_costo_minimo_validacion": 0.89,
+    "costo_minimo_validacion": 18150.0,
+    "fuente": "curva_costos_validacion.csv"
+  },
   "metricas_prueba": {
     "roc_auc": 0.6954221706818255,
+    "average_precision": 0.5318001571307459,
+    "brier": 0.21791116928843962,
     "accuracy": 0.64125,
     "precision": 0.439047619047619,
     "recall": 0.6289222373806276,
-    "f1": 0.517106001121705
+    "f1": 0.517106001121705,
+    "confusion_tn": 1078,
+    "confusion_fp": 589,
+    "confusion_fn": 272,
+    "confusion_tp": 461
   },
   "variables": [
     "ingresos_mensuales_cop",
@@ -37,11 +56,16 @@
   },
   "semilla": 42,
   "corridas": {
-    "regresion_logistica": "8934d8f9b08942bfad0db798b5c7860a",
-    "random_forest": "49ff651a7a8a407c89494f804894d4b8",
-    "hist_gradient_boosting": "f5d681457512451c9776043ccf5ab24b"
+    "baseline_prior": "dc888d2dc76a418da2e436320081adfe",
+    "regresion_logistica_C01": "040f6fed347c47678d209d2defca3c37",
+    "regresion_logistica": "c2aca2e7c0d249ad969cfa1ab55cc6cd",
+    "random_forest": "2043e4ecec614de2a6374601c9083262",
+    "regresion_logistica_C10": "0c7c765a47f948d3a00424b0358a8290",
+    "random_forest_profundo": "ba969e9cf4d14c96b54083509f9732c3",
+    "hist_gradient_boosting": "86d6b712348949ed8b5e046e4b2ea01e",
+    "hist_gradient_boosting_conservador": "5c3cca19f9ce451594aab64d42bc077c"
   },
-  "run_id": "1c003ff09b0f4dc49406ef8325f413b5",
+  "run_id": "b3bd8708780843aca67c603880c3a6bb",
   "mlflow_model": "credimarket-incumplimiento",
-  "mlflow_version": 2
+  "mlflow_version": 5
 }

@@ -3,13 +3,13 @@
   "caso_s12": 14,
   "requisito": "§12.14 Flujo desde frontend",
   "esperado": "Navegador, datos persistidos (la secuencia de la UI deja estado real).",
-  "observado": "build OK (dist/index.html) y secuencia de la UI reproducida por REST: registro+perfil → catálogo 175.000 → solicitud 202 → PENDIENTE_INVENTARIO→APROBADA con reserva 97f7b04c…; relectura persistida (monto 175000.00, estado APROBADA)",
+  "observado": "build OK (dist/index.html) y secuencia de la UI reproducida por REST: registro+perfil → catálogo 175.000 → solicitud 202 → PENDIENTE_INVENTARIO→APROBADA con reserva 5fe776e9…; relectura persistida (monto 175000.00, estado APROBADA)",
   "estado": "OK",
   "detalle": {
     "build": 0,
     "dist": "frontend\\dist\\index.html",
-    "prestamo_id": "897feb30-5f9e-4272-b96c-07ce0f8ab2a9",
-    "reserva_id": "97f7b04c-ac93-4913-9c08-057abb4b0264",
+    "prestamo_id": "c6bcdd10-cd3b-428d-b6e8-468b37c44998",
+    "reserva_id": "5fe776e9-8847-46ff-a29a-5abef0f943d6",
     "traza_estados": [
       "PENDIENTE_INVENTARIO",
       "APROBADA"
@@ -17,6 +17,6 @@
     "monto_total_cop": "175000.00",
     "precio_unitario_cop": "175000.00"
   },
-  "ejecutado_en": "2026-11-02T04:02:54Z",
-  "commit": "e712e73"
+  "ejecutado_en": "2026-11-02T04:56:38Z",
+  "commit": "32e0427"
 }

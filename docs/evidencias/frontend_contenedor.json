@@ -1,0 +1,52 @@
+{
+  "verificacion": "frontend empaquetado en Docker (nginx) + CORS (§10, §13.2)",
+  "origen": "http://localhost:8090",
+  "ok": true,
+  "comprobaciones": [
+    {
+      "comprobacion": "SPA en nginx",
+      "ok": true,
+      "detalle": "GET http://localhost:8090/ → 200"
+    },
+    {
+      "comprobacion": "HTML de producción",
+      "ok": true,
+      "detalle": "contiene #raiz, theme-color y bundle con hash"
+    },
+    {
+      "comprobacion": "assets del bundle",
+      "ok": true,
+      "detalle": "2/2 con 200"
+    },
+    {
+      "comprobacion": "preflight CORS → productos",
+      "ok": true,
+      "detalle": "200 · ACAO=http://localhost:8090"
+    },
+    {
+      "comprobacion": "preflight CORS → clientes",
+      "ok": true,
+      "detalle": "200 · ACAO=http://localhost:8090"
+    },
+    {
+      "comprobacion": "preflight CORS → prestamos",
+      "ok": true,
+      "detalle": "200 · ACAO=http://localhost:8090"
+    },
+    {
+      "comprobacion": "preflight CORS → inventario",
+      "ok": true,
+      "detalle": "200 · ACAO=http://localhost:8090"
+    },
+    {
+      "comprobacion": "login desde el origen del frontend",
+      "ok": true,
+      "detalle": "200 · ACAO=http://localhost:8090"
+    },
+    {
+      "comprobacion": "catálogo con sesión",
+      "ok": true,
+      "detalle": "200 · 20 productos"
+    }
+  ]
+}
