@@ -21,6 +21,7 @@ os.environ["REDIS_PASSWORD"] = os.environ.get("REDIS_PASSWORD", "CAMBIAR_redis_l
 os.environ["JWT_SECRET"] = os.environ.get("JWT_SECRET", "CAMBIAR_jwt_local_largo_32+")
 
 import jwt                                        # noqa: E402
+import pytest                                      # noqa: E402
 import redis                                       # noqa: E402
 from fastapi.testclient import TestClient          # noqa: E402
 
@@ -43,6 +44,15 @@ def _r():
 def _redis():
     return redis.Redis.from_url(ajustes.redis_url, password=ajustes.redis_password,
                                 decode_responses=True)
+
+
+@pytest.fixture(autouse=True)
+def _cortacircuitos_reiniciado():
+    """Cada prueba empieza con el cortacircuitos de Redis cerrado (§6)."""
+    from app import cache
+    cache.reiniciar_cortacircuitos()
+    yield
+    cache.reiniciar_cortacircuitos()
 
 
 def test_salud_y_lectura_listo():
