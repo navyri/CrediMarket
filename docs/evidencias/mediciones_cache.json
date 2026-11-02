@@ -1,0 +1,54 @@
+{
+  "producto": "5e819ef2-18f5-4178-98f7-9ed4d11d4b00",
+  "miss_primera_lectura_ms": 6.4,
+  "hit": {
+    "n": 40,
+    "min_ms": 3.4,
+    "p50_ms": 14.15,
+    "p95_ms": 27.11,
+    "max_ms": 28.0
+  },
+  "carga_catalogo": {
+    "serie": {
+      "n": 40,
+      "min_ms": 4.86,
+      "p50_ms": 15.29,
+      "p95_ms": 30.39,
+      "max_ms": 31.77,
+      "req_s": 64.0
+    },
+    "concurrente_20_hilos": {
+      "n": 40,
+      "min_ms": 16.87,
+      "p50_ms": 77.23,
+      "p95_ms": 108.95,
+      "max_ms": 132.09,
+      "req_s": 208.3
+    },
+    "total_peticiones": 80
+  },
+  "servicio": {
+    "redis_disponible": true,
+    "lecturas": {
+      "total": 83,
+      "aciertos": 81,
+      "fallos": 2,
+      "fallback": 0,
+      "hit_rate": 0.9759,
+      "tasa_fallback": 0.0
+    },
+    "latencia_redis_ms": {
+      "p50": 0.26,
+      "p95": 0.463,
+      "muestra": 83
+    },
+    "invalidaciones": 1,
+    "errores_redis": 0
+  },
+  "invalidacion_tras_patch": {
+    "clave": "productos:v1:5e819ef2-18f5-4178-98f7-9ed4d11d4b00",
+    "clave_borrada": true,
+    "precio_cop": 177000.0
+  },
+  "veredicto": "OK: la primera lectura tras FLUSHDB es un MISS que puebla la caché; las lecturas siguientes son HIT más rápidas y el PATCH borra la clave (invalidación write-through)."
+}
