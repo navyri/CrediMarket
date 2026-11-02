@@ -1,0 +1,29 @@
+{
+  "modo": "sin-redis (fallback a base de datos)",
+  "producto": "5e819ef2-18f5-4178-98f7-9ed4d11d4b00",
+  "lecturas": {
+    "n": 12,
+    "min_ms": 2.81,
+    "p50_ms": 15.28,
+    "p95_ms": 28.23,
+    "max_ms": 7127.29
+  },
+  "servicio": {
+    "redis_disponible": false,
+    "lecturas": {
+      "total": 12,
+      "aciertos": 0,
+      "fallos": 1,
+      "fallback": 11,
+      "hit_rate": 0.0,
+      "tasa_fallback": 0.9167
+    },
+    "latencia_redis_ms": {
+      "p50": null,
+      "p95": null,
+      "muestra": 0
+    },
+    "invalidaciones": 0,
+    "errores_redis": 13
+  }
+}
