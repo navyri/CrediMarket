@@ -3,37 +3,37 @@
   "caso_s12": 15,
   "requisito": "§12.15 Pendiente y actualización asíncrona",
   "esperado": "202 + polling hasta APROBADA (la confirmación llega por mensaje).",
-  "observado": "POST → 202 en 65 ms (PENDIENTE_INVENTARIO) y polling PENDIENTE_INVENTARIO@270ms → APROBADA@1321ms; reserva b453e118… RESERVADA y stock reservada 0 → 1",
+  "observado": "POST → 202 en 28 ms (PENDIENTE_INVENTARIO) y polling PENDIENTE_INVENTARIO@211ms → APROBADA@734ms; reserva d7e2383c… RESERVADA y stock reservada 0 → 1",
   "estado": "OK",
   "detalle": {
-    "prestamo_id": "7c9c747e-3a8e-4ebb-9cca-53dfe24a810c",
-    "reserva_id": "b453e118-e8aa-43d9-87f1-514f0258af5f",
-    "latencia_202_ms": 64.5,
+    "prestamo_id": "dec681ab-0b25-4c17-b483-1c062829bbdb",
+    "reserva_id": "d7e2383c-be83-44b2-ad8d-81b227f1caa9",
+    "latencia_202_ms": 28.1,
     "traza": [
       {
-        "t_ms": 270,
+        "t_ms": 211,
         "estado": "PENDIENTE_INVENTARIO"
       },
       {
-        "t_ms": 1321,
+        "t_ms": 734,
         "estado": "APROBADA"
       }
     ],
     "stock_antes": {
-      "producto_id": "328a3677-966f-4481-8709-72a571225bba",
+      "producto_id": "f133c672-7b17-476d-b59a-74b40113655d",
       "total": 3,
       "reservada": 0,
       "disponible": 3,
-      "actualizado_en": "2026-11-02T03:20:45.711444Z"
+      "actualizado_en": "2026-11-02T04:02:55.265184Z"
     },
     "stock_despues": {
-      "producto_id": "328a3677-966f-4481-8709-72a571225bba",
+      "producto_id": "f133c672-7b17-476d-b59a-74b40113655d",
       "total": 3,
       "reservada": 1,
       "disponible": 2,
-      "actualizado_en": "2026-11-02T03:20:46.667461Z"
+      "actualizado_en": "2026-11-02T04:02:55.921329Z"
     }
   },
-  "ejecutado_en": "2026-11-02T03:20:47Z",
-  "commit": "0a136f6"
+  "ejecutado_en": "2026-11-02T04:02:56Z",
+  "commit": "e712e73"
 }

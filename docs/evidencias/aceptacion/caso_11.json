@@ -17,19 +17,19 @@
         "modelo_version": "v2",
         "run_id": "1c003ff09b0f4dc49406ef8325f413b5",
         "umbral": 0.49,
-        "promovido_en": "2026-11-02T03:20:37Z",
+        "promovido_en": "2026-11-02T04:02:45Z",
         "motivo": "aceptación §12.11: promoción"
       },
       {
         "modelo_version": "v1",
         "run_id": "709931de846a4d3d9b87b81b6b840f9a",
         "umbral": 0.49,
-        "promovido_en": "2026-11-02T03:20:37Z",
+        "promovido_en": "2026-11-02T04:02:45Z",
         "motivo": "aceptación §12.11: rollback"
       }
     ],
     "activo_version_anterior": "v2"
   },
-  "ejecutado_en": "2026-11-02T03:20:37Z",
-  "commit": "0a136f6"
+  "ejecutado_en": "2026-11-02T04:02:45Z",
+  "commit": "e712e73"
 }

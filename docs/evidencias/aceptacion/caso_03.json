@@ -3,10 +3,10 @@
   "caso_s12": 3,
   "requisito": "§12.3 Riesgo favorable sin existencias",
   "esperado": "Cancelación por falta de stock; no hay inventario negativo.",
-  "observado": "préstamo 0588e2a3… CANCELADA_SIN_STOCK (motivo: sin existencias suficientes (disponible 0)), sin reserva y sin stock negativo (existencia=None)",
+  "observado": "préstamo aa44e73b… CANCELADA_SIN_STOCK (motivo: sin existencias suficientes (disponible 0)), sin reserva y sin stock negativo (existencia=None)",
   "estado": "OK",
   "detalle": {
-    "prestamo_id": "0588e2a3-3b33-4582-bd2b-7b499e1eaf65",
+    "prestamo_id": "aa44e73b-934e-475c-87d2-c62ecca887a8",
     "estado": "CANCELADA_SIN_STOCK",
     "motivo": "sin existencias suficientes (disponible 0)",
     "traza_estados": [
@@ -16,6 +16,6 @@
     "stock": null,
     "reservas_del_prestamo": 0
   },
-  "ejecutado_en": "2026-11-02T03:19:45Z",
-  "commit": "0a136f6"
+  "ejecutado_en": "2026-11-02T04:01:54Z",
+  "commit": "e712e73"
 }
