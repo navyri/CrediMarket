@@ -276,6 +276,10 @@ def importar_clientes(request: Request, file: UploadFile = File(...),
 
     procesadas = insertados = actualizados = sin_cambios = rechazadas = 0
     errores: list[ErrorImportacion] = []
+    # Clientes creados/actualizados en ESTE lote: la sesión tiene autoflush
+    # apagado, así que un documento repetido en el mismo archivo no se vería
+    # en la BD hasta el commit (y el commit chocaría, perdiendo todo el lote).
+    vistos: dict[str, Cliente] = {}
 
     for indice, fila_bruta in enumerate(lector, start=2):   # fila 1 = cabecera
         fila = {(k or "").strip().lower(): (v or "").strip()
@@ -289,40 +293,46 @@ def importar_clientes(request: Request, file: UploadFile = File(...),
             errores.append(ErrorImportacion(fila=indice, motivo=motivo))
             continue
 
-        existente = cliente_por_documento(sesion, fila["documento_identidad"])
-        if existente is None:
-            nuevo = Cliente(
-                documento_identidad=fila["documento_identidad"],
-                nombre=fila["nombre"],
-                email=fila["email"].lower(),
-                telefono=fila.get("telefono") or None,
-                ciudad=fila.get("ciudad") or None,
-                activo=(fila.get("activo", "true").lower() in ("true", "1", "si")),
-                **perfil,
-            )
-            sesion.add(nuevo)
-            insertados += 1
-        elif _mismos_datos(existente, fila, perfil):
-            sin_cambios += 1
-        else:
-            existente.nombre = fila["nombre"]
-            existente.email = fila["email"].lower()
-            existente.telefono = fila.get("telefono") or None
-            existente.ciudad = fila.get("ciudad") or None
-            existente.activo = fila.get("activo", "true").lower() in ("true", "1", "si")
-            for campo, valor in perfil.items():
-                setattr(existente, campo, valor)
-            actualizados += 1
+        documento = fila["documento_identidad"]
+        existente = vistos.get(documento) or cliente_por_documento(sesion, documento)
+        # Savepoint por fila: una colisión (p. ej. email ya usado por otro
+        # documento) rechaza SOLO esa fila y conserva el resto del lote.
+        try:
+            with sesion.begin_nested():
+                if existente is None:
+                    nuevo = Cliente(
+                        documento_identidad=documento,
+                        nombre=fila["nombre"],
+                        email=fila["email"].lower(),
+                        telefono=fila.get("telefono") or None,
+                        ciudad=fila.get("ciudad") or None,
+                        activo=(fila.get("activo", "true").lower() in ("true", "1", "si")),
+                        **perfil,
+                    )
+                    sesion.add(nuevo)
+                    sesion.flush()
+                    vistos[documento] = nuevo
+                    insertados += 1
+                elif _mismos_datos(existente, fila, perfil):
+                    sin_cambios += 1
+                else:
+                    existente.nombre = fila["nombre"]
+                    existente.email = fila["email"].lower()
+                    existente.telefono = fila.get("telefono") or None
+                    existente.ciudad = fila.get("ciudad") or None
+                    existente.activo = fila.get("activo", "true").lower() in ("true", "1", "si")
+                    for campo, valor in perfil.items():
+                        setattr(existente, campo, valor)
+                    sesion.flush()
+                    vistos[documento] = existente
+                    actualizados += 1
+        except IntegrityError as exc:
+            rechazadas += 1
+            errores.append(ErrorImportacion(
+                fila=indice,
+                motivo=f"colisión de datos únicos: {exc.orig}".replace("\n", " ")[:200]))
 
-    try:
-        sesion.commit()
-    except IntegrityError as exc:
-        # Fila que chocó con un email ya usado por otro documento: se reporta y no
-        # se pierde el resto de la importación.
-        sesion.rollback()
-        return _problema(409, "Conflicto",
-                         f"colisión de datos únicos: {exc.orig}".replace("\n", " ")[:300],
-                         str(request.url.path))
+    sesion.commit()
 
     return ResultadoImportacion(
         archivo=nombre_archivo,

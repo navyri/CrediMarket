@@ -1,0 +1,158 @@
+/* CrediMarket · paleta de marca: crema #F8F2EF, coral #D8455C, tinta #2B2A29. */
+:root {
+  --crema: #f8f2ef;
+  --crema-honda: #efe4de;
+  --coral: #d8455c;
+  --coral-suave: #f4dfe3;
+  --tinta: #2b2a29;
+  --gris: #6f6a67;
+  --borde: #e3d5cf;
+  --ok: #2e7d52;
+  --ok-suave: #e2f2e9;
+  --alerta: #a3670d;
+  --alerta-suave: #fbeed8;
+  --error-suave: #f9dfe4;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--crema);
+  color: var(--tinta);
+  line-height: 1.5;
+}
+
+a { color: var(--coral); }
+
+/* ------------------------------------------------------------------ shell */
+.cabecera {
+  background: var(--tinta);
+  color: var(--crema);
+  padding: 0.6rem 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+}
+.marca { font-weight: 700; letter-spacing: 0.04em; color: var(--crema); text-decoration: none; }
+.marca span { color: var(--coral); }
+.nav { display: flex; flex-wrap: wrap; gap: 0.2rem; flex: 1; }
+.nav a {
+  color: var(--crema-honda);
+  text-decoration: none;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+}
+.nav a:hover { background: rgba(248, 242, 239, 0.15); }
+.nav a.activo { background: var(--coral); color: #fff; }
+.sesion-cab { display: flex; gap: 0.6rem; align-items: center; font-size: 0.85rem; }
+.sesion-cab .rol { background: rgba(248, 242, 239, 0.18); padding: 0.15rem 0.6rem; border-radius: 999px; }
+
+.contenido { max-width: 1100px; margin: 0 auto; padding: 1.4rem 1.2rem 3rem; }
+h1 { font-size: 1.5rem; margin: 0.2rem 0 0.4rem; }
+h2 { font-size: 1.1rem; margin: 1.4rem 0 0.5rem; }
+.subtitulo { color: var(--gris); margin-top: 0; font-size: 0.95rem; }
+
+/* ------------------------------------------------------------------ tarjetas y tablas */
+.rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+.tarjeta {
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.tarjeta h3 { margin: 0; font-size: 1.02rem; }
+.precio { color: var(--coral); font-weight: 700; font-size: 1.15rem; }
+.meta { color: var(--gris); font-size: 0.83rem; }
+
+.tabla { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--borde); border-radius: 12px; overflow: hidden; font-size: 0.9rem; }
+.tabla th, .tabla td { padding: 0.55rem 0.7rem; text-align: left; border-bottom: 1px solid var(--borde); vertical-align: top; }
+.tabla th { background: var(--crema-honda); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--gris); }
+.tabla tr:last-child td { border-bottom: none; }
+
+/* ------------------------------------------------------------------ formularios */
+form.panel, .panel {
+  background: #fff;
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.campo { display: flex; flex-direction: column; gap: 0.25rem; }
+.campo label { font-size: 0.85rem; font-weight: 600; }
+.campo input, .campo select, .campo textarea {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #fffdfc;
+}
+.campo input:focus, .campo select:focus { outline: 2px solid var(--coral-suave); border-color: var(--coral); }
+.campo .ayuda { font-size: 0.78rem; color: var(--gris); }
+.fila { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+.fila .campo { flex: 1; min-width: 150px; }
+
+button {
+  background: var(--coral);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:hover:not(:disabled) { filter: brightness(1.06); }
+button:disabled { opacity: 0.55; cursor: not-allowed; }
+button.secundario { background: #fff; color: var(--tinta); border: 1px solid var(--borde); }
+button.peligro { background: #fff; color: var(--coral); border: 1px solid var(--coral); }
+button.mini { padding: 0.25rem 0.6rem; font-size: 0.8rem; }
+
+/* ------------------------------------------------------------------ avisos y estados */
+.aviso { border-radius: 10px; padding: 0.65rem 0.9rem; font-size: 0.9rem; }
+.aviso.ok { background: var(--ok-suave); color: var(--ok); }
+.aviso.error { background: var(--error-suave); color: #a12a41; }
+.aviso.info { background: var(--coral-suave); color: #97263a; }
+
+.insignia {
+  display: inline-block;
+  padding: 0.14rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: var(--crema-honda);
+  color: var(--gris);
+  white-space: nowrap;
+}
+.insignia.ok { background: var(--ok-suave); color: var(--ok); }
+.insignia.error { background: var(--error-suave); color: #a12a41; }
+.insignia.aviso { background: var(--alerta-suave); color: var(--alerta); }
+.insignia.proceso { background: var(--coral-suave); color: #97263a; }
+
+.cargando { color: var(--gris); font-style: italic; padding: 1rem 0; }
+.vacio { color: var(--gris); font-size: 0.9rem; }
+
+/* ------------------------------------------------------------------ login */
+.login-caja { max-width: 420px; margin: 8vh auto 0; }
+.login-marca { text-align: center; font-size: 1.9rem; font-weight: 800; letter-spacing: 0.05em; }
+.login-marca span { color: var(--coral); }
+.tabs { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; }
+.tabs button { flex: 1; background: #fff; color: var(--tinta); border: 1px solid var(--borde); }
+.tabs button.activo { background: var(--coral); color: #fff; border-color: var(--coral); }
+
+/* ------------------------------------------------------------------ responsive (§10) */
+@media (max-width: 720px) {
+  .cabecera { flex-direction: column; align-items: stretch; }
+  .nav { justify-content: flex-start; }
+  .sesion-cab { justify-content: space-between; }
+  .contenido { padding: 1rem 0.7rem 2.5rem; }
+  .tabla { display: block; overflow-x: auto; }
+}

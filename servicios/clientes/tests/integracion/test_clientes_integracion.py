@@ -147,6 +147,38 @@ def test_importacion_csv_idempotente():
                             headers=admin).status_code == 400
 
 
+def test_importacion_duplicados_en_el_mismo_lote():
+    """Regresión: documentos repetidos DENTRO de un archivo no rompen el lote.
+
+    La sesión corre con autoflush apagado; sin tracking intra-lote, la 2.ª fila
+    repetida encolaba otro INSERT y el commit perdía TODA la importación con un
+    409 (§9: insertados/actualizados/rechazados con errores por fila).
+    """
+    with TestClient(app) as cliente:
+        admin = {"Authorization": f"Bearer {_admin_token()}"}
+        doc = f"DUP-{int(time.time())}"
+        ts = int(time.time())
+        filas = "".join(
+            f"{doc},Cliente Duplicado {i},dup-{i}-{ts}@demo.local,,,\n"
+            for i in range(5))
+        r1 = cliente.post("/clientes/import", files=_csv(filas), headers=admin)
+        assert r1.status_code == 200, r1.text
+        cuerpo = r1.json()
+        assert cuerpo["insertados"] == 1
+        assert cuerpo["actualizados"] == 4          # las 4 restantes actualizan
+        assert cuerpo["rechazadas"] == 0
+
+        # una fila con email ya usado por OTRO documento se rechaza sola y el
+        # resto del lote se conserva (savepoint por fila). El email sobreviviente
+        # del lote anterior es el de la última actualización (dup-4).
+        otro = f"OTRO-{ts}"
+        choque = f"{otro},Cliente Otro,dup-4-{ts}@demo.local,,,\n"
+        r2 = cliente.post("/clientes/import", files=_csv(choque), headers=admin)
+        assert r2.status_code == 200, r2.text
+        assert r2.json()["rechazadas"] == 1
+        assert any("únicos" in e["motivo"] for e in r2.json()["errores"])
+
+
 def test_consulta_interna_requiere_rol_de_servicio():
     """§9: la verificación de cliente usa el token de servicio, no el de un cliente."""
     with TestClient(app) as cliente:
