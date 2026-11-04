@@ -1,0 +1,25 @@
+# Lineas finales: LF siempre para los archivos que ejecutan o leen sistemas
+# Linux (contenedores). Sin esta regla, Git en Windows (core.autocrlf=true)
+# convierte el shebang de `infra/postgres/01_esquemas.sh` a `#!/bin/bash^M`
+# y el init de PostgreSQL falla en silencio: no se crean los roles
+# `svc_*`, los 4 servicios no pueden autenticarse y entran en bucle de
+# reinicios. Detectado con el ensayo desde un clon limpio (P2-11.l).
+*.sh    text eol=lf
+*.bash  text eol=lf
+
+# Archivos consumidos por Docker/nginx: mismo contenido en cualquier SO.
+Dockerfile text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.conf  text eol=lf
+*.ini   text eol=lf
+*.sql   text eol=lf
+
+# Binarios: jamas se normalizan.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.joblib binary
+*.pdf   binary
