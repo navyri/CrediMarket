@@ -56,7 +56,7 @@ def esperar(url: str, segundos: int, descripcion: str) -> None:
         try:
             with urllib.request.urlopen(url, timeout=5) as respuesta:
                 if respuesta.status < 500:
-                    print(f"  {texto} → {respuesta.status} ({url})")
+                    print(f"  {descripcion} → {respuesta.status} ({url})")
                     return
         except (urllib.error.URLError, OSError) as error:
             ultimo = error
