@@ -1,0 +1,111 @@
+{
+  "verificacion": "P2-11.l · ensayo de la demo completa desde un clon limpio (§11, §13.7 reproducción, §14 la demo se ejecuta desde lo entregado en el repositorio)",
+  "ok": true,
+  "clon": {
+    "origen": "https://github.com/navyri/CrediMarket.git",
+    "destino": "clon temporal limpio (fuera del directorio de trabajo)",
+    "commit": "8659cea",
+    "sin_modelo_al_clonar": true,
+    "sin_datos_al_clonar": true,
+    "sin_node_modules_al_clonar": true,
+    "env": "copiado de .env.example (valores CAMBIAR_* de plantilla)",
+    "volumenes": "pgdata, rabbitmqdata, redisdata y mlflowdata borrados antes del arranque (arranque real desde cero; respaldo de mlflowdata en credimarket_mlflowdata_respaldo)"
+  },
+  "pasos": [
+    {
+      "paso": "arranque del Compose",
+      "ok": true,
+      "detalle": "docker compose up -d → 9/9 contenedores healthy; init de PostgreSQL: '[init] esquemas y usuarios restringidos creados' (4 roles svc_* + 4 esquemas)"
+    },
+    {
+      "paso": "reproducción del modelo",
+      "ok": true,
+      "comando": "python scripts/preparar_desde_clon.py --csv \".../prestamos_entrenamiento.csv\"",
+      "exit_code": 0,
+      "detalle": "particiones + entrenamiento v1 (run 0c353a50…) y v2 (run 7a2bf4c7…) con semilla 42 + promoción de v1 + verificación",
+      "metricas_identicas_al_proyecto_original": {
+        "val_roc_auc": 0.7047,
+        "umbral_servido": 0.49,
+        "test_roc_auc": 0.6954,
+        "test_f1": 0.5171,
+        "test_precision": 0.439,
+        "test_recall": 0.6289,
+        "matriz": {"tn": 1078, "fp": 589, "fn": 272, "tp": 461},
+        "comentario": "idénticas a las de la corrida original: reproducción §13.7 demostrada"
+      },
+      "ready": "GET http://localhost:8003/ready → 200 · {bd:true, broker:true, modelo:true, detalle:'listo'}",
+      "modelo_activo": "v1 · umbral 0.49 · run 0c353a5063654ac0a4882affec500c3e"
+    },
+    {
+      "paso": "siembra del catálogo de demo",
+      "ok": true,
+      "comando": "python scripts/sembrar_demo.py",
+      "detalle": "6 productos DEMO-01…DEMO-06 creados vía API (5 con stock 10, DEMO-06 sin stock para el escenario 3.4); segunda pasada: 0 creados, 6 ya existían (idempotente)"
+    },
+    {
+      "paso": "pruebas automatizadas",
+      "ok": true,
+      "comando": "python scripts/ejecutar_pruebas.py",
+      "resultado": "123 pruebas OK (9 grupos, exit 0)"
+    },
+    {
+      "paso": "pruebas de aceptación §12",
+      "ok": true,
+      "comando": "python scripts/aceptacion/ejecutar_todas.py",
+      "resultado": "16/16 casos OK en 87,5 s (exit 0)",
+      "evidencia": "los 16 `docs/evidencias/aceptacion/caso_*.json` y `resultados.json` se regeneraron en el clon (corrida 2026-11-04T08:22:24Z); el repo conserva además la corrida local equivalente (16/16 en 80,9 s)",
+      "corrida_previa": "14/16 → caso 14 exigía node_modules ausente en clon limpio (corregido en 8659cea) y caso 08 fue flake bajo carga (pasó 3/3 aislado)"
+    },
+    {
+      "paso": "demo en el navegador (frontend nginx en :8090)",
+      "ok": true,
+      "errores_de_consola": 0,
+      "flujo": [
+        "login administrador (POST /auth/token 200, preflight OPTIONS 200, ACAO correcto)",
+        "catálogo con productos DEMO-* (GET /productos 200) y cero errores de consola",
+        "logout → registro de cliente clon-demo11577@demo.local (POST /auth/registro 201)",
+        "perfil financiero: PATCH /clientes/{id} → 200 (4.000.000 / 800.000 / dependiente / 36 / 48 / 2 / 0 / 95)",
+        "solicitud desde el catálogo → Solicitud d2539c99-65a6-47d2-8c89-72f7e6924271",
+        "estado final: APROBADA (reserva confirmada) con reserva de216de8-95ef-4382-855b-f635b12961ad"
+      ],
+      "decision_visible": {
+        "probabilidad_incumplimiento_pct": 33.98,
+        "umbral_pct": 49.0,
+        "version_modelo": "v1",
+        "cuota_mensual_cop": 228835,
+        "tasa_mensual_pct": 1.8,
+        "monto_total_cop": 2450000,
+        "precio_unitario_cop": 2450000,
+        "version_precio": 1
+      }
+    }
+  ],
+  "defectos_detectados_y_corregidos_en_el_ensayo": [
+    {
+      "defecto": "frontend unhealthy 6 h: el healthcheck usaba `localhost` (resuelve ::1) y nginx solo escucha IPv4 → 1442 fallos consecutivos",
+      "fix": "healthcheck por 127.0.0.1",
+      "commit": "d35a964"
+    },
+    {
+      "defecto": "clon en Windows: 01_esquemas.sh llegaba con CRLF → `/bin/bash^M: bad interpreter` → el init no creaba los roles svc_* → los 4 servicios entraban en bucle de reinicios con volúmenes nuevos",
+      "fix": ".gitattributes (LF para *.sh, yml, conf, ini, sql, Dockerfile) + healthcheck de PostgreSQL que exige los 4 roles svc_* (el fallo queda visible en postgres unhealthy en vez de un bucle silencioso)",
+      "commit": "d0cad32"
+    },
+    {
+      "defecto": "nombre de parámetro mal referenciado en la espera de MLflow del bootstrap (py_compile no lo detecta: solo aparece en ejecución)",
+      "fix": "corrección del nombre; el resto del script se revisó leyéndolo completo",
+      "commit": "2ea31ed"
+    },
+    {
+      "defecto": "caso 14 de aceptación fallaba en clon limpio: `npm run build` sin node_modules → `'vite' is not recognized`",
+      "fix": "el caso ejecuta `npm ci` automáticamente si falta node_modules",
+      "commit": "8659cea"
+    },
+    {
+      "defecto": "el CSV crudo no se localizaba fuera de la máquina de desarrollo (ruta hardcodeada en preparar_datos.py)",
+      "fix": "búsqueda portable (env CREDIMARKET_CSV_ENTRENAMIENTO → raíz → ml/datos → datos_fuente → ruta histórica) con mensaje de ayuda si no existe + scripts preparar_desde_clon.py y sembrar_demo.py documentados en README y guía-demo",
+      "commit": "9694240"
+    }
+  ],
+  "conclusion": "la demo completa (arranque, modelo, catálogo, 123 pruebas, 16/16 aceptación y flujo en navegador hasta APROBADA) se ejecutó desde un clon limpio de GitHub con volúmenes borrados, conforme a §14: 'la demostración se ejecuta a partir de lo entregado en el repositorio'."
+}
