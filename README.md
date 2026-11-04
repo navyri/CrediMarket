@@ -66,6 +66,21 @@ cp .env.example .env      # revisar secretos: JWT_SECRET, contraseñas, CORS_ORI
 docker compose up -d      # 9 contenedores: 4 servicios + frontend + infraestructura
 ```
 
+**Paso ML (necesario en un clon limpio):** el CSV crudo y los binarios
+`*.joblib` no se versionan, así que el modelo hay que generarlo una vez (§13.7):
+
+```bash
+python scripts/preparar_desde_clon.py --csv "ruta/al/prestamos_entrenamiento.csv"
+# → crea ml/datos/*.csv, entrena v1 y v2 con semilla 42, promueve v1 y
+#   verifica el artefacto. Sin esto, GET /ready responde 503.
+python scripts/sembrar_demo.py
+# → siembra el catálogo de demostración (DEMO-01…DEMO-06, uno sin stock).
+```
+
+El script busca el CSV también en la raíz del clon, en `ml/datos/`, en
+`datos_fuente/` o en la variable `CREDIMARKET_CSV_ENTRENAMIENTO`; si no lo
+encuentra indica exactamente cómo pasarlo. Ambos pasos son idempotentes.
+
 | Componente | URL |
 |---|---|
 | Frontend (demo desde el navegador) | http://localhost:8090 |

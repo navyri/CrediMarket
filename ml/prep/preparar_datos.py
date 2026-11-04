@@ -10,7 +10,12 @@ Reglas aplicadas (§8.A–§8.B):
 - división estratificada 60/20/20 con semilla fija (RANDOM_SEED=42).
 
 Uso:
-    python ml/prep/preparar_datos.py [--entrada ruta.csv] [--salida ml/datos]
+    python ml/prep/preparar_datos.py [--entrada ruta/al/prestamos_entrenamiento.csv]
+                                      [--salida ml/datos]
+
+Sin `--entrada` el script localiza el CSV (variable de entorno
+`CREDIMARKET_CSV_ENTRENAMIENTO`, raíz del clon, `ml/datos/` o `datos_fuente/`);
+si no lo encuentra explica cómo pasarlo (§13.7).
 """
 import argparse
 import hashlib
@@ -21,8 +26,43 @@ from pathlib import Path
 import pandas as pd
 
 RAIZ = Path(__file__).resolve().parents[2]
-ENTRADA_DEFECTO = Path(r"C:\Users\maria\Downloads\final parte 2\prestamos_entrenamiento.csv")
 SALIDA_DEFECTO = RAIZ / "ml" / "datos"
+
+# El CSV crudo no se versiona (§13.2: datos fuera del repo, hash documentados).
+# La ruta por defecto NO puede estar atada a una máquina concreta, así que se
+# buscan candidatas en orden y, si ninguna existe, se pide `--entrada`.
+# Orden: variable de entorno → raíz del clon → ml/datos → datos_fuente →
+# la ruta histórica de la máquina de desarrollo (último recurso).
+CANDIDATAS_ENTRADA = (
+    None,                                        # CREDIMARKET_CSV_ENTRENAMIENTO
+    RAIZ / "prestamos_entrenamiento.csv",
+    RAIZ / "ml" / "datos" / "prestamos_entrenamiento.csv",
+    RAIZ / "datos_fuente" / "prestamos_entrenamiento.csv",
+    Path(r"C:\Users\maria\Downloads\final parte 2\prestamos_entrenamiento.csv"),
+)
+NOMBRE_CSV = "prestamos_entrenamiento.csv"
+
+
+def buscar_entrada(explicita: Path | None) -> Path:
+    """Resuelve el histórico: lo que venga en `--entrada` manda; si no, la
+    primera candidata existente. Con nada disponible, sale con instrucciones
+    claras (reproducción §13.7: sin datos no hay modelo)."""
+    if explicita is not None:
+        return explicita
+    import os
+    env = os.environ.get("CREDIMARKET_CSV_ENTRENAMIENTO")
+    if env:
+        return Path(env)
+    for candidata in CANDIDATAS_ENTRADA[1:]:
+        if candidata.exists():
+            return candidata
+    raise SystemExit(
+        f"No se encontró {NOMBRE_CSV}.\n"
+        f"  · el CSV crudo no se versiona en git (solo su hash SHA-256);\n"
+        f"  · pásalo con:  python ml/prep/preparar_datos.py --entrada \"ruta/al/{NOMBRE_CSV}\"\n"
+        f"  · o define:    CREDIMARKET_CSV_ENTRENAMIENTO=ruta/al/{NOMBRE_CSV}\n"
+        f"  · o cópialo a: {RAIZ / NOMBRE_CSV}"
+    )
 
 OBJETIVO = "incumplimiento_90d"
 EXCLUIDAS = ["solicitud_id", "cliente_id", OBJETIVO, "tasa_mensual_simulada"]
@@ -111,11 +151,14 @@ _dividir_estratificado = _dividir_estratificados_sin_fuga
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--entrada", type=Path, default=ENTRADA_DEFECTO)
+    parser.add_argument("--entrada", type=Path, default=None,
+                        help=f"ruta al {NOMBRE_CSV} (si se omite, se busca "
+                             "automáticamente o en CREDIMARKET_CSV_ENTRENAMIENTO)")
     parser.add_argument("--salida", type=Path, default=SALIDA_DEFECTO)
     args = parser.parse_args()
 
-    ficha = preparar(args.entrada, args.salida)
+    entrada = buscar_entrada(args.entrada)
+    ficha = preparar(entrada, args.salida)
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     print(json.dumps(ficha, indent=2, ensure_ascii=False))
