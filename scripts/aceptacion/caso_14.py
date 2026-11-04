@@ -26,6 +26,14 @@ def main() -> dict:
     # 1) El frontend compila (el bundle que sirve la interfaz).
     import shutil
     npm = shutil.which("npm") or "npm"     # Windows: resuelve npm.cmd
+    # Un clon limpio no trae `node_modules` (está en .gitignore): sin este
+    # paso el build falla con "'vite' is not recognized" (§13.7 reproducción).
+    if not (RAIZ / "frontend" / "node_modules").exists():
+        print("  node_modules ausente (clon limpio) → npm ci …", flush=True)
+        instalacion = subprocess.run([npm, "ci"], cwd=RAIZ / "frontend",
+                                     capture_output=True, text=True, timeout=900)
+        assert instalacion.returncode == 0, \
+            f"npm ci falló: {(instalacion.stderr or instalacion.stdout)[-800:]}"
     build = subprocess.run([npm, "run", "build"], cwd=RAIZ / "frontend",
                            capture_output=True, text=True, timeout=600)
     assert build.returncode == 0, f"build falló: {build.stderr[-800:]}"
