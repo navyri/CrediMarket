@@ -27,10 +27,21 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./infra/postgres/01_esquemas.sh:/docker-entrypoint-initdb.d/01_esquemas.sh:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      # Además de `pg_isready`, comprueba que el init de `01_esquemas.sh`
+      # creó los 4 roles `svc_*`. Si el script no llega a correr (p. ej. el
+      # shebang con CRLF en un clon de Windows), los servicios no podrían
+      # autenticarse y entrarían en bucle de reinicios sin un aviso claro:
+      # con esta comprobación el fallo queda visible en `postgres unhealthy`
+      # y bloquea a los que dependen de `service_healthy` (P2-11.l).
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} && PGPASSWORD=${POSTGRES_PASSWORD} psql -U ${POSTGRES_USER} -d ${POSTGRES_DB} -tAc \"SELECT count(*) FROM pg_roles WHERE rolname IN ('svc_productos','svc_clientes','svc_prestamos','svc_inventario')\" | grep -q '^4$$'",
+        ]
       interval: 5s
       timeout: 5s
       retries: 12
+      start_period: 30s
 
   productos:
     build:
