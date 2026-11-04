@@ -216,7 +216,10 @@ services:
       - prestamos
       - inventario
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:80/"]
+      # 127.0.0.1 y no `localhost`: en la imagen alpine el nombre resuelve
+      # primero a ::1 y nginx solo escucha IPv4, así que el wget fallaba con
+      # "connection refused" y el contenedor se quedaba unhealthy.
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:80/"]
       interval: 15s
       timeout: 5s
       retries: 6
