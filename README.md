@@ -147,6 +147,7 @@ versionan en el repositorio; sus hash SHA-256 están registrados para verificaci
 | Documento | Contenido |
 |---|---|
 | [`docs/guia-demo.md`](docs/guia-demo.md) | Cuentas de prueba y pasos de la demostración desde el navegador |
+| [`docs/sustentacion.md`](docs/sustentacion.md) | Guion de sustentación: arquitectura, flujo, pruebas en vivo y respuestas de la rúbrica (§14/§15) |
 | [`docs/informe-redis-desempeno.md`](docs/informe-redis-desempeno.md) | Diseño de la caché, mediciones (MISS/HIT/carga), fallos y recursos |
 | [`docs/informe-seleccion-modelo.md`](docs/informe-seleccion-modelo.md) | Baseline y parrillas candidatas, métricas, umbral y curva de costos (§8.B) |
 | [`docs/diccionario-datos.md`](docs/diccionario-datos.md) | Columnas, unidades, categorías, faltantes y particiones de los CSV |
