@@ -11,6 +11,21 @@ cp .env.example .env      # editar valores si hace falta
 docker compose up -d      # 9 contenedores: 4 servicios + frontend + infraestructura
 ```
 
+**Si el sistema nace de un clon limpio** (sin `ml/modelos/*.joblib` ni datos),
+faltan dos pasos antes de la demo; sin ellos `GET /ready` da 503 y el catálogo
+sale vacío:
+
+```bash
+python scripts/preparar_desde_clon.py --csv "ruta/al/prestamos_entrenamiento.csv"
+#   → ml/datos/*.csv + entrena v1 y v2 (semilla 42) + promueve v1 + verifica /ready
+python scripts/sembrar_demo.py
+#   → catálogo DEMO-01…DEMO-06 con stock (DEMO-06 sin existencias, escenario 3.4)
+```
+
+Ambos son **idempotentes**: repetirlos no duplica productos ni reentrena dos
+veces lo mismo (el segundo se puede omitir si `ml/modelos/v1/modelo.joblib`
+ya existe).
+
 | Componente | URL en el host |
 |---|---|
 | Frontend (nginx, build de producción) | **http://localhost:8090** |
