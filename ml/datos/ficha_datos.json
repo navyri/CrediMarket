@@ -1,5 +1,5 @@
 {
-  "fuente": "C:\\Users\\usuario\\Downloads\\final parte 2\\prestamos_entrenamiento.csv",
+  "fuente": "prestamos_entrenamiento.csv",
   "sha256_fuente": "c6cdc437c3aecc9116bc8b978df421d5a7600634c1ad7d6f82e58222a2446ecd",
   "filas_origen": 12000,
   "filas_descartadas": 0,

@@ -1,5 +1,6 @@
 """Medición puntual de drift (PSI) entre el histórico de entrenamiento y
 lotes de producción. Se usa para decidir el diseño de P2-9; no es el entregable."""
+import os
 import sys
 from pathlib import Path
 
@@ -8,9 +9,11 @@ import pandas as pd
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-RAIZ = Path(r"C:\Users\usuario\Downloads\CrediMarket")
+RAIZ = Path(__file__).resolve().parents[2]
 REF = RAIZ / "ml" / "datos" / "entrenamiento.csv"
-NUEVO = Path(r"C:\Users\usuario\Downloads\final parte 2\solicitudes_nuevas.csv")
+# Ruta portable: variable de entorno o archivo dentro del repositorio.
+NUEVO = Path(os.environ.get("CREDIMARKET_CSV_SOLICITUDES")
+             or RAIZ / "solicitudes_nuevas.csv")
 
 VARIABLES = ["ingresos_mensuales_cop", "obligaciones_mensuales_cop",
              "antiguedad_laboral_meses", "meses_historial_crediticio",

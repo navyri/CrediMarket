@@ -31,14 +31,12 @@ SALIDA_DEFECTO = RAIZ / "ml" / "datos"
 # El CSV crudo no se versiona (§13.2: datos fuera del repo, hash documentados).
 # La ruta por defecto NO puede estar atada a una máquina concreta, así que se
 # buscan candidatas en orden y, si ninguna existe, se pide `--entrada`.
-# Orden: variable de entorno → raíz del clon → ml/datos → datos_fuente →
-# la ruta histórica de la máquina de desarrollo (último recurso).
+# Orden: variable de entorno → raíz del clon → ml/datos → datos_fuente.
 CANDIDATAS_ENTRADA = (
     None,                                        # CREDIMARKET_CSV_ENTRENAMIENTO
     RAIZ / "prestamos_entrenamiento.csv",
     RAIZ / "ml" / "datos" / "prestamos_entrenamiento.csv",
     RAIZ / "datos_fuente" / "prestamos_entrenamiento.csv",
-    Path(r"C:\Users\usuario\Downloads\final parte 2\prestamos_entrenamiento.csv"),
 )
 NOMBRE_CSV = "prestamos_entrenamiento.csv"
 
@@ -105,7 +103,7 @@ def preparar(entrada: Path, salida: Path) -> dict:
     test.to_csv(salida / "prueba.csv", index=False)
 
     ficha = {
-        "fuente": str(entrada),
+        "fuente": entrada.name,   # sin ruta absoluta (no expone la máquina)
         "sha256_fuente": sha256(entrada),
         "filas_origen": n_antes,
         "filas_descartadas": descartadas_filas,

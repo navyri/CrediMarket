@@ -35,7 +35,10 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 RAIZ = Path(__file__).resolve().parents[2]
 EVIDENCIAS = RAIZ / "docs" / "evidencias"
-DEFAULT_LOTE = Path(r"C:\Users\usuario\Downloads\final parte 2\solicitudes_nuevas.csv")
+# Ruta portable: `python scripts/monitoreo/demostrar_drift.py <ruta>` o
+# CREDIMARKET_CSV_SOLICITUDES; sin nada, se busca en la raíz del clon.
+DEFAULT_LOTE = Path(os.environ.get("CREDIMARKET_CSV_SOLICITUDES")
+                    or RAIZ / "solicitudes_nuevas.csv")
 
 URL_PRESTAMOS = os.environ.get("URL_PRESTAMOS", "http://localhost:8003")
 URL_PRODUCTOS = os.environ.get("URL_PRODUCTOS", "http://localhost:8001")

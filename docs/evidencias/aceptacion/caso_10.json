@@ -12,7 +12,7 @@
     "probabilidad_artefacto": 0.4435322732077263,
     "umbral": 0.49,
     "decision": "FAVORABLE",
-    "artefacto": "C:\\Users\\usuario\\Downloads\\CrediMarket\\ml\\modelos\\v1\\modelo.joblib",
+    "artefacto": "ml/modelos/v1/modelo.joblib",
     "variables": [
       "ingresos_mensuales_cop",
       "obligaciones_mensuales_cop",

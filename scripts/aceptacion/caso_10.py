@@ -80,7 +80,8 @@ def main() -> dict:
         detalle={"modelo_version": version, "run_id": decision["run_id"],
                  "probabilidad_api": proba_api, "probabilidad_artefacto": proba_local,
                  "umbral": decision["umbral"], "decision": decision["decision"],
-                 "artefacto": str(carpeta / "modelo.joblib"),
+                 "artefacto": (carpeta / "modelo.joblib")
+                 .relative_to(RAIZ).as_posix(),
                  "variables": ficha["variables"]})
 
 
