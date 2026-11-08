@@ -4,7 +4,7 @@
   "clon": {
     "origen": "https://github.com/navyri/CrediMarket.git",
     "destino": "clon temporal limpio (fuera del directorio de trabajo)",
-    "commit": "8659cea",
+    "commit": "6ba02da",
     "sin_modelo_al_clonar": true,
     "sin_datos_al_clonar": true,
     "sin_node_modules_al_clonar": true,
@@ -54,7 +54,7 @@
       "comando": "python scripts/aceptacion/ejecutar_todas.py",
       "resultado": "16/16 casos OK en 87,5 s (exit 0)",
       "evidencia": "los 16 `docs/evidencias/aceptacion/caso_*.json` y `resultados.json` se regeneraron en el clon (corrida 2026-11-04T08:22:24Z); el repo conserva además la corrida local equivalente (16/16 en 80,9 s)",
-      "corrida_previa": "14/16 → caso 14 exigía node_modules ausente en clon limpio (corregido en 8659cea) y caso 08 fue flake bajo carga (pasó 3/3 aislado)"
+      "corrida_previa": "14/16 → caso 14 exigía node_modules ausente en clon limpio (corregido en 6ba02da) y caso 08 fue flake bajo carga (pasó 3/3 aislado)"
     },
     {
       "paso": "demo en el navegador (frontend nginx en :8090)",
@@ -84,27 +84,27 @@
     {
       "defecto": "frontend unhealthy 6 h: el healthcheck usaba `localhost` (resuelve ::1) y nginx solo escucha IPv4 → 1442 fallos consecutivos",
       "fix": "healthcheck por 127.0.0.1",
-      "commit": "d35a964"
+      "commit": "cab7fea"
     },
     {
       "defecto": "clon en Windows: 01_esquemas.sh llegaba con CRLF → `/bin/bash^M: bad interpreter` → el init no creaba los roles svc_* → los 4 servicios entraban en bucle de reinicios con volúmenes nuevos",
       "fix": ".gitattributes (LF para *.sh, yml, conf, ini, sql, Dockerfile) + healthcheck de PostgreSQL que exige los 4 roles svc_* (el fallo queda visible en postgres unhealthy en vez de un bucle silencioso)",
-      "commit": "d0cad32"
+      "commit": "2426db2"
     },
     {
       "defecto": "nombre de parámetro mal referenciado en la espera de MLflow del bootstrap (py_compile no lo detecta: solo aparece en ejecución)",
       "fix": "corrección del nombre; el resto del script se revisó leyéndolo completo",
-      "commit": "2ea31ed"
+      "commit": "4b7a193"
     },
     {
       "defecto": "caso 14 de aceptación fallaba en clon limpio: `npm run build` sin node_modules → `'vite' is not recognized`",
       "fix": "el caso ejecuta `npm ci` automáticamente si falta node_modules",
-      "commit": "8659cea"
+      "commit": "6ba02da"
     },
     {
       "defecto": "el CSV crudo no se localizaba fuera de la máquina de desarrollo (ruta hardcodeada en preparar_datos.py)",
       "fix": "búsqueda portable (env CREDIMARKET_CSV_ENTRENAMIENTO → raíz → ml/datos → datos_fuente → ruta histórica) con mensaje de ayuda si no existe + scripts preparar_desde_clon.py y sembrar_demo.py documentados en README y guía-demo",
-      "commit": "9694240"
+      "commit": "7143d89"
     }
   ],
   "conclusion": "la demo completa (arranque, modelo, catálogo, 123 pruebas, 16/16 aceptación y flujo en navegador hasta APROBADA) se ejecutó desde un clon limpio de GitHub con volúmenes borrados, conforme a §14: 'la demostración se ejecuta a partir de lo entregado en el repositorio'."
