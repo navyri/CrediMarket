@@ -31,6 +31,10 @@ export default function Perfil() {
   const [guardando, setGuardando] = useState(false);
 
   const cargar = async () => {
+    // La cuenta administradora no tiene ficha de cliente (cliente_id=None en
+    // el JWT): sin esta guarda, "Mi perfil" pediría /clientes/null y
+    // mostraría un 404 rojo en pantalla.
+    if (!clienteId) { setCliente(null); setError(null); return; }
     try {
       const respuesta = await llamar("clientes", `/clientes/${clienteId}`);
       setCliente(respuesta);
@@ -71,6 +75,23 @@ export default function Perfil() {
     value: datos[k] ?? "",
     onChange: (e) => setDatos({ ...datos, [k]: e.target.value }),
   });
+
+  if (!clienteId) {
+    return (
+      <>
+        <h1>Mi perfil</h1>
+        <p className="subtitulo">
+          Sus datos y su perfil financiero viven en el servicio Clientes (dueño de sus datos);
+          Préstamos los consume por API para evaluar el riesgo.
+        </p>
+        <div className="aviso info">
+          Su cuenta de administradora no tiene ficha de cliente asociada: el
+          perfil financiero pertenece a los clientes. Abra <strong>Clientes</strong> para
+          ver o editar sus fichas.
+        </div>
+      </>
+    );
+  }
 
   if (!cliente && !error) return <Cargando texto="Cargando perfil…" />;
 
