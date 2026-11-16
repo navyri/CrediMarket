@@ -15,7 +15,7 @@ import requests
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _comun import (URL_PRESTAMOS, admin_token, auth, crear_producto, evidencia,
-                    registrar_cliente, salir)
+                    registrar_cliente, salir, secreto_jwt)
 
 CASO = 16
 REQUISITO = "§12.16 Formulario inválido / sesión vencida / API caída"
@@ -62,12 +62,10 @@ def main() -> dict:
                               "errors": p2.get("errors")}
 
     # 3) Sesión vencida: JWT firmado con el secreto correcto pero expirado → 401.
-    import os
     vencido = jwt.encode({"sub": cliente["cliente_id"], "rol": "cliente",
                           "cliente_id": cliente["cliente_id"],
                           "exp": int(time.time()) - 3600},
-                         os.environ.get("JWT_SECRET", "CAMBIAR_jwt_local_largo_32+"),
-                         algorithm="HS256")
+                         secreto_jwt(), algorithm="HS256")
     r3 = requests.get(f"{URL_PRESTAMOS}/prestamos/{producto}",   # 404/401: importa el 401
                       headers=auth(vencido), timeout=15)
     assert r3.status_code == 401, r3.status_code

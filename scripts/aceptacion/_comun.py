@@ -22,6 +22,26 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 RAIZ = Path(__file__).resolve().parents[2]
+
+
+def secreto_jwt() -> str:
+    """Secreto JWT real del entorno, con la precedencia de Docker Compose.
+
+    Primero la variable de entorno (sobreescribe `.env` en Compose), luego
+    `.env` y en último lugar `.env.example`. Nunca se hardcodea aquí: la
+    plantilla de la plantilla cambió una vez y rompió el caso 16.
+    """
+    if os.environ.get("JWT_SECRET"):
+        return os.environ["JWT_SECRET"]
+    for nombre in (".env", ".env.example"):
+        ruta = RAIZ / nombre
+        if not ruta.exists():
+            continue
+        for linea in ruta.read_text(encoding="utf-8").splitlines():
+            linea = linea.strip()
+            if linea.startswith("JWT_SECRET="):
+                return linea.split("=", 1)[1].strip()
+    return "CAMBIAR_por_48_bytes_aleatorios_minimo"
 EVIDENCIAS = RAIZ / "docs" / "evidencias" / "aceptacion"
 EVIDENCIAS.mkdir(parents=True, exist_ok=True)
 

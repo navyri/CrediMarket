@@ -7,13 +7,32 @@ import os
 import sys
 import time
 import uuid
+from pathlib import Path
 
 import httpx
 import jwt
 
 BASE_PROD = os.environ.get("URL_PRODUCTOS_LOCAL", "http://localhost:8001")
 BASE_CLI = os.environ.get("URL_CLIENTES_LOCAL", "http://localhost:8002")
-JWT_SECRET = os.environ.get("JWT_SECRET", "CAMBIAR_jwt_local_largo_32+")
+
+
+def _secreto_jwt() -> str:
+    """Mismo criterio que Docker Compose: env var, `.env`, luego `.env.example`."""
+    if os.environ.get("JWT_SECRET"):
+        return os.environ["JWT_SECRET"]
+    raiz = Path(__file__).resolve().parents[2]
+    for nombre in (".env", ".env.example"):
+        ruta = raiz / nombre
+        if not ruta.exists():
+            continue
+        for linea in ruta.read_text(encoding="utf-8").splitlines():
+            linea = linea.strip()
+            if linea.startswith("JWT_SECRET="):
+                return linea.split("=", 1)[1].strip()
+    return "CAMBIAR_por_48_bytes_aleatorios_minimo"
+
+
+JWT_SECRET = _secreto_jwt()
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "admin@credimarket.demo")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "CAMBIAR_admin_local")
 
