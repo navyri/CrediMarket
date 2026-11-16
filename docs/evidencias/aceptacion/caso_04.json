@@ -3,24 +3,24 @@
   "caso_s12": 4,
   "requisito": "§12.4 Dos solicitudes por la última unidad",
   "esperado": "Solo una obtiene la reserva.",
-  "observado": "dos POST concurrentes sobre stock=1 → bbb5e967… APROBADA con reserva y 58c5407e… CANCELADA_SIN_STOCK sin reserva; stock final total=1 reservada=1 disponible=0",
+  "observado": "dos POST concurrentes sobre stock=1 → 11e83f09… APROBADA con reserva y dbc9b9ba… CANCELADA_SIN_STOCK sin reserva; stock final total=1 reservada=1 disponible=0",
   "estado": "OK",
   "detalle": {
-    "prestamo_ganador": "bbb5e967-76e0-4568-92b4-c6a66abf7f33",
-    "prestamo_perdedor": "58c5407e-07e2-421b-b881-7600403f97b4",
+    "prestamo_ganador": "11e83f09-43ce-45b2-9c34-a2ee516025bd",
+    "prestamo_perdedor": "dbc9b9ba-1191-435a-81bf-af6cf63106fa",
     "codigos_http": [
       202,
       202
     ],
     "stock": {
-      "producto_id": "3d5e5cd8-20b4-498a-acf1-66352541818b",
+      "producto_id": "5b63acf7-6044-4f00-9bac-1e50cca62cb2",
       "total": 1,
       "reservada": 1,
       "disponible": 0,
-      "actualizado_en": "2026-11-02T04:55:42.314337Z"
+      "actualizado_en": "2026-11-16T02:02:17.959139Z"
     },
     "motivo_perdedor": "sin existencias suficientes (disponible 0)"
   },
-  "ejecutado_en": "2026-11-02T04:55:43Z",
-  "commit": "478cbb9"
+  "ejecutado_en": "2026-11-16T02:02:19Z",
+  "commit": "38a534f"
 }
