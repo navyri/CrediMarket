@@ -98,6 +98,26 @@ Para desarrollo del frontend sin contenedor: `cd frontend && npm ci && npm run d
   <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
 </p>
 
+## Capturas de la demo
+
+Interfaz ejecutada con `docker compose up` (las imágenes viven en [`docs/capturas/`](docs/capturas/)):
+
+<p align="center">
+  <img src="docs/capturas/catalogo.jpg" alt="Catálogo de productos con precios y acciones de administrador" width="760"/>
+</p>
+
+<p align="center">
+  <img src="docs/capturas/modelo.jpg" alt="Modelo de riesgo: versión activa, umbral, run ID, métricas y monitoreo" width="760"/>
+</p>
+
+<p align="center">
+  <img src="docs/capturas/clientes.jpg" alt="Directorio de clientes e importación de CSV" width="760"/>
+</p>
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## Pruebas
 
 ```bash

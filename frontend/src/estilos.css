@@ -1,17 +1,17 @@
-/* CrediMarket · tema CUTE DARK — paleta del collage de referencia.
-   Fondos oscuros (#2B2836 / #322D3D), texto claro (#DCD5D5 / #D1C4C2 /
-   #AFAEB9) y acentos medios: rosa (#BF6F6F / #BF3F6C / #AE2F4D) y azul
-   (#5C6A96 / #395091). El coral #D8455C del README no se toca: vive solo
-   en el banner/footer del documento. */
+/* CrediMarket · tema oscuro — paleta de la referencia bajada de tono para
+   ganar contraste: fondos #1A1723 / #241F30 / #262132, texto claro
+   (#DCD5D5 / #D1C4C2 / #BCBAC9) y acentos medios: rosa (#BF6F6F /
+   #BF3F6C / #AE2F4D) y azul (#5C6A96 / #395091). El coral #D8455C del
+   README no se toca: vive solo en el banner/footer del documento. */
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap");
 
 :root {
-  /* noche (fondos oscuros de la paleta) */
-  --fondo: #2b2836;
-  --fondo-2: #322d3d;
-  --panel: #322d3d;
-  --panel-alto: #46414f;     /* #322D3D + 12% de luz (degradado de tarjetas) */
-  --borde: #41425c;          /* mezcla de #322D3D con #5C6A96 */
+  /* noche (fondos oscuros, con más separación entre capas) */
+  --fondo: #1a1723;
+  --fondo-2: #241f30;
+  --panel: #262132;
+  --panel-alto: #322c42;     /* panel + luz para el degradado de tarjetas */
+  --borde: #4a4563;
   /* acentos rosas */
   --rosa: #bf6f6f;
   --rosa-fuerte: #bf3f6c;
@@ -22,7 +22,7 @@
   /* texto claro */
   --crema: #dcd5d5;
   --beige: #d1c4c2;          /* títulos y etiquetas */
-  --gris: #afaeb9;
+  --gris: #bcbac9;           /* texto secundario: subido para contraste */
   /* estados (fondos translúcidos sobre oscuro) */
   --ok: #8ce6b0;
   --ok-fondo: rgba(70, 200, 130, 0.14);
@@ -42,13 +42,13 @@ body {
   font-family: "Nunito", "Segoe UI", system-ui, -apple-system, sans-serif;
   color: var(--crema);
   line-height: 1.55;
-  /* cielo nocturno con destellos + resplandores rosa/lavanda */
+  /* cielo nocturno: textura de puntitos + resplandores muy suaves de la paleta */
   background-color: var(--fondo);
   background-image:
-    radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1.4px),
-    radial-gradient(1100px 520px at 12% -8%, rgba(191, 63, 108, 0.20), transparent 62%),
-    radial-gradient(900px 560px at 102% -4%, rgba(92, 106, 150, 0.16), transparent 58%),
-    radial-gradient(760px 700px at 50% 118%, rgba(174, 47, 77, 0.14), transparent 62%);
+    radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1.4px),
+    radial-gradient(1100px 520px at 12% -8%, rgba(191, 63, 108, 0.16), transparent 62%),
+    radial-gradient(900px 560px at 102% -4%, rgba(92, 106, 150, 0.13), transparent 58%),
+    radial-gradient(760px 700px at 50% 118%, rgba(174, 47, 77, 0.11), transparent 62%);
   background-size: 30px 30px, auto, auto, auto;
 }
 
@@ -73,7 +73,7 @@ a:hover { color: var(--rosa); }
   position: sticky;
   top: 0;
   z-index: 10;
-  background: rgba(50, 45, 61, 0.94);
+  background: rgba(36, 31, 48, 0.94);
   backdrop-filter: blur(8px);
   color: var(--crema);
   padding: 0.65rem 1.2rem;
@@ -81,7 +81,7 @@ a:hover { color: var(--rosa); }
   flex-wrap: wrap;
   gap: 0.8rem;
   align-items: center;
-  border-bottom: 2px dashed rgba(191, 111, 111, 0.45);   /* borde punteado kawaii */
+  border-bottom: 1px solid var(--borde);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
 }
 .marca {
@@ -93,7 +93,6 @@ a:hover { color: var(--rosa); }
   text-decoration: none;
 }
 .marca span { color: var(--rosa); }
-.marca::after { content: " ♡"; color: var(--azul); font-size: 0.9em; }
 .nav { display: flex; flex-wrap: wrap; gap: 0.2rem; flex: 1; }
 .nav a {
   color: var(--gris);
@@ -122,7 +121,6 @@ a:hover { color: var(--rosa); }
 .contenido { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.2rem 3rem; }
 h1, h2, h3 { font-family: "Fredoka", "Segoe UI", sans-serif; font-weight: 600; }
 h1 { font-size: 1.55rem; margin: 0.2rem 0 0.4rem; }
-h1::after { content: " ✦"; color: var(--rosa); font-size: 0.8em; }
 h2 { font-size: 1.12rem; margin: 1.5rem 0 0.5rem; color: #d1c4c2; }
 .subtitulo { color: var(--gris); margin-top: 0; font-size: 0.95rem; }
 
@@ -138,15 +136,6 @@ h2 { font-size: 1.12rem; margin: 1.5rem 0 0.5rem; color: #d1c4c2; }
   flex-direction: column;
   gap: 0.4rem;
   transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
-}
-.tarjeta::after {                     /* corazoncito en la esquina */
-  content: "♡";
-  position: absolute;
-  top: 8px;
-  right: 14px;
-  color: rgba(191, 111, 111, 0.55);
-  font-size: 0.95rem;
-  pointer-events: none;
 }
 .tarjeta:hover {
   transform: translateY(-3px);
@@ -196,14 +185,6 @@ form.panel, .panel {
   gap: 0.75rem;
   box-shadow: 0 8px 26px rgba(0, 0, 0, 0.28);
 }
-.panel::after {
-  content: "♡";
-  position: absolute;
-  top: 10px;
-  right: 16px;
-  color: rgba(191, 111, 111, 0.5);
-  pointer-events: none;
-}
 .campo { display: flex; flex-direction: column; gap: 0.25rem; }
 .campo label { font-size: 0.85rem; font-weight: 700; color: #d1c4c2; }
 .campo input, .campo select, .campo textarea {
@@ -212,7 +193,7 @@ form.panel, .panel {
   border-radius: 12px;
   font-size: 0.95rem;
   font-family: inherit;
-  background: rgba(43, 40, 54, 0.8);
+  background: rgba(26, 23, 35, 0.9);
   color: var(--crema);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
@@ -223,8 +204,75 @@ form.panel, .panel {
   box-shadow: 0 0 0 3px rgba(191, 111, 111, 0.25);
 }
 .campo .ayuda { font-size: 0.78rem; color: var(--gris); }
+.campo-ojo { position: relative; display: flex; }
+.campo-ojo input { flex: 1; width: 100%; padding-right: 2.3rem; }
+.ojo {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 0.28rem;
+  color: var(--gris);
+  cursor: pointer;
+  box-shadow: none;
+}
+.ojo:hover:not(:disabled) { background: rgba(92, 106, 150, 0.25); color: var(--crema); filter: none; transform: translateY(-50%); box-shadow: none; }
+.ojo:active:not(:disabled) { transform: translateY(-50%); }
+.ojo:focus-visible { outline: 2px solid var(--rosa); outline-offset: 1px; }
 .fila { display: flex; gap: 0.8rem; flex-wrap: wrap; }
 .fila .campo { flex: 1; min-width: 150px; }
+/* cuadrícula de datos alineados (paneles de Modelo): 4 columnas iguales,
+   el Run ID ocupa dos espacios porque es más largo */
+.datos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem 1.4rem;
+}
+.datos .campo { min-width: 0; }
+.datos .campo.ancho { grid-column: span 2; }
+.campo strong { overflow-wrap: anywhere; }   /* run IDs y valores largos: sin desbordes */
+.campo-archivo { position: relative; display: flex; align-items: center; gap: 0.6rem; }
+.campo-archivo input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.archivo-btn {
+  display: inline-block;
+  background: rgba(92, 106, 150, 0.28);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 0.55rem 1rem;
+  color: var(--crema);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.archivo-btn:hover { background: rgba(92, 106, 150, 0.45); border-color: var(--azul); }
+.campo-archivo input:focus-visible + .archivo-btn { outline: 2px solid var(--rosa); outline-offset: 2px; }
+.archivo-nombre {
+  flex: 1;
+  min-width: 0;
+  background: rgba(26, 23, 35, 0.9);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  padding: 0.55rem 0.7rem;
+  color: var(--gris);
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 button {
   background: var(--degradado);
@@ -294,7 +342,19 @@ button.mini { padding: 0.26rem 0.7rem; font-size: 0.8rem; }
 }
 
 /* ------------------------------------------------------------------ login */
-.login-caja { max-width: 440px; margin: 7vh auto 0; }
+/* centrado horizontal y vertical exacto en cualquier tamaño de ventana:
+   el contenedor deja de tener padding vertical y la caja ocupa toda la
+   altura del viewport; el contenido se reparte en el centro con flex */
+.contenido:has(> .login-caja) { padding-top: 0; padding-bottom: 0; }
+.login-caja {
+  max-width: 440px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .login-marca {
   text-align: center;
   font-family: "Fredoka", "Segoe UI", sans-serif;
@@ -308,8 +368,6 @@ button.mini { padding: 0.26rem 0.7rem; font-size: 0.8rem; }
   color: transparent;
   filter: drop-shadow(0 2px 14px rgba(191, 63, 108, 0.4));
 }
-.login-marca::before { content: "✦ "; color: var(--azul); -webkit-text-fill-color: var(--azul); }
-.login-marca::after { content: " ✦"; color: var(--azul); -webkit-text-fill-color: var(--azul); }
 .login-marca span { color: inherit; }
 .tabs { display: flex; gap: 0.4rem; margin-bottom: 0.8rem; }
 .tabs button {
@@ -334,4 +392,9 @@ button.mini { padding: 0.26rem 0.7rem; font-size: 0.8rem; }
   .sesion-cab { justify-content: space-between; }
   .contenido { padding: 1rem 0.7rem 2.5rem; }
   .tabla { display: block; overflow-x: auto; }
+  .datos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 430px) {
+  .datos { grid-template-columns: minmax(0, 1fr); }
+  .datos .campo.ancho { grid-column: span 1; }
 }

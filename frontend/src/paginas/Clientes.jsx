@@ -44,7 +44,7 @@ export default function Clientes() {
       <h1>Clientes</h1>
       <p className="subtitulo">
         Fichas de clientes con su perfil financiero. La importación usa el documento de identidad
-        como clave única: importar dos veces el mismo archivo no duplica clientes (§12.12).
+        como clave única: importar dos veces el mismo archivo no duplica clientes.
       </p>
       <Aviso tipo="ok" texto={aviso} onCerrar={() => setAviso(null)} />
       <Aviso tipo="error" texto={error} />
@@ -182,8 +182,12 @@ function Importacion({ onListo }) {
       <div className="fila" style={{ alignItems: "flex-end" }}>
         <div className="campo" style={{ flex: 2 }}>
           <label htmlFor="csv">Archivo CSV (con encabezados del histórico)</label>
-          <input id="csv" type="file" accept=".csv,text/csv"
-                 onChange={(e) => setArchivo(e.target.files?.[0] || null)} />
+          <div className="campo-archivo">
+            <input id="csv" type="file" accept=".csv,text/csv"
+                   onChange={(e) => setArchivo(e.target.files?.[0] || null)} />
+            <label className="archivo-btn" htmlFor="csv">Seleccionar archivo</label>
+            <span className="archivo-nombre">{archivo ? archivo.name : "Ningún archivo elegido"}</span>
+          </div>
         </div>
         <button type="submit" disabled={enviando}>{enviando ? "Importando…" : "Importar"}</button>
       </div>

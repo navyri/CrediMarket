@@ -30,20 +30,18 @@ export default function Modelo() {
     <>
       <h1>Modelo de riesgo</h1>
       <p className="subtitulo">
-        El modelo vive dentro del servicio Préstamos (§8): el entrenamiento es un proceso fuera de
+        El modelo vive dentro del servicio Préstamos: el entrenamiento es un proceso fuera de
         línea; la promoción es explícita y reversible.
       </p>
       <Aviso tipo="error" texto={error} />
 
       {info && (
         <div className="panel">
-          <div className="fila">
+          <div className="datos">
             <Dato etiqueta="Versión activa" valor={info.modelo_version} />
             <Dato etiqueta="Umbral" valor={`${(info.umbral * 100).toFixed(0)} %`} />
-            <Dato etiqueta="Run ID" valor={info.run_id || "—"} />
+            <Dato etiqueta="Run ID" valor={info.run_id || "—"} ancho />
             <Dato etiqueta="Promovido" valor={fecha(info.fecha_promocion)} />
-          </div>
-          <div className="fila">
             <Dato etiqueta="Algoritmo" valor={info.candidato || "—"} />
             <Dato etiqueta="ROC AUC (validación)" valor={info.roc_auc_validacion?.toFixed(4) || "—"} />
             <Dato etiqueta="Prueba (AUC / F1)" valor={
@@ -58,19 +56,19 @@ export default function Modelo() {
             Interfaz de MLflow:{" "}
             <a href={MLFLOW_URL} target="_blank" rel="noreferrer">{MLFLOW_URL}</a>{" "}
             (el servicio reporta <code>{info.mlflow_url}</code>; historial de entrenamientos y
-            comparación, no se reconstruye aquí, §10).
+            comparación, no se reconstruye aquí).
           </p>
         </div>
       )}
 
-      <h2>Monitoreo en producción (§15.2)</h2>
+      <h2>Monitoreo en producción</h2>
       {monitoreo && (
         <div className="panel">
           {monitoreo.total_inferencias === 0 ? (
             <p className="vacio">Aún no hay decisiones registradas en este despliegue.</p>
           ) : (
             <>
-              <div className="fila">
+              <div className="datos">
                 <Dato etiqueta="Inferencias" valor={monitoreo.total_inferencias} />
                 <Dato etiqueta="Latencia p50" valor={`${monitoreo.latencia_ms.p50} ms`} />
                 <Dato etiqueta="Latencia p95" valor={`${monitoreo.latencia_ms.p95} ms`} />
@@ -97,9 +95,9 @@ export default function Modelo() {
   );
 }
 
-function Dato({ etiqueta, valor }) {
+function Dato({ etiqueta, valor, ancho = false }) {
   return (
-    <div className="campo" style={{ flex: 1, minWidth: 170 }}>
+    <div className={ancho ? "campo ancho" : "campo"}>
       <span className="meta">{etiqueta}</span>
       <strong>{valor}</strong>
     </div>
