@@ -10,7 +10,7 @@
   <img src="https://img.shields.io/badge/microservicios-4%20de%20negocio-D8455C?style=flat-square"/>
   <img src="https://img.shields.io/badge/Python-REST-2A1F26?style=flat-square&logo=python&logoColor=F8F2EF"/>
   <img src="https://img.shields.io/badge/Redis-cache--aside-F2C4CC?style=flat-square&logo=redis&logoColor=2A1F26"/>
-  <img src="https://img.shields.io/badge/broker-Kafka%20o%20RabbitMQ-9FB8DC?style=flat-square"/>
+  <img src="https://img.shields.io/badge/broker-RabbitMQ-9FB8DC?style=flat-square&logo=rabbitmq&logoColor=2A1F26"/>
   <img src="https://img.shields.io/badge/MLflow-experimentos-2A1F26?style=flat-square&logo=mlflow&logoColor=D8455C"/>
   <img src="https://img.shields.io/badge/Docker-Compose-9FB8DC?style=flat-square&logo=docker&logoColor=2A1F26"/>
   <img src="https://img.shields.io/badge/datos-12.000%2B200%20sint%C3%A9ticos-D8455C?style=flat-square"/>
@@ -123,7 +123,7 @@ Interfaz ejecutada con `docker compose up` (las imágenes viven en [`docs/captur
 ```bash
 pip install -r servicios/requirements-dev.txt   # pytest + httpx (una sola vez)
 python scripts/ejecutar_pruebas.py              # 123 pruebas: unitarias + integración
-python scripts/aceptacion/ejecutar_todas.py     # 16 casos de §12 → 16/16 OK (~80 s)
+python scripts/aceptacion/ejecutar_todas.py     # 16 casos de §12 → 16/16 OK (~75 s)
 python scripts/medir_cache.py                   # mediciones de la caché Redis
 ```
 
@@ -178,6 +178,12 @@ versionan en el repositorio; sus hash SHA-256 están registrados para verificaci
 | [`docs/arquitectura/decision-broker.md`](docs/arquitectura/decision-broker.md) | Decisión Kafka vs. RabbitMQ y su configuración |
 | [`docs/arquitectura/seguridad.md`](docs/arquitectura/seguridad.md) | JWT, roles, autorización e idempotencia |
 | [`docs/arquitectura/estrategia-pruebas.md`](docs/arquitectura/estrategia-pruebas.md) | Estrategia de pruebas y mapa a la rúbrica |
+| [`docs/arquitectura/responsabilidades-y-datos.md`](docs/arquitectura/responsabilidades-y-datos.md) | Responsabilidades, propiedad de datos y vías de comunicación autorizadas |
+| [`docs/arquitectura/stack.md`](docs/arquitectura/stack.md) | P2-DEC-010: stack tecnológico y versiones fijadas |
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## Estructura
 
@@ -193,7 +199,7 @@ CrediMarket/
 ├── ml/                       # prep, train, export, monitoreo, datos y modelos (v1/v2)
 │   └── requirements.txt      # dependencias del ciclo MLOps
 ├── scripts/                  # pruebas pytest, casos de aceptación y mediciones
-└── docs/                     # arquitectura, guía de demo, informes y evidencias
+└── docs/                     # arquitectura, contratos, guía de demo, informes y evidencias
 ```
 
 <p align="center">

@@ -3,6 +3,10 @@
 Diseño de P2-1.6 y P2-1.7. Base: §4 (tabla de estados mínimos + párrafos de vencimiento y eventos
 tardíos) y §12 (pruebas 1, 3, 4, 7, 15).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 1. Estados
 
 Los 6 estados de la tabla mínima de §4, más un estado propio para el vencimiento (§4 permite que el
@@ -24,6 +28,10 @@ Notas de diseño:
   entrega es vía liberación → `CANCELADA` o vencimiento → `CANCELADA_VENCIDA`.
 - No existe estado de "reactivación": los estados finales son absorbentes (prueba #7).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 2. Transiciones (origen → destino · disparador · efectos)
 
 | # | Origen | Destino | Disparador | Efectos |
@@ -39,6 +47,10 @@ Notas de diseño:
 | T9 | cualquiera final | *(sin cambio)* | evento tardío (`reservada`, `liberada`, `vencida`, `salida.confirmada`) | **no reactiva**; se registra en log con `correlation_id` como `evento_tardio_ignorado` |
 
 Salidas por estado final: ninguna (absorbentes).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 3. Diagrama (Mermaid)
 
@@ -59,23 +71,32 @@ stateDiagram-v2
     COMPLETADA --> [*]
 ```
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 4. Tiempos de espera (§4: documentar)
 
 | Parámetro | Valor | Comportamiento |
 |---|---|---|
-| `RESERVA_VENCIMIENTO` | 10 minutos | Inventario libera reservas no entregadas ni canceladas; publica `reserva.vencida` |
-| `ESPERA_EVENTO_RESERVA` | 30 segundos | si `PENDIENTE_INVENTARIO` no recibe evento, el frontend hace polling y Préstamos expone el estado; el evento llegue tarde o no, el estado solo cambia por T3/T4/T5 |
-| `ESPERA_EVENTO_LIBERACION` | 15 segundos | tras cancelar `APROBADA`, si no llega `liberada` se reintenta publicación vía outbox (no se marca `CANCELADA` antes) |
+| `RESERVA_VENCIMIENTO_SEG` | 600 s (10 minutos) | Inventario libera reservas no entregadas ni canceladas; publica `reserva.vencida` |
+| `INTERVALO_VENCIMIENTO_SEG` | 15 s | cadencia de la tarea periódica que busca reservas vencidas |
+| `ESPERA_EVENTO_RESERVA_SEG` | 30 s | si `PENDIENTE_INVENTARIO` no recibe evento, el frontend hace polling y Préstamos expone el estado; el evento llegue tarde o no, el estado solo cambia por T3/T4/T5 |
+| `ESPERA_EVENTO_LIBERACION_SEG` | 15 s | tras cancelar `APROBADA`, si no llega `liberada` se reintenta publicación vía outbox (no se marca `CANCELADA` antes) |
 | Reintentos broker | 3 intentos, TTL 5 s | después → dead letter |
 
-Los valores se configuran por variables de entorno (`RESERVA_VENCIMIENTO_SEG`, etc.).
+Todos los valores se configuran por variables de entorno (`.env` / Compose).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 5. Reservas, vencimiento, cancelaciones y eventos tardíos (P2-1.7)
 
 - **Reserva atómica:** `UPDATE inventario.existencia SET reservada = reservada + :n
   WHERE producto_id = :p AND (total - reservada) >= :n` → filas afectadas 0 ⇒ `insuficiente`
   (nunca existencias negativas; pruebas #3 y #4).
-- **Vencimiento:** tarea periódica en Inventario (cada 30 s) busca reservas `RESERVADA` con
+- **Vencimiento:** tarea periódica en Inventario (cada 15 s, `INTERVALO_VENCIMIENTO_SEG`) busca reservas `RESERVADA` con
   `vence_en < now()`, las pasa a `VENCIDA` en la misma transacción que devuelve las unidades a
   disponibles y escribe outbox `reserva.vencida`. Préstamos recibe T8.
 - **Cancelación previa a la entrega:** T5/T7. Con reserva → broker `reserva.cancelada` → Inventario
@@ -91,6 +112,10 @@ Los valores se configuran por variables de entorno (`RESERVA_VENCIMIENTO_SEG`, e
 - **Carrera dos solicitudes por la última unidad (prueba #4):** la condición `WHERE` atómica deja
   pasar exactamente una; la otra recibe `insuficiente` ⇒ `CANCELADA_SIN_STOCK`.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 6. Reglas críticas cubiertas
 
 | Regla (prompt) | Dónde |
@@ -101,3 +126,7 @@ Los valores se configuran por variables de entorno (`RESERVA_VENCIMIENTO_SEG`, e
 | Cancelación final exige resolver reserva | T7 espera `liberada` |
 | Vencimiento no deja aprobado con reserva inexistente | T8 única salida no-entrega de `APROBADA` |
 | Rechazo no pide inventario | T1 sin outbox a Inventario |
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=D8455C" alt=""/>
+</p>

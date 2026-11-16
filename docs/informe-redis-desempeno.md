@@ -15,6 +15,10 @@ docker compose start redis
 python scripts/aceptacion/ejecutar_todas.py      # casos 08 y 09 (Redis) + el resto
 ```
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 1. Diseño de la caché (lo que se midió)
 
 | Aspecto | Decisión |
@@ -22,7 +26,7 @@ python scripts/aceptacion/ejecutar_todas.py      # casos 08 y 09 (Redis) + el re
 | Patrón | cache-aside: `GET clave` → miss → BD → `SET` con TTL |
 | Clave | `productos:v1:{producto_id}` (`productos` + versión `v1` + id) |
 | TTL de la caché | 60 s (`CACHE_TTL_SEG`, configurable) |
-| Invalidación | `DEL` de la clave **después** del commit del `PATCH`/`DELETE` + borrado del fallback local |
+| Invalidación | `DEL` de la clave **después** del commit del `PATCH`/`desactivar` + borrado del fallback local |
 | Fallback en memoria | TTL 5 s, solo cuando Redis no responde; nunca sustituye a la BD |
 | Timeouts de conexión | `socket_connect_timeout=1`, `socket_timeout=1` |
 | Cortacircuitos | Tras el primer fallo no se toca Redis durante 5 s (`CACHE_FAIL_FAST_SEG`); al vencer se reintenta y, si responde, se cierra |
@@ -31,6 +35,10 @@ python scripts/aceptacion/ejecutar_todas.py      # casos 08 y 09 (Redis) + el re
 Condición de dato desactualizado documentada: como máximo el TTL (60 s) si la
 invalidación no llegó a ejecutarse por una caída simultánea, o 5 s de datos
 servidos por el fallback en memoria durante una indisponibilidad.
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 2. Mediciones con Redis disponible
 
@@ -57,6 +65,10 @@ Corrida `python scripts/medir_cache.py --lecturas 40`
 |---|---|---|---|
 | Serie secuencial (40 × `GET /productos?pagina=1&tamano=50`) | 15,29 | 30,39 | **64,0** |
 | Concurrente, 20 hilos (40 peticiones) | 77,23 | 108,95 | **208,3** |
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 3. Comportamiento ante fallos
 
@@ -98,16 +110,24 @@ Prueba unitaria que lo garantiza: `test_cortacircuitos_no_reintenta_redis_durant
 préstamo posterior cotiza al precio nuevo con la versión reciente. El navegador
 nunca envía el precio (§4).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 4. Límites de Redis (§6)
 
 - **No** reemplaza las bases de datos de Préstamos ni de Inventario: la
   deduplicación de solicitudes y de eventos es durable en PostgreSQL
-  (tabla `prestamos.idempotency_key` con `request_hash` y respuesta asociada) y
+  (tabla `prestamos.solicitud_idempotente` con `huella_cuerpo` y respuesta asociada) y
   sobrevive a la caída o al `FLUSHDB` de Redis (casos 05 y 08).
 - La cotización que define el monto se lee de la fuente de verdad con su
   `version`; una caché vieja no puede fijar el precio (caso 09).
 - Rate limiting: no implementado (opcional, no suma) para no confundirlo con la
   caché exigida.
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 5. Recursos consumidos
 
@@ -134,6 +154,10 @@ Redis aporta 6,5 MiB y es el componente que más latencia ahorra por byte
 usado. En la carga concurrente de §2 el servicio de Productos sostuvo
 208 peticiones/s con p95 de 109 ms sin agotar conexiones.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 6. Evidencias asociadas
 
 - `docs/evidencias/mediciones_cache.json` — MISS/HIT, carga e invalidación.
@@ -141,3 +165,7 @@ usado. En la carga concurrente de §2 el servicio de Productos sostuvo
 - `docs/evidencias/aceptacion/caso_08.json` — Redis vacío/expirado/caído.
 - `docs/evidencias/aceptacion/caso_09.json` — invalidación por precio.
 - `docs/evidencias/p2_test_019_redis_cache.json` — hit-rate, fallback, p50/p95.
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=D8455C" alt=""/>
+</p>

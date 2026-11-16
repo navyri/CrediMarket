@@ -2,6 +2,10 @@
 
 Documento de P2-1.3 (§5.1 del enunciado: 1 a 2 páginas respondiendo las seis preguntas).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 1. Volumen, consumidores y patrón
 
 CrediMarket genera pocas solicitudes por minuto (demo + pruebas de aceptación: decenas de mensajes
@@ -9,6 +13,10 @@ por corrida, no miles por segundo). Hay **dos servicios** como extremos: Présta
 comandos de reserva/cancelación, consumidor de eventos de inventario) e Inventario (productor de
 eventos, consumidor de comandos), con **un grupo de consumidores por cola** y patrón
 comando/evento dirigido (no fan-out, no streaming de datos).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 2. Conservación y reproducción de eventos
 
@@ -19,12 +27,20 @@ Kafka ofrecería retención temporal y re-play por offset, pero no necesitamos r
 de semanas ni re-analizar eventos históricos: el requisito §5 es transportar el flujo real con
 recuperación, no construir un log de eventos duradero a largo plazo.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 3. Distribución del trabajo y orden
 
 El orden por `prestamo_id` (una reserva, su liberación y su entrega deben verse en orden) se consigue
 enviando esos mensajes con la **misma routing key lógica hacia la misma cola** y un único consumidor
 por cola durante la demo; en RabbitMQ el orden dentro de una cola está garantizado. En Kafka habría
 que fijar particiones por clave `prestamo_id` y discutir rebalanceos; aquí el volumen no lo justifica.
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 4. Errores, duplicados, reintentos y mensajes fallidos
 
@@ -37,12 +53,20 @@ que fijar particiones por clave `prestamo_id` y discutir rebalanceos; aquí el v
 - Publicación: **publisher confirms** + mensajes persistentes (§5.2 RabbitMQ), con outbox en el
   productor (P2-REQ-039).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 5. Costo de recursos y complejidad operativa
 
-RabbitMQ: una imagen (~200 MB) con panel de administración incluido (`:management`), sin ZK/KRaft, arranque en
+RabbitMQ: una imagen (~290 MB con panel `:management`) sin ZK/KRaft, arranque en
 segundos, memoria muy por debajo de Kafka en este volumen. Kafka con KRaft requiere más memoria y
 más configuración (topics, retenciones, offsets, grupos) que solo se amortiza con alto volumen o
 retención analítica. En un portátil con Docker Desktop, RabbitMQ es la opción más liviana.
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 6. Por qué elegimos RabbitMQ y qué cambio nos haría escoger Kafka
 
@@ -51,6 +75,10 @@ panel de inspección para la demo, y menor costo operativo. **Cambiaríamos a Ka
 varios consumidores independientes del mismo flujo, se exigiera retención temporal con replay
 (histórico auditable), el orden por clave con múltiples particiones y rebalanceos fuera un requisito,
 o el volumen creciera a cientos de mensajes por segundo con consumidores escalados.
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 7. Configuración a documentar (§5.2 columna RabbitMQ)
 
@@ -65,3 +93,7 @@ o el volumen creciera a cientos de mensajes por segundo con consumidores escalad
 | Inspección | UI en puerto 15672 para la demostración |
 
 Referencia oficial: https://www.rabbitmq.com/docs/reliability (§16 del enunciado).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=D8455C" alt=""/>
+</p>

@@ -2,36 +2,46 @@
 
 Diseño de P2-1.10. Base: §12 (16 pruebas de aceptación), §15.2 (rúbrica), reglas del encargo.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 1. Niveles
 
 | Nivel | Herramienta | Alcance | Identificación |
 |---|---|---|---|
-| Unitario | `pytest` | lógica pura de cada servicio (máquina de estados, hashing, validaciones, reservas con BD en memoria/transaccional). **Se usan mocks aquí, declarados como tales** (`tests/unitarios/`, nombres `test_*_unit`) | no sustituye integración |
-| Integración API | `pytest` + `TestClient` + RabbitMQ/Redis/PostgreSQL reales vía Compose | endpoints completos con sus dependencias reales | `tests/integracion/` |
+| Unitario | `pytest` | lógica pura de cada servicio (máquina de estados, hashing, validaciones, reservas con BD en memoria/transaccional). **Se usan mocks aquí, declarados como tales** (`servicios/*/tests/test_*_unit.py`) | no sustituye integración |
+| Integración API | `pytest` + `TestClient` + RabbitMQ/Redis/PostgreSQL reales vía Compose | endpoints completos con sus dependencias reales | `servicios/*/tests/integracion/` |
 | Mensajería | scripts `scripts/pruebas/` contra Compose | publicación real, reintentos, DLQ, deduplicación, caída/recuperación | evidencia con logs |
 | Aceptación (16) | `scripts/aceptacion/caso_*.py` (uno por caso de §12) | flujo extremo a extremo con backend real | un resultado por prueba P2-TEST-* |
 | Frontend E2E | flujo manual documentado + capturas (§10) | navegador contra APIs reales | guía de demo |
 
 No hay mocks en la demostración: los mocks existen solo en unitarios y están rotulados.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 2. Registro de evidencias
 
-Cada prueba queda en `docs/evidencias/P2-TEST-NNN.md` con:
+Cada ejecución guarda su resultado en JSON dentro de `docs/evidencias/`:
 
-```
-ID: P2-TEST-0NN
-Requisito: P2-REQ-XXX (sección del enunciado)
-Precondiciones: ...
-Comando/pasos: ...
-Resultado esperado: ...
-Resultado observado: (solo con ejecución real)
-Estado: [ ]/[~]/[x]
-Logs/artefactos: ruta
-Commit/version probada: <sha>
-```
+- `docs/evidencias/aceptacion/caso_NN.json` (uno por caso de §12) con los campos
+  `id`, `requisito`, `esperado`, `observado`, `estado`, `detalle`, `commit` y
+  `ejecutado_en`; `resultados.json` consolida la corrida (`total`, `ok`,
+  `fallos`, `duracion_total_s`).
+- Mediciones puntuales: `mediciones_cache.json`, `mediciones_cache_sin_redis.json`,
+  `p2_test_019_redis_cache.json`, `p2_test_020_drift_simulado.json`,
+  `experimentos_mlflow.json`, `ensayo_clon_limpio.json`.
 
-Prohibido marcar `[x]` sin resultado observado; los logs se guardan en `docs/evidencias/logs/`
-(gitignored si pesan; se cita su hash).
+El orquestador `scripts/aceptacion/ejecutar_todas.py` regenera la evidencia de los
+16 casos; el estado solo puede ser `OK` cuando `observado` refleja una ejecución
+real (prohibido marcar OK sin ejecutar). Los logs pesados quedan fuera del repo
+(gitignored) y se cita su hash.
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 3. Matriz pruebas de aceptación → casos
 
@@ -58,6 +68,10 @@ Extras exigidos por rúbrica (no son de §12 pero se prueban): P2-TEST-017 (outb
 guardar y publicar), P2-TEST-018 (dead letter tras reintentos), P2-TEST-019 (mediciones Redis:
 p50/p95/hit-rate/fallback), P2-TEST-020 (drift simulado y monitoreo, P2-9.4).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 4. Concurrencia e idempotencia
 
 - Última unidad: dos `POST /prestamos` concurrentes (httpx AsyncClient + `asyncio.gather`) sobre
@@ -66,9 +80,17 @@ p50/p95/hit-rate/fallback), P2-TEST-020 (drift simulado y monitoreo, P2-9.4).
   inventario (§12.5).
 - Duplicado HTTP: misma key reprocesada → mismo `prestamo_id`; key con cuerpo distinto → 409.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 5. Reproducibilidad
 
-- Semilla fija `RANDOM_SEED=42` en entrenamiento y en datos de prueba.
+- Semilla fija `SEMILLA = 42` (`ml/train/entrenar.py`) en entrenamiento y en datos de prueba.
 - `scripts/aceptacion/ejecutar_todas.py` orquesta los 16 casos contra Compose y produce un
   resumen `resultados.json` (IDs, esperado/observado, duración) que alimenta `docs/evidencias/`.
 - Compose es el único requisito de infraestructura (sin nube de pago, §13).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=D8455C" alt=""/>
+</p>

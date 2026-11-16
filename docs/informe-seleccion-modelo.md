@@ -13,11 +13,15 @@ python ml/train/entrenar.py --modelo-version v2
 python scripts/ml/exportar_experimentos.py  # historial de MLflow → JSON
 ```
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 1. Reglas declaradas ANTES de comparar
 
 | Decisión | Valor declarado | Dónde vive |
 |---|---|---|
-| Particiones (70/15/15 aprox.) | 7.200 entrenamiento · 2.400 validación · 2.400 prueba | `ml/datos/*.csv`, `ficha_datos.json` |
+| Particiones (60/20/20) | 7.200 entrenamiento · 2.400 validación · 2.400 prueba | `ml/datos/*.csv`, `ficha_datos.json` |
 | Semilla | `42` (corridas reproducibles) | `SEMILLA` en `ml/train/entrenar.py` |
 | Métrica de selección | **ROC-AUC en validación** | `MÉTRICA_SELECCIÓN` |
 | Criterio de desempate | mayor ROC-AUC → menor **Brier** en validación → orden de la parrilla | comentario en el bucle de selección, parámetro `desempate` en MLflow |
@@ -29,6 +33,10 @@ Además: el preprocesamiento (imputación, escalado, one-hot) se ajusta **solo**
 entrenamiento dentro del `sklearn.Pipeline`; `solicitud_id`, `cliente_id` y la
 etiqueta nunca entran como variables; no se selecciona por accuracy (se reporta,
 pero no decide).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 2. Baseline y parrilla de candidatas (iteración v2)
 
@@ -66,6 +74,10 @@ del bosque, e iteraciones/tasa del potenciador (más paciente vs. más fiel).
   el criterio declarado no llegó a desempatar.
 
 **Ganador: `regresion_logistica`** (ROC-AUC 0.7047 en validación).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 3. Umbral: ajustado en validación y congelado antes de la prueba
 
@@ -105,6 +117,10 @@ incumplimientos: equilibra los dos errores en lugar de anular uno. El umbral de
 costo mínimo queda registrado igualmente (`umbral_costo_minimo = 0.89`,
 `val_costo_ficticio_min = 18150`) para que la decisión sea reproducible.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 4. Evaluación final en prueba (una sola vez)
 
 Tras congelar candidato y umbral, el pipeline se reajusta con el conjunto de
@@ -130,6 +146,10 @@ las 2.400 filas de prueba con umbral 0.49:
   aprueban 589 que incumplirán (FP); con los costos ficticios del §3 eso sería
   63.950 en validación y 65.700 en prueba (`100·589 + 25·272`).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 5. Trazabilidad (MLflow, §8.C)
 
 - Experimento `credimarket-incumplimiento-90d` en http://localhost:5000
@@ -153,6 +173,10 @@ las 2.400 filas de prueba con umbral 0.49:
   `python ml/export/administrar_activo.py` y trazas en
   `ml/modelos/historial_promociones.jsonl`.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 6. Versión activa y relación con v1
 
 La versión **activa sigue siendo `v1`** (run `709931de…`, umbral 0.49): no se
@@ -168,6 +192,10 @@ v2 aporta es la comparación completa (baseline + 7 candidatas), las métricas
 ampliadas (AP, Brier, matriz de confusión) y la curva de costos exigidos por
 §8.B.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 7. Limitaciones
 
 - Datos sintéticos y desbalanceados (≈30,6 % clase 1): los umbrales y costos son
@@ -177,3 +205,7 @@ ampliadas (AP, Brier, matriz de confusión) y la curva de costos exigidos por
   dentro del conjunto de desarrollo».
 - La calibración se evalúa con Brier (punto único); una curva de calibración
   completa quedaría como extensión opcional.
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=D8455C" alt=""/>
+</p>

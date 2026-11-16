@@ -2,6 +2,10 @@
 
 Diseño de P2-1.5. Base: §5.2 (columna RabbitMQ), §5.3 y §4.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 1. Sobre (envelope) común — obligatorio en todos los mensajes
 
 ```json
@@ -24,11 +28,19 @@ Diseño de P2-1.5. Base: §5.2 (columna RabbitMQ), §5.3 y §4.
 - **Los mensajes hacia Inventario NO llevan datos financieros** (ni ingresos, ni monto, ni
   `cliente_id`): solo `prestamo_id`, `producto_id`, `cantidad`, `plazo_desde` operativo (§5.3).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 2. Topología RabbitMQ (resumen; detalle en `decision-broker.md` §7)
 
 Exchange `credimarket.topic` (topic, durable) · colas `prestamos.comandos` e `inventario.comandos`
 (durables) · dead letter `credimarket.dlx` → `prestamos.dlq`, `inventario.dlq` · publisher confirms
 + mensajes persistentes · ack después del commit.
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 3. Mensajes
 
@@ -133,6 +145,10 @@ coherente: **un préstamo aprobado no puede conservar una reserva inexistente**)
 
 → Préstamos: `APROBADA → COMPLETADA` (§4).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 4. Garantías y errores (§5.2/§5.3)
 
 - **Publicación:** outbox en el productor (P2-REQ-039); relay publica con `publisher confirm`;
@@ -149,5 +165,9 @@ coherente: **un préstamo aprobado no puede conservar una reserva inexistente**)
 - **Caída:** mensajes durables + ack posterior al commit + outbox cubren la caída entre guardar y
   publicar (prueba #6).
 
-Ejemplos JSON completos versionados en `docs/contratos/ejemplos/` (se generan en P2-1.5 como parte
-de este entregable, junto con los esquemas).
+Ejemplos JSON completos versionados en `docs/contratos/ejemplos/` (7 archivos, entregable P2-1.5,
+junto con los esquemas).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=D8455C" alt=""/>
+</p>

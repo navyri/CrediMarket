@@ -10,7 +10,9 @@
 > `main` en GitHub y los nombres se completan solo si el profesor lo solicita por canal
 > privado.
 
----
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 1. Guion de arquitectura (≤ 5 min) — P2-12.1
 
@@ -104,7 +106,9 @@ Ejecutar el caso feliz en el navegador mientras se explica (paso 3.2 de la guía
 **16/16 casos de aceptación** de §12 · **7 entregables** de §13 en el repositorio ·
 arranque verificado desde un **clon limpio** (`docs/evidencias/ensayo_clon_limpio.json`).
 
----
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 2. Flujo en navegador: los 8 escenarios de §10 — P2-12.2
 
@@ -125,14 +129,16 @@ Pasos exactos en [`docs/guia-demo.md`](guia-demo.md) §3; aquí el resumen para 
 Detalle de sesión/roles: cuentas de prueba en `guia-demo.md` §2 (administrador
 `admin@credimarket.demo`; cliente recién registrado en el escenario 3.1).
 
----
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 3. Demostración en vivo de pruebas (§12) — P2-12.3
 
 **Comando único** (desde la raíz del clon, con el Compose levantado):
 
 ```bash
-python scripts/aceptacion/ejecutar_todas.py     # 16 casos · ≈ 88 s · resultados.json
+python scripts/aceptacion/ejecutar_todas.py     # 16 casos · ≈ 75 s · resultados.json
 ```
 
 Salida esperada: `RESULTADO: 16/16 casos OK` y evidencia por caso en
@@ -159,7 +165,9 @@ Las **123 pruebas** de unidad/integración se ejecutan con `python scripts/ejecu
 | 15 | Solicitud pendiente y asíncrona | La interfaz muestra `PENDIENTE_INVENTARIO` y **se actualiza sola** |
 | 16 | Formulario inválido / sesión vencida / API caída | Mensajes claros y estado recuperable, **sin respuestas simuladas** |
 
----
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 4. Respuestas: rúbrica §15.2 y limitaciones — P2-12.4
 
@@ -174,7 +182,7 @@ Las **123 pruebas** de unidad/integración se ejecutan con `python scripts/ejecu
 | 5 | Exportación, API y versiones (15 %) | Excelente | Pipeline exportado con manifiesto, promoción/rollback explícitos, API con los 6 endpoints y validación, carga al iniciar, equivalencia demostrada (caso 10), monitoreo + drift (PSI), 2.ª versión (casos 10 y 11) |
 | 6 | Seguridad, idempotencia y recuperación (15 %) | Excelente | Roles validados en backend (caso 13), idempotencia HTTP con `409` y de mensajes (caso 05), outbox demostrado (casos 05–06), reserva atómica sin stock negativo (caso 04), recuperación ante caídas (06–08), CSV idempotente (caso 12) |
 | 7 | Frontend (10 %) | Excelente | Los módulos de §10 sobre APIs reales, roles y estados pendientes con actualización automática (caso 15), errores y sesión vencida manejados (caso 16), diseño adaptable, **cero respuestas simuladas** |
-| 8 | Documentación y reproducibilidad (5 %) | Excelente | `git clone` → `docker compose up -d` → bootstrap documentado; README, 5 diagramas, contratos, guía de demo e informes completos; **contribución real visible en el historial de commits** (con la salvedad de grupo de 1 de §4) |
+| 8 | Documentación y reproducibilidad (5 %) | Excelente | `git clone` → `docker compose up -d` → bootstrap documentado; README, 6 diagramas, contratos, guía de demo e informes completos; **contribución real visible en el historial de commits** (con la salvedad de grupo de 1 de §4) |
 
 ### 4.2 · Condiciones de §15.3 (cuidado especial)
 
@@ -199,7 +207,9 @@ Las **123 pruebas** de unidad/integración se ejecutan con `python scripts/ejecu
 5. **Drift**: es un diagnóstico **simulado** con un lote de referencia fija
    (`solicitudes_nuevas.csv`, PSI máximo 0,1266), como permite el alcance (P2-DEC-008).
 
----
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 5. Cierre de entrega: verificación de integridad — P2-12.5
 
@@ -222,13 +232,17 @@ git ls-files | findstr /R "\.env$ \.joblib$ node_modules venv \.pyc$ \.csv$"
 | Verificación | Resultado |
 |---|---|
 | Commits en `main` sincronizados con `origin/main`, árbol limpio | ✅ |
-| Archivos trackeados: 185 · `.env` no trackeado · 0 `.joblib`/`.csv`/`node_modules`/`venv`/`.pyc` | ✅ |
+| Archivos trackeados: 189 · `.env` no trackeado · 0 `.joblib`/`.csv`/`node_modules`/`venv`/`.pyc` | ✅ |
 | Patrones de secreto (URIs con contraseña, JWT, llaves privadas) en archivos trackeados | ✅ ninguno |
 | 7 entregables §13 presentes (17 archivos clave verificados) | ✅ |
-| `docs/arquitectura/`: 9 documentos, 5 diagramas Mermaid, 7 ejemplos JSON de contratos | ✅ |
+| `docs/arquitectura/`: 9 documentos, 6 diagramas Mermaid (5 en `diagramas.md` + la máquina de estados), 7 ejemplos JSON de contratos | ✅ |
 | 16 casos `scripts/aceptacion/caso_*.py` + `ejecutar_todas.py` | ✅ |
 | Arranque desde clon limpio: 9/9 `healthy`, 123 pruebas, 16/16 aceptación, demo hasta `APROBADA` | ✅ `docs/evidencias/ensayo_clon_limpio.json` |
 | Registro maestro: **191 tareas/requisitos → 191 [x], 0 pendientes** | ✅ local (no versionado, P2-DEC-009) |
 
 **Orden sugerido de la sustentación:** §1 (arquitectura, 5 min) → §2 (flujo en navegador,
 8 escenarios) → §3 (pruebas en vivo, el comando único) → §4 (preguntas de la rúbrica).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=D8455C" alt=""/>
+</p>

@@ -3,6 +3,10 @@
 Diseño de P2-1.9. Se versionan como Mermaid (se renderizan en GitHub y se actualizan con el
 código).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 1. Arquitectura general
 
 ```mermaid
@@ -49,6 +53,10 @@ posesión individual del mismo motor); el broker solo conecta Préstamos↔Inven
 en Productos; MLflow es infraestructura consumida por Préstamos y por el proceso de entrenamiento
 fuera de línea.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 2. Secuencia · caso feliz (solicitud → reserva → aprobación → entrega)
 
 ```mermaid
@@ -85,6 +93,10 @@ sequenceDiagram
     P-->>A: COMPLETADA
 ```
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 3. Secuencia · rechazo por riesgo (sin inventario)
 
 ```mermaid
@@ -102,6 +114,10 @@ sequenceDiagram
     Note over P,B: ningún mensaje hacia Inventario
     B-->>I: (sin tráfico)
 ```
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 4. Secuencia · cancelación con evento tardío (prueba #7)
 
@@ -126,6 +142,10 @@ sequenceDiagram
     P->>P: estado final → log evento_tardio_ignorado (sin reactivar)
 ```
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 5. Secuencia · vencimiento de reserva (§4)
 
 ```mermaid
@@ -137,9 +157,13 @@ sequenceDiagram
     participant P as Préstamos
 
     Note over I: reserva RESERVADA con vence_en < now()
-    T->>I: cada 30 s
+    T->>I: cada 15 s
     I->>I: transacción: reservada→vencida + unidades disponibles + outbox
     I->>B: inventario.reserva.vencida
     B->>P: inventario.reserva.vencida
     P->>P: APROBADA → CANCELADA_VENCIDA (nunca aprobado sin reserva)
 ```
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=D8455C" alt=""/>
+</p>

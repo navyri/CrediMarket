@@ -4,6 +4,10 @@ Todo el flujo se ejecuta **desde el navegador** contra las APIs reales: no hay r
 simuladas en el frontend, cada pantalla llama a los microservicios y los datos quedan
 persistidos en PostgreSQL (§10).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 1. Levantar el sistema
 
 ```bash
@@ -40,6 +44,10 @@ ya existe).
 
 Comprobación rápida: `docker compose ps` debe mostrar los 9 servicios `healthy`.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 2. Cuentas de prueba
 
 | Rol | Correo | Contraseña | Cómo se obtiene |
@@ -54,6 +62,10 @@ navegador.
 
 > La sesión dura 30 minutos; al vencer, la interfaz muestra el aviso de sesión
 > vencida y devuelve al formulario de acceso (§10, requisitos transversales).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 3. Flujo completo paso a paso (8 escenarios obligatorios, §10)
 
@@ -136,14 +148,18 @@ navegador.
    sobre umbral y deriva PSI). Cada préstamo guarda en su registro la versión con
    la que se decidió.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 4. Demo complementaria con scripts (fallos, concurrencia, caché, reentrega)
 
 Estos escenarios no se fuerzan desde la interfaz; se ejecutan con scripts y su
 resultado final **sí se observa en el navegador** (§10):
 
 ```bash
-python scripts/aceptacion/ejecutar_todas.py     # 16 casos de §12 → 16/16 OK (~81 s)
-python scripts/ejecutar_pruebas.py              # 122 pruebas pytest (unitarias + integración)
+python scripts/aceptacion/ejecutar_todas.py     # 16 casos de §12 → 16/16 OK (~75 s)
+python scripts/ejecutar_pruebas.py              # 123 pruebas pytest (unitarias + integración)
 python scripts/medir_cache.py                   # MISS/HIT/invalidación con métricas
 ```
 
@@ -153,6 +169,10 @@ cancelación con evento tardío, Redis vacío/expirado/caído, precio modificado
 equivalencia joblib vs API, promoción/rollback, importación CSV, autorización 403,
 flujo del frontend, traza de polling y validaciones con sesión vencida.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 5. Evidencias
 
 - `docs/evidencias/aceptacion/caso_01.json` … `caso_16.json` + `resultados.json`
@@ -161,3 +181,7 @@ flujo del frontend, traza de polling y validaciones con sesión vencida.
 - `docs/evidencias/p2_test_019_redis_cache.json` y
   `docs/evidencias/p2_test_020_drift_simulado.json` — métricas de caché y deriva.
 - Historial de MLflow en http://localhost:5000 (volumen `mlflowdata`).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=D8455C" alt=""/>
+</p>

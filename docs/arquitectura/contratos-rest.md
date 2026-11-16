@@ -3,6 +3,10 @@
 Diseño de P2-1.4. Base: §4, §8.E, §9, §10 del enunciado. Cada servicio publica OpenAPI
 (`/docs`) que se genera desde FastAPI; este documento fija las rutas y semánticas.
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## Convenciones comunes (los 4 servicios)
 
 - JSON UTF-8; nombres en `snake_case`; fechas ISO-8601 UTC.
@@ -30,6 +34,10 @@ Diseño de P2-1.4. Base: §4, §8.E, §9, §10 del enunciado. Cada servicio publ
 | 422 | cuerpo bien formado pero tipos/rangos inválidos (FastAPI) |
 | 503 | dependencia crítica no disponible (`/ready` lo refleja) |
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## Servicio Productos (puerto 8001)
 
 | Método y ruta | Rol | Semántica |
@@ -40,10 +48,15 @@ Diseño de P2-1.4. Base: §4, §8.E, §9, §10 del enunciado. Cada servicio publ
 | `PATCH /productos/{id}` | administrador | actualiza precio/categoría/nombre; **incrementa `version`** y tras commit invalida la clave Redis |
 | `POST /productos/{id}/desactivar` | administrador | `activo=false`; incrementa `version`; invalida caché |
 | `GET /productos/{id}/cotizacion` | interno (token de servicio) | **fuente de verdad**: lee BD (no Redis) y devuelve `{producto_id, precio_cop, version, vigente_desde}`. Préstamos persiste `precio` + `version` (§4) |
+| `GET /cache/estadisticas` | administrador | métricas de observación de la caché del proceso (aciertos, fallos, invalidaciones) |
 | `GET /health` (público) / `GET /ready` (público) | — | procesa / BD+Redis listos |
 
 Reglas: el precio del préstamo **nunca** sale de una caché sin validar versión (§6). El cliente no
 envía precio en la solicitud de préstamo (§4).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## Servicio Clientes (puerto 8002)
 
@@ -53,13 +66,19 @@ envía precio en la solicitud de préstamo (§4).
 | `GET /clientes` | administrador | listado |
 | `GET /clientes/{id}` | dueño o administrador | 403 si es ajeno y no es admin |
 | `PATCH /clientes/{id}` | dueño o administrador | actualización parcial |
-| `POST /clientes/import` | administrador | multipart `file`; respuesta `{procesadas, insertados, actualizados, rechazadas, errores:[{fila, motivo}]}` (§9) |
+| `POST /clientes/import` | administrador | multipart `file`; respuesta `{archivo, procesadas, insertados, actualizados, sin_cambios, rechazadas, errores:[{fila, motivo}]}` (§9) |
+| `POST /auth/registro` | público | crea `usuario` + `cliente` vinculado (bcrypt) y devuelve JWT; registro desde la interfaz |
 | `POST /auth/token` | público | login → JWT (P2-1.8: la demo emite tokens de prueba de forma controlada, §9) |
+| `GET /clientes/{id}/credenciales` | interno (token de servicio) | existe y está activo (validación de Préstamos, §9) |
 | `GET /health` / `GET /ready` | público | lo básico |
 
 Política de importación (se fija aquí, P2-REQ-040): clave `documento_identidad`; fila ya existente y
 con datos distintos → **actualiza** y cuenta en `actualizados`; fila inválida → `rechazadas` con
 motivo por fila; repetir el mismo archivo → 0 insertados, 0 actualizados (idempotente, §12.12).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## Servicio Préstamos (puerto 8003)
 
@@ -72,11 +91,18 @@ motivo por fila; repetir el mismo archivo → 0 insertados, 0 actualizados (idem
 | `POST /riesgo/predict` | interno/administrador | inferencia aislada; **no** reserva inventario (§8.E) |
 | `GET /modelo/info` | administrador | `{modelo_version, run_id, umbral, variables[], fecha_promocion, mlflow_url}` (§8.E) |
 | `POST /admin/modelo/promover` | administrador | promoción explícita de candidato → activa; `{"modelo_version":…}` (§8.D) |
+| `POST /admin/modelo/rollback` | administrador | rollback explícito: reactiva la última promoción anterior (§8.D) |
+| `GET /monitoreo/estado` | administrador | latencias p50/p95, tasa sobre umbral y deriva PSI de las últimas inferencias (§15.2) |
+| `POST /monitoreo/evaluar-lote` | interno | PSI de un lote contra la línea base exportada (P2-9.4) |
 | `GET /health` / `GET /ready` | público | `/ready` = 503 si el modelo no cargó (§8.E) |
 
 Nota: la cancelación con reserva confirmada publica `prestamo.reserva.cancelada` y espera
 `inventario.reserva.liberada` antes de terminar `CANCELADA` (§4: la cancelación final requiere
 resolver la reserva).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## Servicio Inventario (puerto 8004)
 
@@ -84,16 +110,25 @@ resolver la reserva).
 |---|---|---|
 | `GET /existencias` / `GET /existencias/{producto_id}` | administrador | existencia total, reservada y disponible |
 | `POST /entradas` | administrador | entrada de stock; registra `movimiento` |
-| `GET /reservas` | administrador | reservas con estado y vencimiento |
+| `GET /reservas` / `GET /reservas/{id}` | interno (admin o servicio) | reservas con estado y vencimiento |
 | `GET /movimientos` | administrador | historial |
 | `POST /reservas/{id}/entrega` | administrador | confirma salida (entrega simulada §4); publica `inventario.salida.confirmada` |
 | `POST /reservas/{id}/liberar` | administrador | liberación manual; publica `inventario.reserva.liberada` |
+| `GET /eventos/procesados` / `GET /outbox/pendiente` | interno (admin o servicio) | deduplicación y outbox: diagnóstico de mensajes (§5.3) |
 | `GET /health` / `GET /ready` | público | lo básico |
 
 Las reservas **no** se crean por REST: llegan por broker (`prestamo.reserva.solicitada`) y se aplican
 con transacción atómica `UPDATE ... WHERE disponible >= cantidad` (P2-REQ, §4; prueba #4/#3).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## Frontend → servicios
 
 El navegador solo llama a estas APIs con JWT (§10); no toca BD, Redis, broker ni MLflow. Las URLs de
 cada servicio se configuran por variables de entorno del build (`VITE_API_*`).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=D8455C" alt=""/>
+</p>

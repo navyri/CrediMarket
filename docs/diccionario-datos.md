@@ -7,6 +7,10 @@
 > coinciden con el análisis de `ml/datos/ficha_datos.json` (que guarda además
 > el SHA-256 de la fuente).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 1. Fuentes
 
 | Archivo | Filas × columnas | Uso | Versión |
@@ -17,6 +21,10 @@
 Los CSV **no se versionan** en el repo (`.gitignore`); se regeneran/leerán desde
 la ruta original y sus hash SHA-256 están registrados en el registro interno y en
 `ml/datos/ficha_datos.json`.
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 2. Columnas del histórico
 
@@ -57,6 +65,10 @@ legítimo (no se rellena fuera del `Pipeline`).
   trazabilidad, auditoría y deduplicación; el `Pipeline` recibe únicamente las
   11 predictorias (10 numéricas + `tipo_empleo`).
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 3. Columnas de `solicitudes_nuevas.csv`
 
 Mismas 14 columnas **sin** `incumplimiento_90d`: 200 filas con IDs continuos
@@ -64,6 +76,10 @@ posteriores (`SOL-0012001+`), **0 solapamiento** de `solicitud_id` y `cliente_id
 con el histórico. Faltantes: `porcentaje_pago_puntual` 43 · `tipo_empleo` 2 ·
 `antiguedad_laboral_meses` 1 · `meses_historial_crediticio` 1.
 Sirve para probar inferencia y monitoreo de deriva (`scripts/monitoreo/demostrar_drift.py`).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
 
 ## 4. Particiones (§8.A)
 
@@ -75,6 +91,10 @@ Estratificadas por la etiqueta, **semilla 42**, sin solapamiento de IDs:
 | `ml/datos/validacion.csv` | 2.400 | ≈ 30,55 % | selección de candidato y umbral |
 | `ml/datos/prueba.csv` | 2.400 | ≈ 30,55 % | evaluación final, una sola vez |
 
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=rect&height=6&color=D8455C"/>
+</p>
+
 ## 5. Etiqueta y objetivo
 
 - Objetivo: **`incumplimiento_90d`** (clase positiva 1 = incumplió a 90 días).
@@ -84,3 +104,7 @@ Estratificadas por la etiqueta, **semilla 42**, sin solapamiento de IDs:
   una columna de aprobación.
 - Desbalance moderado (≈30,6 % clase 1): por eso la selección no se hace por
   accuracy (ver `docs/informe-seleccion-modelo.md`).
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=120&section=footer&color=D8455C" alt=""/>
+</p>
