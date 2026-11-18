@@ -3,9 +3,11 @@ import { llamar } from "../api.js";
 import { Aviso, Cargando, mensajeError } from "../componentes.jsx";
 import { useSesion } from "../sesion.jsx";
 
+// El 4.º elemento marca los campos obligatorios (NOT NULL en la base): nunca
+// se envían vacíos, porque el backend los rechaza con 400.
 const CAMPOS_DATOS = [
-  ["nombre", "Nombre", "text"],
-  ["email", "Correo electrónico", "email"],
+  ["nombre", "Nombre", "text", true],
+  ["email", "Correo electrónico", "email", true],
   ["telefono", "Teléfono", "text"],
   ["ciudad", "Ciudad", "text"],
 ];
@@ -20,6 +22,10 @@ const CAMPOS_PERFIL = [
   ["atrasos_previos_30d", "Atrasos previos (30d)", "number"],
   ["porcentaje_pago_puntual", "Pago puntual (%)", "number"],
 ];
+
+/** Compara lo tecleado con lo guardado sin distinguir `""` de `null` ni
+ *  número de su texto: un campo intacto no viaja en el PATCH. */
+const mismo = (a, b) => String(a ?? "") === String(b ?? "");
 
 /** Mi perfil (§10: edición de datos permitidos, dueño o administrador). */
 export default function Perfil() {
@@ -54,10 +60,18 @@ export default function Perfil() {
     setError(null);
     try {
       const cuerpo = {};
-      CAMPOS_DATOS.forEach(([k]) => { if (datos[k] !== undefined && datos[k] !== cliente[k]) cuerpo[k] = datos[k]; });
+      // Un campo vacío limpia el valor (null) en vez de mandar "": el backend
+      // rechaza la cadena vacía con 400. Los obligatorios (nombre/email) no se
+      // envían vacíos; además el formulario los exige con `required`.
+      CAMPOS_DATOS.forEach(([k, , , obligatorio]) => {
+        if (datos[k] === undefined || mismo(datos[k], cliente[k])) return;
+        if (datos[k] === "" && obligatorio) return;
+        cuerpo[k] = datos[k] === "" ? null : datos[k];
+      });
       CAMPOS_PERFIL.forEach(([k, , tipo]) => {
-        if (datos[k] === undefined || datos[k] === cliente[k]) return;
-        cuerpo[k] = tipo === "number" && datos[k] !== "" ? Number(datos[k]) : datos[k];
+        if (datos[k] === undefined || mismo(datos[k], cliente[k])) return;
+        if (datos[k] === "") { cuerpo[k] = null; return; }
+        cuerpo[k] = tipo === "number" ? Number(datos[k]) : datos[k];
       });
       if (Object.keys(cuerpo).length === 0) { setOk("Sin cambios por guardar."); setGuardando(false); return; }
       const respuesta = await llamar("clientes", `/clientes/${clienteId}`, { metodo: "PATCH", cuerpo });
@@ -112,10 +126,10 @@ export default function Perfil() {
             <div className="campo"><label>Estado</label><input value={cliente.activo ? "Activo" : "Inactivo"} disabled /></div>
           </div>
           <div className="fila">
-            {CAMPOS_DATOS.map(([k, etiqueta, tipo]) => (
+            {CAMPOS_DATOS.map(([k, etiqueta, tipo, obligatorio]) => (
               <div className="campo" key={k}>
                 <label>{etiqueta}</label>
-                <input type={tipo} {...campo(k)} />
+                <input type={tipo} required={Boolean(obligatorio)} {...campo(k)} />
               </div>
             ))}
           </div>

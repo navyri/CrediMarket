@@ -86,7 +86,13 @@ export async function llamar(servicio, ruta, opciones = {}) {
   if (respuesta.status === 204) return null;
 
   const tipo = respuesta.headers.get("content-type") || "";
-  const json = tipo.includes("application/json") ? await respuesta.json() : null;
+  // Los errores llegan como `application/problem+json` (no contienen la
+  // subcadena "application/json"): sin leerlos se pierden `title`, `detail` y
+  // `errors[]` y el aviso queda en el statusText genérico ("[400] Bad Request").
+  let json = null;
+  if (tipo.includes("json")) {
+    try { json = await respuesta.json(); } catch { json = null; }  // cuerpo vacío o ilegible
+  }
 
   if (!respuesta.ok) {
     const detalle = tipo.includes("problem+json")

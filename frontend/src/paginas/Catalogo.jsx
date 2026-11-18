@@ -15,10 +15,13 @@ export default function Catalogo() {
   const [productos, setProductos] = useState(null);
   const [error, setError] = useState(null);
   const [aviso, setAviso] = useState(null);
+  const [busqueda, setBusqueda] = useState("");
 
   const cargar = useCallback(async () => {
     try {
-      const respuesta = await llamar("productos", "/productos?pagina=1&tamano=50");
+      // tamano=100 (el máximo del endpoint): la demo publica 66 productos y
+      // con 50 se quedaban 16 fuera del listado, sin paginación en la UI.
+      const respuesta = await llamar("productos", "/productos?pagina=1&tamano=100");
       setProductos(respuesta.items);
       setError(null);
     } catch (exc) {
@@ -28,6 +31,14 @@ export default function Catalogo() {
   }, []);
 
   useEffect(() => { cargar(); }, [cargar]);
+
+  // Filtro en el navegador sobre lo ya cargado: nombre, categoría, SKU o
+  // descripción, sin distinguir mayúsculas ni tildes.
+  const normalizar = (t) => (t || "").toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const termino = normalizar(busqueda.trim());
+  const filtrados = productos?.filter((p) =>
+    !termino || [p.nombre, p.categoria, p.sku, p.descripcion].some((v) => normalizar(v).includes(termino)),
+  );
 
   return (
     <>
@@ -43,8 +54,24 @@ export default function Catalogo() {
 
       {esAdmin && <PanelProducto onCreado={() => { setAviso("Producto creado."); cargar(); }} />}
 
+      {productos?.length > 0 && (
+        <div className="campo" style={{ maxWidth: "26rem", margin: esAdmin ? "1rem 0" : "0 0 1rem" }}>
+          <label htmlFor="buscar-producto">Buscar producto</label>
+          <input
+            id="buscar-producto"
+            type="search"
+            placeholder="Nombre, categoría, SKU o descripción…"
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+          />
+        </div>
+      )}
+      {productos?.length > 0 && filtrados.length === 0 && (
+        <Vacio texto={`Ningún producto coincide con «${busqueda.trim()}».`} />
+      )}
+
       <div className="rejilla" style={{ marginTop: esAdmin ? "1.2rem" : 0 }}>
-        {productos?.map((p) => (
+        {filtrados?.map((p) => (
           <TarjetaProducto
             key={p.id}
             producto={p}
