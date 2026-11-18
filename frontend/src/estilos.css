@@ -397,4 +397,5 @@ button.mini { padding: 0.26rem 0.7rem; font-size: 0.8rem; }
 @media (max-width: 430px) {
   .datos { grid-template-columns: minmax(0, 1fr); }
   .datos .campo.ancho { grid-column: span 1; }
+  .tabs button { padding: 0.5rem 0.55rem; font-size: 0.85rem; }   /* 3 pestañas sin desborde */
 }

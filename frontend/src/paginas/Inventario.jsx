@@ -3,6 +3,12 @@ import { fecha, llamar } from "../api.js";
 import { Aviso, Cargando, Vacio, mensajeError } from "../componentes.jsx";
 
 /** Inventario (§10, solo administrador): existencias, reservas, movimientos y entradas. */
+const SECCIONES = [
+  ["existencias", "Existencias"],
+  ["reservas", "Reservas"],
+  ["movimientos", "Movimientos"],
+];
+
 export default function Inventario() {
   const [existencias, setExistencias] = useState(null);
   const [reservas, setReservas] = useState(null);
@@ -11,6 +17,7 @@ export default function Inventario() {
   const [error, setError] = useState(null);
   const [aviso, setAviso] = useState(null);
   const [ocupado, setOcupado] = useState(false);
+  const [pestana, setPestana] = useState("existencias");
 
   const nombreDe = (id) => nombres[id] || `${id.slice(0, 8)}…`;
 
@@ -66,75 +73,100 @@ export default function Inventario() {
 
       <PanelEntrada onRegistrado={(msg) => { setAviso(msg); cargar(); }} />
 
-      <h2>Existencias</h2>
-      {existencias === null && <Cargando texto="Cargando existencias…" />}
-      {existencias?.length === 0 && <Vacio texto="Sin existencias registradas; registre una entrada." />}
-      {existencias?.length > 0 && (
-        <table className="tabla">
-          <thead><tr><th>Producto</th><th>Total</th><th>Reservada</th><th>Disponible</th><th>Actualizado</th></tr></thead>
-          <tbody>
-            {existencias.map((e) => (
-              <tr key={e.producto_id}>
-                <td>{nombreDe(e.producto_id)}</td>
-                <td>{e.total}</td>
-                <td>{e.reservada}</td>
-                <td><strong>{e.disponible}</strong></td>
-                <td className="meta">{fecha(e.actualizado_en)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Sub-secciones en pestañas: una tabla a la vez para no apilar tanta info. */}
+      <div className="tabs" style={{ maxWidth: "32rem" }}>
+        {SECCIONES.map(([clave, etiqueta]) => (
+          <button
+            key={clave}
+            type="button"
+            className={pestana === clave ? "activo" : ""}
+            onClick={() => setPestana(clave)}
+          >
+            {etiqueta}
+          </button>
+        ))}
+      </div>
+
+      {pestana === "existencias" && (
+        <>
+          {existencias === null && <Cargando texto="Cargando existencias…" />}
+          {existencias?.length === 0 && <Vacio texto="Sin existencias registradas; registre una entrada." />}
+          {existencias?.length > 0 && (
+            <table className="tabla">
+              <thead><tr><th>Producto</th><th>Total</th><th>Reservada</th><th>Disponible</th><th>Actualizado</th></tr></thead>
+              <tbody>
+                {existencias.map((e) => (
+                  <tr key={e.producto_id}>
+                    <td>{nombreDe(e.producto_id)}</td>
+                    <td>{e.total}</td>
+                    <td>{e.reservada}</td>
+                    <td><strong>{e.disponible}</strong></td>
+                    <td className="meta">{fecha(e.actualizado_en)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </>
       )}
 
-      <h2>Reservas</h2>
-      {reservas?.length === 0 && <Vacio texto="No hay reservas." />}
-      {reservas?.length > 0 && (
-        <table className="tabla">
-          <thead><tr><th>Reserva</th><th>Préstamo</th><th>Producto</th><th>Cant.</th><th>Estado</th><th>Vence</th><th>Acciones</th></tr></thead>
-          <tbody>
-            {reservas.map((r) => (
-              <tr key={r.id}>
-                <td>{r.id.slice(0, 8)}…</td>
-                <td>{r.prestamo_id.slice(0, 8)}…</td>
-                <td>{nombreDe(r.producto_id)}</td>
-                <td>{r.cantidad}</td>
-                <td>
-                  <span className={`insignia ${r.estado === "RESERVADA" ? "proceso" : r.estado === "ENTREGADA" ? "ok" : ""}`}>
-                    {r.estado}
-                  </span>
-                </td>
-                <td className="meta">{fecha(r.vence_en)}</td>
-                <td>
-                  {r.estado === "RESERVADA" && (
-                    <>
-                      <button className="mini" disabled={ocupado} onClick={() => entregar(r.id)}>Entregar</button>{" "}
-                      <button className="mini secundario" disabled={ocupado} onClick={() => liberar(r.id)}>Liberar</button>
-                    </>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {pestana === "reservas" && (
+        <>
+          {reservas === null && <Cargando texto="Cargando reservas…" />}
+          {reservas?.length === 0 && <Vacio texto="No hay reservas." />}
+          {reservas?.length > 0 && (
+            <table className="tabla">
+              <thead><tr><th>Reserva</th><th>Préstamo</th><th>Producto</th><th>Cant.</th><th>Estado</th><th>Vence</th><th>Acciones</th></tr></thead>
+              <tbody>
+                {reservas.map((r) => (
+                  <tr key={r.id}>
+                    <td>{r.id.slice(0, 8)}…</td>
+                    <td>{r.prestamo_id.slice(0, 8)}…</td>
+                    <td>{nombreDe(r.producto_id)}</td>
+                    <td>{r.cantidad}</td>
+                    <td>
+                      <span className={`insignia ${r.estado === "RESERVADA" ? "proceso" : r.estado === "ENTREGADA" ? "ok" : ""}`}>
+                        {r.estado}
+                      </span>
+                    </td>
+                    <td className="meta">{fecha(r.vence_en)}</td>
+                    <td>
+                      {r.estado === "RESERVADA" && (
+                        <>
+                          <button className="mini" disabled={ocupado} onClick={() => entregar(r.id)}>Entregar</button>{" "}
+                          <button className="mini secundario" disabled={ocupado} onClick={() => liberar(r.id)}>Liberar</button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </>
       )}
 
-      <h2>Movimientos</h2>
-      {movimientos?.length === 0 && <Vacio texto="Sin movimientos." />}
-      {movimientos?.length > 0 && (
-        <table className="tabla">
-          <thead><tr><th>Tipo</th><th>Producto</th><th>Cant.</th><th>Referencia</th><th>Fecha</th></tr></thead>
-          <tbody>
-            {movimientos.map((m) => (
-              <tr key={m.id}>
-                <td><span className="insignia">{m.tipo}</span></td>
-                <td>{nombreDe(m.producto_id)}</td>
-                <td>{m.cantidad}</td>
-                <td className="meta">{m.referencia || "—"}</td>
-                <td className="meta">{fecha(m.creado_en)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {pestana === "movimientos" && (
+        <>
+          {movimientos === null && <Cargando texto="Cargando movimientos…" />}
+          {movimientos?.length === 0 && <Vacio texto="Sin movimientos." />}
+          {movimientos?.length > 0 && (
+            <table className="tabla">
+              <thead><tr><th>Tipo</th><th>Producto</th><th>Cant.</th><th>Referencia</th><th>Fecha</th></tr></thead>
+              <tbody>
+                {movimientos.map((m) => (
+                  <tr key={m.id}>
+                    <td><span className="insignia">{m.tipo}</span></td>
+                    <td>{nombreDe(m.producto_id)}</td>
+                    <td>{m.cantidad}</td>
+                    <td className="meta">{m.referencia || "—"}</td>
+                    <td className="meta">{fecha(m.creado_en)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </>
       )}
     </>
   );
