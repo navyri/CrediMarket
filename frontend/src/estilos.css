@@ -384,6 +384,8 @@ button.mini { padding: 0.26rem 0.7rem; font-size: 0.8rem; }
   border-color: transparent;
   box-shadow: 0 3px 14px rgba(191, 63, 108, 0.4);
 }
+/* Inventario: mismo hueco que hay entre las pestañas y la tabla (0.8rem) */
+.panel + .tabs { margin-top: 0.8rem; }
 
 /* ------------------------------------------------------------------ responsive (§10) */
 @media (max-width: 720px) {
