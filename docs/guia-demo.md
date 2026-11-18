@@ -134,8 +134,12 @@ navegador.
 
 ### 3.8 Importación de clientes (CSV)
 
-1. Como **administrador** → **Clientes** → **Archivo CSV** (encabezados del
-   histórico `prestamos_entrenamiento.csv`) → **Importar**.
+1. Como **administrador** → **Clientes** → **Archivo CSV** con las columnas
+   adaptadas del histórico (el archivo crudo `prestamos_entrenamiento.csv` **no**
+   sirve: no trae `documento_identidad`/`nombre`/`email`; generar el de clientes
+   con
+   `python scripts/preparar_clientes_csv.py ruta/al/prestamos_entrenamiento.csv salida/clientes.csv`)
+   → **Importar**.
 2. La interfaz muestra el resumen: insertados / actualizados / sin cambios y el
    motivo de rechazo **por fila** (p. ej. documento repetido). Repita la
    importación: la segunda vez todo queda *sin cambios* (idempotente).
