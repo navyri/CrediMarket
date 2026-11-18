@@ -103,7 +103,7 @@ Para desarrollo del frontend sin contenedor: `cd frontend && npm ci && npm run d
 Interfaz ejecutada con `docker compose up` (las imágenes viven en [`docs/capturas/`](docs/capturas/)):
 
 <p align="center">
-  <img src="docs/capturas/catalogo.jpg" alt="Catálogo de productos con precios y acciones de administrador" width="760"/>
+  <img src="docs/capturas/catalogo.jpg" alt="Catálogo de productos con barra de búsqueda, precios y acciones de administrador" width="760"/>
 </p>
 
 <p align="center">
