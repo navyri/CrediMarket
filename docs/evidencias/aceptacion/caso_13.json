@@ -3,10 +3,10 @@
   "caso_s12": 13,
   "requisito": "§12.13 Cliente accede a préstamos ajenos",
   "esperado": "Rechazado por autorización (403) con token de otro cliente.",
-  "observado": "préstamo 34871a35…: dueño 200, cliente ajeno 403 en GET y 403 en cancelar (JSON legible), sin token 401, admin 200; estado inalalterado APROBADA",
+  "observado": "préstamo 7dc80385…: dueño 200, cliente ajeno 403 en GET y 403 en cancelar (JSON legible), sin token 401, admin 200; estado inalalterado APROBADA",
   "estado": "OK",
   "detalle": {
-    "prestamo_id": "34871a35-4381-4e54-933f-8020aac51d30",
+    "prestamo_id": "7dc80385-8c41-49ba-8fa0-d2c9e704f540",
     "dueno_get": 200,
     "ajeno_get": 403,
     "ajeno_cancelar": 403,
@@ -14,6 +14,6 @@
     "admin_get": 200,
     "estado_final": "APROBADA"
   },
-  "ejecutado_en": "2026-11-18T18:14:26Z",
-  "commit": "d36222b"
+  "ejecutado_en": "2026-11-20T01:40:53Z",
+  "commit": "5748c0c"
 }

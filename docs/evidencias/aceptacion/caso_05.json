@@ -3,30 +3,30 @@
   "caso_s12": 5,
   "requisito": "§12.5 Misma petición y mismo evento repetidos",
   "esperado": "Un préstamo y un único efecto sobre el inventario.",
-  "observado": "misma clave×2 → 1 préstamo (c8ea8dc5…); clave repetida con cuerpo distinto → 409; entrega repetida → 200 y luego 409 con un solo descuento (4 → 3); préstamos del cliente = 1",
+  "observado": "misma clave×2 → 1 préstamo (3b8fabee…); clave repetida con cuerpo distinto → 409; entrega repetida → 200 y luego 409 con un solo descuento (4 → 3); préstamos del cliente = 1",
   "estado": "OK",
   "detalle": {
-    "prestamo_id": "c8ea8dc5-fdfb-4155-8261-84529718d73d",
-    "segunda_respuesta_misma_clave": "c8ea8dc5-fdfb-4155-8261-84529718d73d",
+    "prestamo_id": "3b8fabee-913d-4a98-aca7-0eaaa3bc29bc",
+    "segunda_respuesta_misma_clave": "3b8fabee-913d-4a98-aca7-0eaaa3bc29bc",
     "clave_cuerpo_distinto": 409,
     "entrega_1": 200,
     "entrega_2": 409,
     "stock_antes": {
-      "producto_id": "0d06f5a8-da7a-4b15-8ceb-06d34244d6a4",
+      "producto_id": "eeef7148-9808-43d2-9ec9-3242cb679d9f",
       "total": 4,
       "reservada": 0,
       "disponible": 4,
-      "actualizado_en": "2026-11-18T18:13:24.263961Z"
+      "actualizado_en": "2026-11-20T01:40:09.094614Z"
     },
     "stock_despues": {
-      "producto_id": "0d06f5a8-da7a-4b15-8ceb-06d34244d6a4",
+      "producto_id": "eeef7148-9808-43d2-9ec9-3242cb679d9f",
       "total": 3,
       "reservada": 0,
       "disponible": 3,
-      "actualizado_en": "2026-11-18T18:13:26.236215Z"
+      "actualizado_en": "2026-11-20T01:40:10.506425Z"
     },
     "prestamos_del_cliente": 1
   },
-  "ejecutado_en": "2026-11-18T18:13:26Z",
-  "commit": "d36222b"
+  "ejecutado_en": "2026-11-20T01:40:10Z",
+  "commit": "5748c0c"
 }
