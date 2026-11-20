@@ -3,7 +3,7 @@
   "caso_s12": 12,
   "requisito": "§12.12 Importar CSV dos veces",
   "esperado": "0 insertados/actualizados en la 2.ª importación; sin duplicar clientes.",
-  "observado": "1.ª importación → 3 insertadas + 1 rechazadas con motivo por fila; 2.ª → 0 insertadas/0 actualizadas/3 sin cambios; directorio 67 → 70 clientes (+3, sin duplicados)",
+  "observado": "1.ª importación → 3 insertadas + 1 rechazadas con motivo por fila; 2.ª → 0 insertadas/0 actualizadas/3 sin cambios; directorio 12088 → 12091 clientes (+3, sin duplicados)",
   "estado": "OK",
   "detalle": {
     "primera": {
@@ -34,9 +34,9 @@
         }
       ]
     },
-    "clientes_antes": 67,
-    "clientes_despues": 70
+    "clientes_antes": 12088,
+    "clientes_despues": 12091
   },
-  "ejecutado_en": "2026-11-16T02:03:05Z",
-  "commit": "38a534f"
+  "ejecutado_en": "2026-11-18T18:14:24Z",
+  "commit": "d36222b"
 }

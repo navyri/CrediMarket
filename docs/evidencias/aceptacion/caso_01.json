@@ -3,11 +3,11 @@
   "caso_s12": 1,
   "requisito": "§12.1 Riesgo favorable con existencias",
   "esperado": "Reserva confirmada, préstamo aprobado y entrega simulada coherente.",
-  "observado": "préstamo d7ae1561… aprobado con reserva 50fe28e9… y entregado (traza PENDIENTE_INVENTARIO→APROBADA→APROBADA→COMPLETADA); stock 5/0 → 3/0",
+  "observado": "préstamo 6ca4fa6a… aprobado con reserva 2c3ba491… y entregado (traza PENDIENTE_INVENTARIO→APROBADA→APROBADA→COMPLETADA); stock 5/0 → 3/0",
   "estado": "OK",
   "detalle": {
-    "prestamo_id": "d7ae1561-d5ce-4516-ab45-1c02790a6571",
-    "reserva_id": "50fe28e9-16a4-40ec-a122-321cf0b673d8",
+    "prestamo_id": "6ca4fa6a-1c01-4fdb-aae8-bdc26301b144",
+    "reserva_id": "2c3ba491-c203-4271-ace3-2a9b5f7c1c90",
     "traza_estados": [
       "PENDIENTE_INVENTARIO",
       "APROBADA",
@@ -15,21 +15,21 @@
       "COMPLETADA"
     ],
     "stock_antes": {
-      "producto_id": "95f7fa21-8e2a-4308-8641-2e48c0e093d1",
+      "producto_id": "38032c11-fd85-427d-9f3e-e2d3f2700df3",
       "total": 5,
       "reservada": 0,
       "disponible": 5,
-      "actualizado_en": "2026-11-16T02:02:09.286663Z"
+      "actualizado_en": "2026-11-18T18:13:12.653342Z"
     },
     "stock_despues": {
-      "producto_id": "95f7fa21-8e2a-4308-8641-2e48c0e093d1",
+      "producto_id": "38032c11-fd85-427d-9f3e-e2d3f2700df3",
       "total": 3,
       "reservada": 0,
       "disponible": 3,
-      "actualizado_en": "2026-11-16T02:02:10.696263Z"
+      "actualizado_en": "2026-11-18T18:13:13.989530Z"
     },
     "monto_total_cop": "350000.00"
   },
-  "ejecutado_en": "2026-11-16T02:02:11Z",
-  "commit": "38a534f"
+  "ejecutado_en": "2026-11-18T18:13:14Z",
+  "commit": "d36222b"
 }
